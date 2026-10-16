@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Czytanie C1 2019</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.opt { display: block; padding: 4px 8px; border-radius: 6px; margin: 2px 0; cursor: pointer; }
+.opt input { margin-right: 8px; }
+.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 600; }
+.opt.bad { background: var(--bad-bg); color: var(--bad); }
+.opt.key { outline: 2px solid var(--ok); }
+.qfix { font: 600 14px/1.3 system-ui, sans-serif; color: var(--ok); margin-top: 4px; }
+.tf { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.tf .opt { margin: 0; border: 1px solid var(--line); padding: 4px 12px; }
+.frag { padding: 6px 10px; margin: 4px 0; background: var(--example); border-radius: 8px; font-size: 15px; }
+.frag b { margin-right: 6px; }
+.frag.used { opacity: .45; }
+.frag.struck { opacity: .6; font-style: italic; }
+.mrow { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.mrow .t { flex: 1 1 240px; font-weight: 600; }
+.mrow select { font: 16px system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; }
+.mrow.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.mrow.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.mrow .fix { flex-basis: 100%; }
+.gap .fix { display: inline; }
+.gap select { width: auto; max-width: 72vw; }
+.gap.cloze select { width: 9em; }
+.gap.letter select { width: 5em; }
+.mctext { font-family: Georgia, "Times New Roman", serif; font-size: 16.5px; line-height: 1.7; background: var(--input-bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px; }
+.mctext .no { font-family: system-ui, sans-serif; font-weight: 700; margin-right: 6px; }
+.mctext .src { margin-top: 4px; }
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie tekstów pisanych C1 - test przykładowy 2019</span>
+    <span class="timer" id="timer">60:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Rozumienie tekstów pisanych</h1>
+  <p class="lead">Oficjalny test przykładowy egzaminu certyfikatowego C1 (Państwowa Komisja, wersja z 2019 roku). 5 zadań, 60 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji.</p>
+  <div class="notice" id="timeUp">Czas minął (60 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: oficjalny test przykładowy C1 (2019), część "Rozumienie tekstów pisanych" + oficjalny klucz ----------
+const TASKS = [
+  { id: 'I', type: 'cloze', per: 0.5, max: 5,
+    title: 'Zadanie I',
+    instr: 'Proszę - zgodnie z przykładem - podkreślić najlepszą spośród możliwości podanych w nawiasach (na egzaminie podkreślasz ją, tutaj wybierasz z listy).',
+    textTitle: 'Elektryzujące (się) urny',
+    paras: [
+'W trakcie zbliżających się wyborów samorządowych po raz pierwszy na dużą skalę wykorzystane zostaną przezroczyste urny z poliwęglanu. Eksperci zwracają uwagę na ([[poważny]], niezwykły, znaczący, pierwszy) problem - fakt, że łatwo się one elektryzują. Z ustaleń „Rzeczpospolitej” wiadomo, że przyciąganie kart wyborczych przez urny to jedno z {1:zadań|pytań|zagadnień|założeń}, które chcą poruszyć eksperci Fundacji Batorego w przygotowywanym przez siebie poradniku dla obserwatorów społecznych wyborów. Joanna Załuska, dyrektor programu „Masz głos, masz wybór” w fundacji, mówi, że naelektryzowane urny mogą {2:spowodować|ujawnić|nasunąć|wyznaczyć} dwojakie problemy - czytamy na portalu rp.pl.',
+'O jakie kłopoty chodzi? Karta z głosem może przykleić się nie tylko do dna urny, co {3:usprawni|udrożni|utrudni|zakłóci} jej wyciągnięcie, ale też do jej boku (według ekspertów z Fundacji Batorego, do takiego przypadku doszło w Rosji). Urny są przezroczyste, co może {4:powodować|procentować|owocować|skutkować} ujawnieniem, na jakiego kandydata został oddany głos.',
+'- Na {5:poziomie|płaszczyźnie|etapie|obszarze} prac nad nowelizacją kodeksu wyborczego pojawiła się {6:wątpliwość|nowość|niepewność|myśl} związana z przezroczystością urn. Chodziło po prostu o to, że karta do głosowania może upaść tak, że będzie widoczna. Dlatego wprowadziliśmy {7:przymus|obowiązek|powinność|możliwość} złożenia karty na pół przed wrzuceniem do urny, by nie było widać, jak kto głosował. A szczerze mówiąc, te urny od początku powinny być półmatowe. Jeśli okaże się, że sprawiają problemy, trzeba będzie pomyśleć nad zmianami - komentuje dla „Rzeczpospolitej” poseł PiS Marcin Horała.',
+'Zmiany w kodeksie wyborczym, wprowadzające m.in. przezroczyste urny, zostały {8:dokonane|wykonane|nadmienione|nakreślone} z inicjatywy prezydenta Bronisława Komorowskiego, który {9:wnioskował|skierował|sugerował|zatwierdził} projekt nowelizacji do Sejmu po kontrowersjach związanych z wyborami samorządowymi w 2014 roku. Ostatecznie Sejm uchwalił nowelę, przyjmując pod koniec czerwca 2015 roku niektóre {10:zmiany|retusze|poprawki|przeróbki} Senatu.'
+    ],
+    src: 'Na podstawie: https://www.tech.wp.pl',
+    answers: { 1: 'zagadnień', 2: 'spowodować', 3: 'utrudni', 4: 'skutkować', 5: 'etapie', 6: 'wątpliwość', 7: 'obowiązek', 8: 'dokonane', 9: 'skierował', 10: 'poprawki' }
+  },
+  { id: 'II', type: 'mc', per: 1, max: 5,
+    title: 'Zadanie II',
+    instr: 'Proszę przeczytać fragmenty tekstów i - zgodnie z przykładem - zaznaczyć właściwą odpowiedź.',
+    example: {
+      text: 'Największe udokumentowane płatki śniegu pojawiły się w 1887 roku w Montanie (USA). Miały aż 38 cm średnicy i składały się z tysięcy zlepionych ze sobą białych kryształków. Białych? Śnieg wcale nie jest biały! Tak naprawdę jest przezroczysty. Widziana przez nas biel jest jedynie wynikiem odbijania światła w drobinkach lodu.',
+      src: 'Na podstawie: https://krolowasuperstarblog.wordpress.com',
+      stem: 'Ten tekst informuje o tym, że',
+      opts: ['najwięcej śniegu spadło w Montanie w drugiej połowie XIX wieku.', 'białe lodowe drobinki tworzą nietypowe, duże płatki śniegu.', 'płatki śniegu w rzeczywistości są bezbarwne.'],
+      ans: 2
+    },
+    qs: [
+      { text: 'W Polsce działa szajka, która ściąga pieniądze z kont na kwoty powyżej 100 tys. zł. Oszuści w salonach podszywają się pod właścicieli telefonów i żądają wydania duplikatów kart SIM. To daje im dostęp do kodów służących do potwierdzania przelewów, jakie na dany numer SMS-em wysyła bank. Podobne przypadki miały dotyczyć różnych operatorów.',
+        src: 'Na podstawie: http://www.finanse.wp.pl', stem: 'Ten tekst informuje o tym, że',
+        opts: ['grupa przestępcza ściąga pieniądze z kont różnych operatorów.', 'oszuści wyłudzają karty SIM innych użytkowników.', 'bank wysyła SMS-em kod weryfikujący właściciela.'], ans: 'b' },
+      { text: 'Prawdziwy oscypek różni się od innych góralskich serów m.in. kształtem. Ten tradycyjny owczy ser waży ok. pół kilograma, mierzy od 17 do 23 centymetrów i ma wrzecionowaty kształt. W smaku jest ostrzejszy od serów krowich, ma inną strukturę i jest bardziej kruchy.',
+        src: 'Na podstawie: http://www.polskieradio.pl', stem: 'Ten tekst informuje o tym, że',
+        opts: ['oscypek to rodzaj ostrzejszego sera krowiego.', 'górale produkują oscypki o jednym kształcie.', 'kształt oscypka zależy od jego rozmiaru.'], ans: 'b' },
+      { text: 'W Polsce dopiero raczkuje, lecz na Zachodzie od lat święci triumfy. Mowa o reportażu komiksowym, który udowadnia, że w prasie wciąż jest miejsce na długie teksty - choć nie w tradycyjnej formie. Niezbyt udaną próbę przeniesienia obrazkowych reportaży na polski grunt podjął 15 lat temu stołeczny dziennik.',
+        src: 'Na podstawie: http://www.polskieradio.pl', stem: 'Ten tekst informuje o tym, że',
+        opts: ['jedna z gazet codziennych bez sukcesu posłużyła się nową odmianą reportażu.', 'prasa niezbyt chętnie wykorzystuje dłuższe teksty o nowatorskiej formie.', 'reportaż komiksowy w Polsce naśladuje wzorce zachodnie.'], ans: 'a' },
+      { text: 'Choć na polskich drogach bezapelacyjnie dominują samochody napędzane silnikiem spalinowym, to gdyby Polacy kupowali dziś nowe „cztery kółka”, auta elektryczne wyraźnie wyprzedziłyby popularnością diesle. Kupno samochodu z silnikiem Diesla rozważałoby tylko 36% Polaków. Tymczasem kupno hybrydy za prawdopodobne uznaje 45% badanych, a auta elektrycznego 32%.',
+        src: 'Na podstawie: http://www.ing.pl', stem: 'Ten tekst informuje o tym, że',
+        opts: ['Polacy przekonują się do aut z silnikiem na prąd.', 'jedna trzecia Polaków rozważa kupno samochodu z silnikiem spalinowym.', 'diesle przestały być w Polsce popularne.'], ans: 'a' },
+      { text: 'W 2010 roku dr Gerard Gierliński dowiódł, że odkryte przez niego odciski stóp należą do archaicznych form ludzkich poruszających się w postawie wyprostowanej. Najstarsze dotąd (zidentyfikowane w Tanzanii) ślady praludzi pochodzą sprzed 3,66 mln lat. „Polskie” są nie tylko znacznie starsze (5,7 mln lat), ale ponadto pochodzą z Europy - miejsca, które wedle dotychczasowych teorii miało być zasiedlone znacznie później.',
+        src: 'Na podstawie: http://wiadomosci.gazeta.pl/wiadomosci', stem: 'Tekst ten informuje o tym, że',
+        opts: ['polski uczony dokonał przełomowego odkrycia na terenie Tanzanii.', 'Gierliński odkrył ślady stóp istot o archaicznym kształcie.', 'odkrycie Polaka podważyło wiedzę o zasięgu bytowania praczłowieka.'], ans: 'c' }
+    ]
+  },
+  { id: 'III', type: 'tf', per: 1, max: 10,
+    title: 'Zadanie III',
+    instr: 'Proszę przeczytać tekst, a następnie - jak w przykładzie - zaznaczyć: TAK - gdy zdanie jest zgodne z tekstem; NIE - gdy nie jest zgodne z tekstem; BI - gdy w tekście brakuje informacji na dany temat.',
+    textTitle: 'Z historii dobroczynności',
+    paras: [
+'Czy pierwszym dobrodziejem był biblijny miłosierny Samarytanin? Może chęć niesienia pomocy zaszczepił nam już boski Prometeusz? A zwykli ludzie? Kiedy zaczęli pomagać innym? Wiele wskazuje na to, że losem chorych i umierających w Grecji i Rzymie czasów starożytnych przejmowali się wyłącznie lekarze. Przy swoich siedzibach tworzyli coś, co dziś nazwalibyśmy hospicjami, gdzie bezinteresownie otaczali opieką potrzebujących.',
+'Na większą skalę dobroczynność rozwinęła się po rozprzestrzenieniu się w Europie chrześcijaństwa, w które wpisana jest pomoc najuboższym.',
+'W mrokach średniowiecza światłem dla biednych, chorych i opuszczonych stawały się szpitale, przytułki i sierocińce prowadzone przez zgromadzenia zakonne, a także przez zamożnych świeckich. Jednym z najsłynniejszych ówczesnych szpitali, w których rozdawano jałmużnę, był założony na przełomie VII i VIII wieku Hotel-Dieu w Paryżu.',
+'W okresie renesansu, kiedy zaczęto dostrzegać, jak bezbronny wobec przeciwności losu jest człowiek, chętniej włączano się w pomoc dla ofiar zaraz i wielkich głodów. W siłę rosły zakony, które nie ograniczały swojej działalności wyłącznie do modlitwy, lecz sprawowały także opiekę nad sierotami, bezdomnymi i więźniami. Pojawili się też pierwsi misjonarze. W tym samym czasie coraz większą rolę zaczęli odgrywać dobroczyńcy spoza kręgów kościelnych. Dobre uczynki wpisywali sobie do testamentów, co miało im wybłagać przychylność niebios.',
+'Podejście darczyńców do działalności pomocowej zaczęło się zmieniać dopiero w XVIII wieku. Miłosierdzie, które gwarantowało łaskę z nieba, zastępowała filantropia traktowana jako przejaw współczucia człowieka dla człowieka. Powstawały organizacje oraz towarzystwa nastawione na długofalową pomoc biednym, polegającą między innymi na wspieraniu ich w poszukiwaniu pracy czy zdobywaniu wykształcenia.',
+'Rozkwit tak rozumianej filantropii przypada jednak - zarówno w Polsce, jak i na świecie - dopiero na XIX wiek. Pod zaborami ogromne zasługi filantropijne położyło Warszawskie Towarzystwo Dobroczynności. Warto zaznaczyć że, oprócz otaczania opieką potrzebujących, działalność większości polskich towarzystw dobroczynnych w tamtych czasach podporządkowana była ideom narodowym.',
+'Prawdziwego przełomu w postrzeganiu dobroczynności w Europie dokonał jednak dopiero szwajcarski kupiec i finansista Henri Dunant, który w 1863 roku powołał do życia Czerwony Krzyż. Stało się to po wstrząsie, jakiego doznał po tym, jak zobaczył 40 tysięcy zabitych i rannych pozostawionych bez opieki po austriacko-włoskiej bitwie pod Solferino w 1859 roku. Dunant skrzyknął tubylców i bez większych trudności namówił ich do udzielenia pomocy rannym bez oglądania się na to, do której armii należeli. Po powrocie do rodzinnej Genewy finansista wraz z kilkoma wpływowymi rodakami utworzył Międzynarodowy Komitet Pomocy Rannym, który ostatecznie zmienił nazwę na Międzynarodowy Komitet Czerwonego Krzyża.',
+'Bezinteresowne pomaganie, o które zawalczył kiedyś Henri Dunant, kontynuują dziś członkowie działającego od 40 lat międzynarodowego zrzeszenia „Lekarze bez Granic”. Tworzą oni jedną z najodważniejszych i najbardziej bezkompromisowych organizacji pomocowych. Pojawiają się na terenach, które inni dobroczyńcy opuścili - najczęściej z obawy o własne bezpieczeństwo.'
+    ],
+    src: 'Na podstawie: Anna Szulc, Od tytana do wolontariusza, „Przekrój - dodatek specjalny”, luty 2011, s. 26-27.',
+    example: { stem: 'W starożytnej Grecji i Rzymie nad chorymi w stanie terminalnym kuratelę sprawowali prawdopodobnie jedynie lekarze.', ans: 'TAK' },
+    qs: [
+      { stem: 'Działalność filantropijna rozkwitła wraz z pojawieniem się w Europie chrześcijaństwa.', ans: 'NIE' },
+      { stem: 'Średniowieczne zakłady opiekuńcze i lecznice stanowiły pokrzepienie dla serc potrzebujących.', ans: 'TAK' },
+      { stem: 'Hotel-Dieu w Paryżu był utrzymywany z datków bogatych obywateli.', ans: 'BI' },
+      { stem: 'Większość zakonów w okresie odrodzenia ograniczała swoją działalność do wspierania osób w potrzebie.', ans: 'NIE' },
+      { stem: 'Postawa renesansowych donatorów świeckich była w pełni altruistyczna.', ans: 'NIE' },
+      { stem: 'W XVIII wieku pomoc organizacji i towarzystw dobroczynnych miała charakter doraźny.', ans: 'NIE' },
+      { stem: 'Polskie towarzystwa dobroczynne krzewiły między innymi wartości patriotyczne.', ans: 'TAK' },
+      { stem: 'Okoliczni mieszkańcy podjęli inicjatywę pomocy poszkodowanym w bitwie pod Solferino z własnej i nieprzymuszonej woli.', ans: 'NIE' },
+      { stem: 'Międzynarodowy Komitet Czerwonego Krzyża został założony dzięki wsparciu grona prominentnych Szwajcarów.', ans: 'TAK' },
+      { stem: 'Lekarze z organizacji „Lekarze bez Granic” udzielają pomocy medycznej głównie ubogim i niedożywionym w krajach dotkniętych działaniami zbrojnymi.', ans: 'BI' }
+    ]
+  },
+  { id: 'IV', type: 'gapfrag', per: 1, max: 10,
+    title: 'Zadanie IV',
+    instr: 'Proszę przeczytać tekst i - zgodnie z przykładem - dopasować usunięte z niego fragmenty (A-L). Uwaga! Jeden fragment został podany dodatkowo.',
+    textTitle: 'Piraci XXI wieku',
+    frags: {
+      A: 'idealne środowisko do plenienia się przemocy, także na morzu',
+      B: 'prawo do czerpania dochodów z eksploatacji złóż ropy',
+      C: 'kompromisu dającego szansę na pokój',
+      D: 'wywiera ona wpływ na szybkie rozwiązanie kryzysu zakładniczego',
+      E: 'wojnami i konfliktami zbrojnymi oraz nędzą',
+      F: 'tzw. przełowienia wód przybrzeżnych przez kłusujące obce trawlery',
+      G: 'zamierzało schodzić z areny dziejów',
+      H: 'przewlekły, ciągnący się przez dekady konflikt religijny',
+      I: 'mechanizm ten został stosunkowo dobrze rozpoznany',
+      J: 'piractwo morskie karmiło się łupami z zagrabionych towarów',
+      K: 'poziom życia w kraju nie tylko się nie podnosi, ale wręcz spada',
+      L: 'stosunkowo szybko doszło do profesjonalizacji działań przestępczych'
+    },
+    used: 'E',
+    paras: [
+'Współczesne piractwo jest nierozerwalnie związane z dwoma zjawiskami: [[E]]. Przyjrzyjmy się Zatoce Gwinejskiej. Przestępczość w jej rejonie to rezultat wielu lat krwawych zmagań w krajach tam położonych, takich jak: Liberia, Sierra Leone, Wybrzeże Kości Słoniowej, Nigeria. Siłę napędową dzisiejszego piractwa stanowi jednak głównie {1}. Jest to starcie między muzułmanami zamieszkującymi deltę rzeki Niger a zdominowanym przez chrześcijan rządem centralnym w Nigerii. Stawką jest {2}. Rząd przejmuje w dzisiejszych czasach większość zysków z wydobycia, jednak {3}. Dzieje się tak również za sprawą ogromnej degradacji środowiska, która jest skutkiem prowadzonej działalności gospodarczej. Narastają wrogie nastroje społeczne. Protesty przekształcają się w 2005 roku w wojnę partyzancką. Władze nie są w stanie ani złamać oporu zbrojnie ani zaakceptować {4}. Słabość rządowego aparatu wykonawczego, funkcjonowanie sieci powiązań plemiennych, wszechpotęga instrumentów korupcyjnych tworzą {5}.',
+'Współczesna przemoc morska pod każdą szerokością geograficzną ma podobną genezę. Pierwszymi piratami byli rybacy zrujnowani bądź przez klęski żywiołowe, bądź na skutek {6}, do tego należy dodać permanentne wojny domowe. Początkowo łupem kilkuosobowych band padały małe statki przewożące żywność, ale {7}. Piraci przenieśli się na pełne morze i atakowali motorowym sprzętem pływającym z baz-matek oddalonych 300-400 mil od brzegu. Mimo że przez całe wieki {8}, to obecnie proceder ten uległ diametralnej zmianie. Sprawcy nie mają czasu, by odprowadzić jednostkę do brzegu i zająć się grabieżą. Celem pirackich napadów stali się więc członkowie załóg. W tym modelu działania preferowane są statki należące do dużych firm armatorskich w państwach, gdzie silna jest rola opinii publicznej, ponieważ {9}, stając się mimowolnie sojusznikiem bandytów.',
+'Piractwo towarzyszyło żegludze od jej zarania i nic nie wskazuje na to, by {10}. Wizja łodzi motorowych wypełnionych zdeterminowanymi mężczyznami wyposażonymi w karabiny automatyczne i granatniki przeciwpancerne, to wciąż stały motyw lęków marynarzy i armatorów.'
+    ],
+    src: 'Na podstawie: Krzysztof Kubiak, Piraci XXI wieku, „Niezbędnik Współczesny”, s. 46-47.',
+    answers: { 1: 'H', 2: 'B', 3: 'K', 4: 'C', 5: 'A', 6: 'F', 7: 'L', 8: 'J', 9: 'D', 10: 'G' },
+    note: 'Fragment zbędny: I.'
+  },
+  { id: 'V', type: 'match', per: 1, max: 10,
+    title: 'Zadanie V',
+    instr: 'Proszę - zgodnie z przykładem - połączyć tytuły z kolumny I z fragmentami tekstów z kolumny II. Odpowiedzi proszę wpisać do tabeli (tutaj wybierasz literę fragmentu przy każdym tytule).',
+    textTitle: 'Teoria ruchu w bezruchu',
+    textSub: '(Katarzyna Nosowska, piosenkarka)',
+    frags: {
+      A: 'Jestem teoretykiem wysiłku. Regularnie kupuję pisma poświęcone fitnessowi. Lubię dresy. Obserwuję profile trenerów personalnych. Śledzę rozwój mody sportowej i rynku odżywek białkowych.',
+      B: 'Lubię siedzieć, polegiwać, wysiadywać jajo rozczarowania światem w gnieździe uwitym z kołdry. Staram się otaczać dobrymi ludźmi, którzy chętnie, bez najmniejszego oporu przyniosą mi herbatkę, papierosy, podadzą talerz z ciepłą strawą, potem drugi, trzeci i kolejne.',
+      C: 'Dawno temu zdarzało mi się wspinać na mount everest szóstego piętra prawie każdego dnia. Dawno temu używałam nóg. Odkąd jako dojrzała kobieta zrobiłam prawo jazdy - zawsze się wożę. Odkąd zamieszkałam na parterze - nie muszę ryzykować utraty życia podczas wspinaczki.',
+      D: 'Boję się, że kiedy porzucę ciało, by udać się na wieczne łowy, któraś z bliskich mi osób na pytanie: „Co było najbardziej charakterystyczne dla Katarzyny?”, odpowie bez zastanowienia: „Była jedyną znaną mi osobą, która z nienadużywania ruchu uczyniła sens życia”.',
+      E: 'Odwiedzam stepper w piwnicy, żeby wiedział, że jestem, że pamiętam. Ronię łzy wzruszenia, patrząc na metamorfozy dziewczyn i kobiet, jak Polska długa i szeroka.',
+      F: 'Mam buty do biegania, bieliznę termiczną, hantle, ekspandery, gumy fitness, profesjonalną skakankę, baletki i matę do jogi, DVD z Ewą, DVD z Anią, Jane, Cindy, podręczniki o pilatesie w weekend, muskulaturze w tydzień, rower, buty narciarskie i snowboardowe spodnie.',
+      G: 'Miałam też sto sześćdziesiąt kilo żywej bieżni, którą jednak zamieniłam na stoliczek i dwa krzesełka, żeby kawkę z koleżankami pić (na werandzie, gdzie stała bieżnia) kulturalnie, jak to czynią damy.',
+      H: 'Dwukrotnie zakupiłam karnet na siłownię. Raz roczny w ramach motywacji. Pary wystarczyło mi na trzy miesiące, aż przyszedł ten jeden poranek, kiedy wewnętrzny głos wysyczał mi w głowie: „Zimno jest, dokąd będziesz lazła w tę słotę i smog?”. No to nie poszłam.',
+      I: 'Kilka lat później na fali zdrowego rozsądku zakupiłam karnet trzymiesięczny. Na tyle wystarczyło mi zapału. I znów wewnętrzny buntownik szeptem nieznoszącym sprzeciwu odwiódł mnie skutecznie od pomysłu przedłużenia romansu z siłownią.',
+      J: 'Praktycznie spalam kalorie w sposób, który nie boli. Dziewięć godzin czytania - około 400 kcal. Leżenie - 372 kcal. Śpiewanie - 1116 kcal! Miałam nosa, wybierając zawód. Aż strach pomyśleć, ile bym obecnie ważyła, gdyby nie te kilkadziesiąt koncertów rocznie…',
+      K: 'Ćwiczącą Annę Ewę Lewandowską-Chodakowską mogę oglądać codziennie. W czymś elastycznym oczywiście. Dziewięć godzin oglądania na leżąco to 372 kcal… - mało. Mogę dorzucić śpiew.'
+    },
+    used: 'D',
+    example: 'Błyskawiczna odpowiedź',
+    titles: ['Relaks przyjemniejszy', 'Aktywny kwartał', 'Być na bieżąco to podstawa', 'Uzależnienie od cudzej energii', 'Bezpieczeństwo w przyjaznym kokonie', 'Bierne odchudzanie', 'Drugie podejście', 'Jestem wrażliwa', 'Wygodniej i ostrożniej', 'Inwestycja w siebie'],
+    src: 'Na podstawie: Katarzyna Nosowska, A ja żem jej powiedziała, Warszawa 2018',
+    answers: { 1: 'G', 2: 'H', 3: 'A', 4: 'K', 5: 'B', 6: 'J', 7: 'I', 8: 'E', 9: 'C', 10: 'F' }
+  }
+];
+
+const MAX = 40, PASS = 24;
+const TEST_ID = 'czytanie-2019';
+const STORE_KEY = 'c1_czyt_2019_v1';
+
+// ---------- pomocnicze ----------
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+const NOSAVE = /[?&]selftest\b/.test(location.search);
+function save() { if (NOSAVE) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {} }
+function countOf(t) { return t.type === 'cloze' || t.type === 'gapfrag' || t.type === 'match' ? Object.keys(t.answers || {}).length || t.titles.length : t.qs.length; }
+
+// ---------- budowanie arkusza ----------
+function textBlock(t, gapFn) {
+  let h = `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>`;
+  h += t.paras.map(p => {
+    let x = esc(p);
+    x = x.replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+    if (gapFn) x = x.replace(/\{(\d+)(?::([^}]*))?\}/g, (m, n, o) => gapFn(n, o));
+    return `<p>${x}</p>`;
+  }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+  return h;
+}
+function letterSelect(t, id, n, letters) {
+  const opts = letters.map(l => `<option value="${l}">${l}</option>`).join('');
+  return `<span class="gap letter" id="g-${id}"><select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select><sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+}
+function fragList(t) {
+  return `<div id="frags-${t.id}">` + Object.keys(t.frags).map(l =>
+    `<div class="frag${l === t.used ? ' struck' : ''}" data-l="${l}"><b>${l}.</b>${esc(t.frags[l])}${l === t.used ? ' <span class="src">(PRZYKŁAD)</span>' : ''}</div>`).join('') + `</div>`;
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    const n = countOf(t);
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${n} x ${pl(t.per)} p. = ${t.max} p.</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    if (t.type === 'tf') {
+      html += `<div class="text">${t.textTitle ? '<p class="noindent"><b>' + esc(t.textTitle) + '</b></p>' : ''}${t.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div><div class="src">${esc(t.src)}</div>`;
+      html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div>${esc(t.example.stem)} <b>- ${t.example.ans}</b></div>`;
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="q" id="q-${id}"><div class="stem">${i + 1}. ${esc(q.stem)}</div><div class="tf">` +
+          ['TAK', 'NIE', 'BI'].map(v => `<label class="opt" data-v="${v}"><input type="radio" name="${id}" value="${v}">${v}</label>`).join('') +
+          `</div><div class="qfix"></div></div>`;
+      });
+    } else if (t.type === 'mc') {
+      const e = t.example;
+      html += `<div class="example-box" style="margin-top:4px"><div class="lbl">PRZYKŁAD</div>` +
+        `<div class="mctext" style="background:transparent;border:0;padding:4px 0">${esc(e.text)}<div class="src">${esc(e.src)}</div></div>` +
+        `<b>${esc(e.stem)}</b><br>` +
+        e.opts.map((o, i) => `<span style="${i === e.ans ? 'font-weight:700;text-decoration:underline dotted' : ''}">${'abc'[i]}) ${esc(o)}</span>`).join('<br>') + `</div>`;
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="q" id="q-${id}"><div class="mctext"><span class="no">${i + 1}.</span>${esc(q.text)}<div class="src">${esc(q.src)}</div></div>` +
+          `<div class="stem">${i + 1}. ${esc(q.stem)}</div>` +
+          q.opts.map((o, j) => `<label class="opt" data-v="${'abc'[j]}"><input type="radio" name="${id}" value="${'abc'[j]}">${'abc'[j]}) ${esc(o)}</label>`).join('') +
+          `<div class="qfix"></div></div>`;
+      });
+    } else if (t.type === 'gapfrag') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="example-box"><div class="lbl">FRAGMENTY (A-L)</div></div>` + fragList(t);
+      html += textBlock(t, (n) => letterSelect(t, `${t.id}-${n}`, n, letters));
+    } else if (t.type === 'match') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="text"><p class="noindent" style="line-height:1.5"><b>${esc(t.textTitle)}</b> ${esc(t.textSub)}</p></div>`;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(t.example)} - <b>${t.used}</b></div>`;
+      html += `<div class="example-box"><div class="lbl">KOLUMNA II - FRAGMENTY</div></div>` + fragList(t);
+      html += `<div class="example-box" style="margin-top:12px"><div class="lbl">KOLUMNA I - TYTUŁY: wybierz literę</div></div>`;
+      t.titles.forEach((ti, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="mrow" id="g-${id}"><span class="t">${i + 1}. ${esc(ti)}</span><select data-id="${id}" aria-label="Tytuł ${i + 1}"><option value=""></option>${letters.map(l => `<option value="${l}">${l}</option>`).join('')}</select><span class="fix"></span></div>`;
+      });
+      html += `<div class="src">${esc(t.src)}</div>`;
+    } else if (t.type === 'cloze') {
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>` + t.paras.map(p => {
+        let x = esc(p).replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+        x = x.replace(/\{(\d+):([^}]*)\}/g, (m, k, o) => {
+          const id = `${t.id}-${k}`;
+          const opts = o.split('|').map(w => `<option value="${w}">${w}</option>`).join('');
+          return `<span class="gap cloze" id="g-${id}"><select data-id="${id}" aria-label="Luka ${k}"><option value=""></option>${opts}</select><sup class="gapno">${k}</sup><span class="fix"></span></span>`;
+        });
+        return `<p>${x}</p>`;
+      }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+    }
+    if (t.note && t.type !== 'cloze') html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('select[data-id]').forEach(el => {
+    if (saved[el.dataset.id] != null) el.value = saved[el.dataset.id];
+    el.addEventListener('change', () => { save(); updateProgress(); updateFrags(); });
+  });
+  root.querySelectorAll('input[type=radio]').forEach(el => {
+    if (saved[el.name] === el.value) el.checked = true;
+    el.addEventListener('change', () => { save(); updateProgress(); });
+  });
+  updateProgress(); updateFrags();
+}
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('select[data-id]').forEach(el => { o[el.dataset.id] = el.value; });
+  document.querySelectorAll('input[type=radio]:checked').forEach(el => { o[el.name] = el.value; });
+  return o;
+}
+function totalQuestions() {
+  return document.querySelectorAll('select[data-id]').length + document.querySelectorAll('.q').length;
+}
+function updateProgress() {
+  const o = collect();
+  const filled = Object.values(o).filter(v => v).length;
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${totalQuestions()}`;
+}
+function updateFrags() {
+  for (const t of TASKS) {
+    if (!t.frags) continue;
+    const chosen = [...document.querySelectorAll(`#task-${t.id} select`)].map(s => s.value).filter(Boolean);
+    document.querySelectorAll(`#frags-${t.id} .frag`).forEach(f => {
+      if (f.dataset.l === t.used) return;
+      f.classList.toggle('used', chosen.includes(f.dataset.l));
+    });
+  }
+}
+
+// ---------- sprawdzanie ----------
+function checkAll() {
+  const vals = collect();
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const got = vals[id] || '';
+        const box = document.getElementById(`q-${id}`);
+        box.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad', 'key');
+          if (l.dataset.v === q.ans) l.classList.add('key');
+          if (l.dataset.v === got) l.classList.add(got === q.ans ? 'ok' : 'bad');
+        });
+        const fx = box.querySelector('.qfix');
+        if (got === q.ans) { score += t.per; fx.textContent = ''; }
+        else fx.textContent = '→ poprawna odpowiedź: ' + (t.type === 'mc' ? q.ans + ') ' + q.opts['abc'.indexOf(q.ans)] : q.ans);
+      });
+    } else {
+      for (const n in t.answers) {
+        const id = `${t.id}-${n}`;
+        const a = t.answers[n];
+        const raw = vals[id] || '';
+        const ok = raw !== '' && raw === a;
+        const gap = document.getElementById(`g-${id}`);
+        const fix = gap.querySelector('.fix');
+        gap.classList.remove('ok', 'bad', 'almost');
+        if (ok) { score += t.per; gap.classList.add('ok'); fix.textContent = ''; }
+        else {
+          gap.classList.add('bad');
+          fix.textContent = '→ ' + a + (t.frags ? ' (' + t.frags[a].slice(0, 60) + '...)' : '');
+        }
+      }
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / ${t.max} p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    per.push({ t, score });
+  }
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błąd, obok poprawna odpowiedź z klucza. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+let left = 60 * 60, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < 3600 ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  clearInterval(tick); running = false; left = 3600; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', () => checkAll());
+document.getElementById('checkBottom').addEventListener('click', () => checkAll());
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+// ---------- kontrakt Trenera C1 (autotest kluczem) ----------
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.qs.forEach((q, i) => {
+        const r = document.querySelector(`input[name="${t.id}-${i + 1}"][value="${q.ans}"]`);
+        if (r) r.checked = true;
+      });
+    } else {
+      for (const n in t.answers) {
+        const el = document.querySelector(`select[data-id="${t.id}-${n}"]`);
+        if (el) el.value = t.answers[n];
+      }
+    }
+  }
+  save(); updateProgress(); updateFrags();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'czytanie', session: '2019', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

@@ -1,0 +1,1298 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gramatyka C1 - ściąga i trening</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+
+/* ===== Ściąga i trening: dodatki do stylu arkusza ===== */
+[hidden] { display: none !important; }
+.tabs { display: flex; gap: 6px; }
+.tabs button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+h3 { font-size: 14px; margin: 16px 0 6px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.stats { color: var(--muted); font-size: 14px; }
+
+/* trening */
+.types { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; margin: 12px 0 4px; }
+.typebtn { text-align: left; padding: 9px 12px; border-radius: 10px; line-height: 1.3; }
+.typebtn b { display: block; font-size: 15px; }
+.typebtn span { font-size: 13px; color: var(--muted); }
+.typebtn[aria-pressed="true"] { border-color: var(--accent); background: var(--example); box-shadow: inset 0 0 0 1px var(--accent); }
+.typebtn:disabled { opacity: .5; cursor: default; }
+.typebtn.weak span { color: var(--bad); font-weight: 600; }
+.keyhint { color: var(--muted); font-size: 14px; margin: 12px 0 0; }
+.qhead { display: flex; justify-content: space-between; gap: 4px 16px; flex-wrap: wrap; font-size: 14px; color: var(--muted); margin-bottom: 8px; }
+.qhead b { color: var(--ink); }
+.qmeta { font-size: 13px; color: var(--muted); margin: 12px 0 2px; }
+.qinstr { font-weight: 600; margin: 2px 0 8px; font-size: 15px; }
+.qtext { margin: 4px 0 12px; }
+#qtext .gap input { width: 14em; }
+.qh { color: var(--muted); font-size: 15px; margin-left: .25em; white-space: nowrap; }
+.slot {
+  display: inline-block; min-width: 9em; min-height: 1.6em; text-align: center; padding: 0 10px; vertical-align: baseline;
+  border-bottom: 2px solid var(--muted); background: var(--input-bg); border-radius: 4px 4px 0 0;
+  font-weight: 700; color: var(--accent);
+}
+.gap.ok .slot { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad .slot { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost .slot { border-color: var(--warn); background: var(--warn-bg); }
+.opts { display: flex; flex-wrap: wrap; gap: 8px; margin: 2px 0 8px; }
+.opt { padding: 6px 12px; border-radius: 999px; font-size: 16px; }
+.opt .k { color: var(--muted); font-size: 12px; margin-right: 6px; }
+.opt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.opt[aria-pressed="true"] .k { color: inherit; opacity: .8; }
+.opt:disabled { cursor: default; opacity: .6; }
+.fb { border-radius: 10px; padding: 10px 14px; margin: 8px 0; font-weight: 600; }
+.fb.ok { background: var(--ok-bg); color: var(--ok); }
+.fb.bad { background: var(--bad-bg); color: var(--bad); }
+.fb.almost { background: var(--warn-bg); color: var(--warn); }
+.fb .full { display: block; margin-top: 6px; color: var(--ink); font-weight: 400; font-size: 16px; line-height: 1.6; }
+.fb .full b { color: var(--ok); }
+.fb .you { display: block; font-weight: 400; margin-top: 4px; }
+.fb a { color: var(--accent); cursor: pointer; text-decoration: underline; }
+.errs { list-style: none; padding: 0; margin: 4px 0 0; }
+.errs li { padding: 10px 0; border-top: 1px solid var(--line); line-height: 1.6; }
+.errs li:first-child { border-top: 0; }
+.errs b { color: var(--ok); }
+.errs .you { display: block; font-size: 14px; color: var(--bad); }
+.errs .mt { display: block; font-size: 12px; color: var(--muted); }
+
+/* ściąga */
+.jump { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+.jump a { padding: 4px 12px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); color: var(--accent); text-decoration: none; font-weight: 600; font-size: 14px; }
+.cheat { scroll-margin-top: 120px; }
+.cheat .what { margin: 0 0 6px; }
+.cheat ul { margin: 4px 0 8px; padding-left: 20px; }
+.cheat li { margin: 4px 0; }
+.traps { background: var(--warn-bg); border-radius: 8px; padding: 6px 14px 6px 16px; margin: 14px 0 6px; }
+.traps h3 { color: var(--warn); margin: 6px 0 2px; }
+.traps ul { margin: 2px 0 6px; }
+.tw { overflow-x: auto; margin: 6px 0 10px; }
+table.t { border-collapse: collapse; width: 100%; font-size: 14.5px; min-width: 440px; }
+table.t th, table.t td { border: 1px solid var(--line); padding: 5px 8px; text-align: left; vertical-align: top; }
+table.t th { background: var(--example); }
+.exs, .glos { list-style: none; padding: 0 !important; margin: 4px 0 8px; }
+.exs li, .glos li { padding: 8px 0; border-top: 1px solid var(--line); margin: 0; line-height: 1.55; }
+.exs li:first-child, .glos li:first-child { border-top: 0; }
+.exs b, .glos b.a { color: var(--ok); }
+.exs .h { color: var(--muted); font-size: 14px; }
+.exs .tag { color: var(--muted); font-size: 12px; white-space: nowrap; }
+.exs .o { display: block; }
+.exs .k { display: block; margin-top: 2px; }
+.exs .kwb { color: var(--accent); font-weight: 700; }
+.glos .gex { display: block; font-size: 14.5px; color: var(--muted); margin-top: 2px; }
+.glos .gex b { color: var(--ok); }
+.pairs { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0 18px; margin: 4px 0 10px; }
+.pairs span { padding: 5px 0; border-bottom: 1px dotted var(--line); font-size: 15px; }
+.pairs b { color: var(--ok); }
+.glosd { margin: 8px 0; }
+.glosd summary { cursor: pointer; font-weight: 700; padding: 6px 0; color: var(--accent); }
+.glosd h3 { margin-top: 14px; }
+.more { margin-top: 8px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+#setup, #quiz, #summary { scroll-margin-top: 72px; }
+@media (max-width: 600px) {
+  #qtext .gap input { width: 11em; }
+  .qtext { font-size: 17px; }
+  .bar .title { display: none; }
+  .tabs { margin-left: auto; }
+  table.t { min-width: 0; font-size: 13.5px; }
+  table.t th, table.t td { padding: 4px 6px; }
+}
+</style>
+<script src="assets/c1-common.js"></script>
+<script src="assets/trening-dane.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Gramatyka C1: ściąga i trening</span>
+    <div class="tabs" role="tablist" aria-label="Widok strony">
+      <button type="button" id="tabTrening" role="tab" aria-selected="true">Trening</button>
+      <button type="button" id="tabSciaga" role="tab" aria-selected="false">Ściąga</button>
+    </div>
+  </div>
+</header>
+
+<!-- ======================= TRENING BŁYSKAWICZNY ======================= -->
+<main class="wrap" id="viewTrening">
+  <h1>Trening błyskawiczny</h1>
+  <p class="lead" id="leadTrening">Szybkie pytania z prawdziwych kluczy arkuszy C1: jedno zdanie, jedna luka.</p>
+  <noscript><div class="notice show">Ta strona potrzebuje włączonego JavaScriptu.</div></noscript>
+  <div class="notice" id="noData">Brak pytań. Uruchom <b>node c1/tools/zbuduj_trening.js</b>, żeby zbudować plik assets/trening-dane.js.</div>
+
+  <section class="card" id="setup">
+    <h2><span>Wybierz typ zadania</span><span class="pts" id="setupInfo"></span></h2>
+    <div class="types" id="types"></div>
+    <div class="actions"><button type="button" class="primary" id="startBtn">Zacznij rundę</button></div>
+    <p class="keyhint">Runda to 20 pytań. Wpisz odpowiedź i naciśnij Enter, drugi Enter przechodzi do następnego pytania. Pytania, w których się pomylisz, wrócą na liście na końcu rundy.</p>
+  </section>
+
+  <section class="card" id="quiz" hidden>
+    <div class="qhead"><span id="qnum"></span><span id="qstreak"></span><span id="qscore"></span></div>
+    <div class="meter"><i id="qbar" style="width:0%"></i></div>
+    <div class="qmeta" id="qmeta"></div>
+    <p class="qinstr" id="qinstr"></p>
+    <div class="text qtext" id="qtext"></div>
+    <div class="opts" id="opts"></div>
+    <div class="notice" id="qflash"></div>
+    <div id="qfb" aria-live="polite"></div>
+    <div class="actions">
+      <button type="button" class="primary" id="checkBtn">Sprawdź</button>
+      <button type="button" id="skipBtn">Nie wiem</button>
+      <button type="button" id="stopBtn">Zakończ rundę</button>
+    </div>
+    <p class="keyhint" id="qkeys"></p>
+  </section>
+
+  <section class="card" id="summary" hidden></section>
+</main>
+
+<!-- ============================== ŚCIĄGA ============================== -->
+<main class="wrap" id="viewSciaga" hidden>
+  <h1>Ściąga: poprawność gramatyczna</h1>
+  <p class="lead">Reguły, końcówki i pułapki do ośmiu zadań tej części. Przykłady na dole każdej karty to prawdziwe odpowiedzi z kluczy arkuszy, z kilku sesji.</p>
+  <nav class="jump" aria-label="Skocz do zadania">
+    <a href="#s-start">Zanim zaczniesz</a>
+    <a href="#s-liczebniki">Liczebniki</a>
+    <a href="#s-przeksztalcenia">Przekształcanie</a>
+    <a href="#s-odczasownikowe">Odczasownikowe</a>
+    <a href="#s-przymiotniki">Przymiotniki</a>
+    <a href="#s-ramka">Ramka</a>
+    <a href="#s-imieslowy">Imiesłowy</a>
+    <a href="#s-aspekt">Czasowniki</a>
+    <a href="#s-odmiana">Odmiana</a>
+  </nav>
+
+  <section class="card cheat" id="s-start">
+    <h2><span>Zanim zaczniesz</span><span class="pts">8 zadań, 60 min, 40 p.</span></h2>
+    <ul>
+      <li><b>Punkty:</b> siedem zadań ma po 10 luk po 0,5 p. (razem 5 p.), a zadanie na przekształcanie zdań to 5 zdań po 1 p. (każde zdanie ma 4 elementy po 0,25 p.). Żeby zdać tę część, trzeba mieć 24 z 40 p. (60%).</li>
+      <li><b>Kolejność zadań</b> w arkuszach z lat 2021-2024 jest zwykle taka jak na kartach poniżej, ale w starszych arkuszach bywa inna (np. w 2019 przekształcanie jest na końcu). Zadanie rozpoznasz po poleceniu.</li>
+      <li><b>Czas:</b> 60 minut, czyli średnio 7 minut na zadanie. Zadanie na przekształcanie zdań zostaw na koniec, ale w każdym zdaniu zapisz choć część: każdy poprawny element to 0,25 p.</li>
+      <li><b>Pisownia:</b> wpisuj jedną formę, poprawnie, z ogonkami. Błąd w pisowni to błąd w odpowiedzi (ten trener liczy tak samo).</li>
+      <li><b>Puste luki:</b> pusta luka to na pewno 0 p. Wpisz najlepszą formę, nawet gdy nie jesteś pewien.</li>
+      <li><b>W każdej luce myśl w tej kolejności:</b> 1. co stoi przed luką (przyimek, czasownik, rzeczownik), 2. jaki to przypadek, rodzaj i liczba, 3. dopiero końcówka.</li>
+    </ul>
+  </section>
+
+  <!-- ---------- I. LICZEBNIKI ---------- -->
+  <section class="card cheat" id="s-liczebniki" data-typ="liczebniki">
+    <h2><span>Liczebniki z rzeczownikami</span><span class="pts">zwykle zad. I, 10 x 0,5 p.</span></h2>
+    <p class="what">Liczbę z nawiasu zapisz słowami i odmień razem z rzeczownikiem. Przypadek wynika ze słowa przed luką: z przyimka (przed + N., po upływie + D., z + N., o + Ms.) albo z czasownika (doliczyć się + D.). Słowa <i>ponad, blisko, niemal, niespełna, prawie</i> nie zmieniają przypadku.</p>
+
+    <h3>Odmiana liczebników głównych</h3>
+    <div class="tw"><table class="t">
+      <tr><th></th><th>M.</th><th>D. (też Ms.)</th><th>C.</th><th>N.</th></tr>
+      <tr><td>2</td><td>dwa, dwie</td><td>dwóch (dwu)</td><td>dwóm (dwu)</td><td>dwoma, dwiema</td></tr>
+      <tr><td>3, 4</td><td>trzy, cztery</td><td>trzech, czterech</td><td>trzem, czterem</td><td>trzema, czterema</td></tr>
+      <tr><td>5-19</td><td>pięć, dziewięć, piętnaście</td><td>pięciu, dziewięciu, piętnastu</td><td>jak D.</td><td>pięcioma, piętnastoma (też -u)</td></tr>
+      <tr><td>20-90</td><td>dwadzieścia, pięćdziesiąt</td><td>dwudziestu, pięćdziesięciu</td><td>jak D.</td><td>dwudziestoma (też -u)</td></tr>
+      <tr><td>100-900</td><td>sto, dwieście, trzysta, pięćset</td><td>stu, dwustu, trzystu, pięciuset</td><td>jak D.</td><td>stu, dwustoma, trzystoma, pięciuset</td></tr>
+      <tr><td>kilka, parę, wiele</td><td>kilka, parę, wiele</td><td>kilku, paru, wielu</td><td>jak D.</td><td>kilkoma, wieloma</td></tr>
+    </table></div>
+    <p>Od <i>kilka-</i>: kilkanaście → kilkunastu, kilkadziesiąt → kilkudziesięciu, kilkaset → kilkuset. Podobnie ile → ilu, tyle → tylu.</p>
+
+    <h3>Rzeczownik po liczebniku</h3>
+    <ul>
+      <li><b>2, 3, 4</b> (też 22, 33, 44, ale nie 12-14): w M. i B. rzeczownik w M. lm: dwa miesiące, trzy lata, cztery doby.</li>
+      <li><b>5 i więcej, 12-14, kilka, wiele:</b> w M. i B. rzeczownik w D. lm: pięć lat, piętnaście osób, kilka miesięcy.</li>
+      <li><b>Przypadki zależne:</b> liczebnik i rzeczownik mają ten sam przypadek: do dwóch dób, po dziewięciu miesiącach, z kilkoma przyjaciółmi, o pięciu osobach.</li>
+      <li><b>Mężczyźni (męskoosobowe):</b> B. = D.: przez paru zapaleńców, widzę pięciu studentów. Rzeczy, zwierzęta i kobiety: B. = M.: pięć stołów, dwie kobiety. Dwaj, trzej, czterej + M. lm osobowy: trzej włamywacze, czterej biolodzy (też: trzech włamywaczy).</li>
+      <li><b>Tysiąc, milion</b> to rzeczowniki: dwa tysiące, pięć tysięcy; D. tysiąca, miliona, C. tysiącowi, N. tysiącem. Z trzystoma tysiącami obiektów: liczebnik i „tysiąc” w tym samym przypadku, a to, co liczymy, w D. lm (wokół miliona lokali).</li>
+      <li><b>Liczby złożone:</b> odmieniaj każdy człon: ze stu piętnastoma (też stu piętnastu) osadnikami; w dwudziestu pięciu procentach; dwudziestu jeden referatów (D.). Procent po liczebniku: czterdzieści procent, w pięciu procentach.</li>
+      <li><b>Ułamki i połowy:</b> trzy czwarte, dwie trzecie + D. lm (trzy czwarte ludzi); pół (nieodmienne), półtora (m., n.), półtorej (ż.).</li>
+      <li><b>Liczebniki zbiorowe:</b> dwoje, troje, czworo, pięcioro, kilkoro (D. dwojga, trojga, czworga, pięciorga, kilkorga; N. dwojgiem, kilkorgiem). Dla dzieci, niemowląt, młodych zwierząt i grup mieszanych (dziewcząt i chłopców, pianistek i pianistów): czterdzieścioro młodych ludzi, spośród trzydzieściorga uczestników, z kilkorgiem dzieci. Rzeczownik w D. lm w każdym przypadku. Oboje → obojga (D.), obojgu (C.).</li>
+      <li><b>Porządkowe</b> odmieniają się jak przymiotniki: po ósmych urodzinach, w latach dziewięćdziesiątych, drugą pozycję. W dacie odmienia się tylko ostatni człon: w dwa tysiące dwudziestym trzecim roku.</li>
+      <li><b>Nieregularne lm:</b> rok → lata, lat, latom, laty/latami, latach; człowiek → ludzie, ludzi, ludźmi; dziecko → dzieci, dziećmi; brat → bracia, braci, braćmi; przyjaciel → przyjaciół, przyjaciółmi; dzień → dni; miesiąc → miesięcy; doba → dób; osoba → osób; złoty → złotych.</li>
+    </ul>
+
+    <div class="traps">
+      <h3>Pułapki</h3>
+      <ul>
+        <li>D.: dwóch, trzech, czterech (-ch), ale pięciu, dziewięciu, piętnastu (-u). Nie mieszaj ich.</li>
+        <li>Albo <b>z kilkoma przyjaciółmi</b> (N. + N.), albo <b>z kilkorgiem przyjaciół</b> (zbiorowe + D. lm). Błąd: z kilkoma przyjaciół.</li>
+        <li>Po 5 i więcej rzeczownik w M. jest w D. lm (pięć lat), ale w przypadkach zależnych dopasowuje się do liczebnika (po pięciu latach).</li>
+        <li>Czasownik też ustala przypadek: doliczyć się, spodziewać się, obawiać się + D. (doliczono się piętnastu).</li>
+      </ul>
+    </div>
+
+    <h3>Z arkuszy</h3>
+    <ul class="exs" data-ex="liczebniki"></ul>
+    <div class="more"><button type="button" class="primary" data-train="liczebniki">Trenuj: liczebniki</button><button type="button" data-more="liczebniki">Inne przykłady</button></div>
+  </section>
+
+  <!-- ---------- II. PRZEKSZTAŁCANIE ---------- -->
+  <section class="card cheat" id="s-przeksztalcenia" data-typ="przeksztalcenia">
+    <h2><span>Zdania złożone na pojedyncze</span><span class="pts">zwykle zad. II, 5 x 1 p.</span></h2>
+    <p class="what">Zdanie złożone (z „że”, „żeby”, „czy”, „gdy”, „który”) zamień na pojedyncze, nie zmieniając sensu. Słowo z nawiasu ma być nowym czasownikiem głównym. Za zdanie 1 p.: po 0,25 p. za czasownik i za trzy inne przekształcone elementy.</p>
+
+    <h3>Jak to zrobić</h3>
+    <ol>
+      <li>Słowo z nawiasu to nowy czasownik: odmień je do nowego podmiotu (daje, umożliwia, wiąże się z, będzie sprzyjać).</li>
+      <li>Zdanie podrzędne zamień na rzeczownik: czasownik → rzeczownik odczasownikowy na -nie/-cie albo pokrewny: wykorzystać → wykorzystanie, zanikać → zanikanie, wzrosnąć → wzrost, spadać → spadek, zmienić → zmiana.</li>
+      <li>Dopełnienie staje się dopełniaczem: podjąć decyzję → podjęcie decyzji. Podmiot zdania podrzędnego: dopełniacz (wzrost zapotrzebowania), przez + B. (wykorzystywanie przez nią) albo dopełnienie czasownika głównego (zwolnić użytkownika, umożliwia aplikacji).</li>
+      <li>Przysłówek zamień na przymiotnik: sprawnie → sprawny przebieg, niezwłocznie → niezwłoczne uiszczenie, samodzielnie → samodzielne podjęcie.</li>
+      <li>Zdanie z „który” zamień na przymiotnik lub imiesłów: która jest potrzebna, aby chłodzić → niezbędnej do chłodzenia; które wynoszą → wynoszącej; które odbija → odbijającego.</li>
+      <li>Nie zostawiaj „że”, „żeby”, „aby”, „czy” i nie dodawaj nowych informacji.</li>
+    </ol>
+
+    <h3>Wzory z kluczy</h3>
+    <div class="tw"><table class="t">
+      <tr><th>zdanie złożone</th><th>zdanie pojedyncze (klucz)</th></tr>
+      <tr><td>obserwują, że spada zainteresowanie</td><td>odnotowują spadek zainteresowania</td></tr>
+      <tr><td>mają świadomość, że powinni rozszerzyć</td><td>rozumieją konieczność rozszerzenia</td></tr>
+      <tr><td>mają nadzieję, że osiągną</td><td>liczą na osiągnięcie</td></tr>
+      <tr><td>planują, że podniesie się</td><td>dążą do podniesienia</td></tr>
+      <tr><td>spowodowało, że nie musi posiadać</td><td>zwolniło z konieczności posiadania</td></tr>
+      <tr><td>pozwala, by podjęła decyzję</td><td>umożliwia podjęcie decyzji</td></tr>
+      <tr><td>jest możliwe, gdy uiścimy opłatę</td><td>wiąże się z uiszczeniem opłaty</td></tr>
+      <tr><td>chcą sprawdzić, czy będą umieli</td><td>chcą przetestować umiejętność</td></tr>
+      <tr><td>zamierza zmienić to, że dominują mężczyźni</td><td>zamierza zerwać z dominacją mężczyzn</td></tr>
+      <tr><td>sugerowali, że będzie można wykorzystać</td><td>przewidywali możliwość wykorzystania</td></tr>
+      <tr><td>sprawia, że przebiega sprawnie</td><td>zapewnia sprawny przebieg</td></tr>
+    </table></div>
+    <p><b>Rekcja czasowników z kluczy:</b> wiązać się z + N.; liczyć się z + N.; liczyć na + B.; dążyć do + D.; zerwać z + N.; sprzyjać + C.; polegać na + Ms.; skutkować + N.; inwestować w + B.; spodziewać się + D.; być świadomym + D.; zwolnić kogoś z + D.; umożliwiać + C. + B.; zapewniać + C. + B.</p>
+
+    <div class="traps">
+      <h3>Pułapki</h3>
+      <ul>
+        <li>Po rzeczowniku odczasownikowym stoi dopełniacz, nie biernik: podjęcie decyzji (nie: decyzję).</li>
+        <li>Rekcja słowa z nawiasu ustala przypadek: wiązać się z uiszczeniem (N.), liczyć na osiągnięcie (B.), dążyć do podniesienia (D.).</li>
+        <li>Z / ze: wiąże się z uiszczeniem, ale liczy się ze spędzeniem (ze przed zbitkami spółgłosek).</li>
+        <li>Przymiotnik odmieniaj razem z rzeczownikiem: samodzielne podjęcie, sprawny przebieg, częstych wyłączeń.</li>
+        <li>Wykorzystania i wykorzystywania zwykle są uznawane obie, ale rzeczownik ma pochodzić od właściwego czasownika.</li>
+        <li>Gdy nie umiesz przekształcić całego zdania, zapisz czasownik z nawiasu i rzeczownik odczasownikowy: to już 0,5 p.</li>
+      </ul>
+    </div>
+
+    <h3>Z arkuszy</h3>
+    <ul class="exs" data-ex="przeksztalcenia"></ul>
+    <div class="more"><button type="button" data-more="przeksztalcenia">Inne przykłady</button></div>
+  </section>
+
+  <!-- ---------- III. RZECZOWNIKI ODCZASOWNIKOWE ---------- -->
+  <section class="card cheat" id="s-odczasownikowe" data-typ="odczasownikowe">
+    <h2><span>Rzeczowniki odczasownikowe</span><span class="pts">zwykle zad. III, 10 x 0,5 p.</span></h2>
+    <p class="what">Od słowa w nawiasie (zwykle czasownika) utwórz rzeczownik i odmień go tak, jak wymaga zdanie. Przypadek ustala przyimek lub rzeczownik przed luką: do + D., w + Ms., z + N., o + Ms., na + Ms.</p>
+
+    <h3>Jaki rzeczownik powstaje</h3>
+    <div class="tw"><table class="t">
+      <tr><th>typ</th><th>przykłady z kluczy</th></tr>
+      <tr><td>-nie / -cie (czynność lub jej wynik, najczęstsze)</td><td>wprowadzić → wprowadzenie; ustalić → ustalenie; zalesić → zalesienie; odkryć → odkrycie; uniknąć → uniknięcie; rozpocząć → rozpoczęcie; wyczuć → wyczucie; przekonać → przekonanie</td></tr>
+      <tr><td>żeński na -a: -ka, -ba, -ata, -ota</td><td>prosić → prośba; ocenić → ocena; utracić → utrata; stracić → strata; uciec → ucieczka; obrobić → obróbka; wycinać → wycinka; tęsknić → tęsknota; pochwalić → pochwała; wystawić → wystawa; uprawiać → uprawa; pomylić → pomyłka; zachęcać → zachęta; szkodzić → szkoda; ochronić → ochrona; wierzyć → wiara; karać → kara</td></tr>
+      <tr><td>sam temat, bez przyrostka</td><td>wpływać → wpływ; rozwijać → rozwój; zbierać → zbiór; pamiętać → pamięć; decydować → decyzja; rozważyć → rozwaga</td></tr>
+      <tr><td>skutek, wynik: -stwo, -ość, -ność, często lm</td><td>zwyciężyć → zwycięstwo; uczestniczyć → uczestnictwo; następować → następstwo; pozostać → pozostałość; oszczędzić → oszczędności; zbierać → zbiory; pragnąć → pragnienie</td></tr>
+      <tr><td>-cja, -ia</td><td>adaptować → adaptacja; kolekcjonować → kolekcja; migrować → migracja; ewoluować → ewolucja; reżyserować → reżyseria</td></tr>
+      <tr><td>osoba lub wykonawca: -ca, -ec, -tor, -sz</td><td>tworzyć → twórca; kłamać → kłamca; znać → znawca; dystrybuować → dystrybutor; przybyć → przybysz; nadawać → nadawca</td></tr>
+    </table></div>
+
+    <h3>Tworzenie i odmiana</h3>
+    <ul>
+      <li><b>-ać → -anie</b> (czytać → czytanie), <b>-ować → -owanie</b> (kolekcjonować → kolekcjonowanie), <b>-ić/-yć/-eć → -enie</b> ze zmianą spółgłoski (zalesić → zalesienie, uiścić → uiszczenie).</li>
+      <li><b>-cie</b> po jednosylabowych i na -ąć/-uć: pić → picie, żyć → życie, przyjąć → przyjęcie, wyczuć → wyczucie; <b>-nąć → -nięcie</b>: uniknąć → uniknięcie.</li>
+      <li>Aspekt z nawiasu zostaje: obejrzeć → obejrzenie (jednorazowo), oglądać → oglądanie (proces).</li>
+      <li>Rzeczownik na <b>-nie/-cie</b> (nijaki): D. -nia/-cia (powstania, wyczucia), C. -niu, N. -niem (z wyczuciem), Ms. -niu; D. lm -ń (zainteresowań, ustaleń, przesileń).</li>
+      <li>Rzeczownik na <b>-cja/-ia</b> (żeński): D., C. i Ms. -ji/-ii (kolekcji, migracji, reżyserii), N. -ją/-ią (ewolucją), B. -ę.</li>
+      <li>Rzeczownik na <b>-a</b>: D. -y/-i, C. i Ms. -ie ze zmianą spółgłoski: utrata → utracie (t → c), obróbka → obróbce (k → c), ucieczka → ucieczce, prośba → prośbie, ocena → ocenie, wystawa → wystawie, uprawa → uprawie; B. -ę (prośbę), N. -ą; D. lm bez końcówki: pochwał, wystaw, dób.</li>
+      <li>Rzeczownik na <b>-ca</b>: twórca → twórcy, twórców, twórcami; kłamca → kłamcami; znawca → znawcy. W B. lm osoby męskie: B. = D. (zainspirowały twórców).</li>
+      <li>Zmiany w temacie: o ↔ ó (tworzyć → twórca, rozwijać → rozwój), ść → szcz (uiścić → uiszczenie), t → c i k → c przed -ie.</li>
+    </ul>
+
+    <div class="traps">
+      <h3>Pułapki</h3>
+      <ul>
+        <li>Nie każde słowo ma -nie. Gdy -nie brzmi sztucznie, szukaj rzeczownika na -a/-ka: spełnić czyjąś prośbę (nie: proszenie), ocena (nie: ocenienie), utrata (nie: utracenie).</li>
+        <li>Rodzaj, liczbę i przypadek bierz z luki: czyjąś (B. ż.) → prośbę; wiele (D. lm) → pochwał; do (D.) → obejrzenia.</li>
+        <li>Dopełniacz zależy od rzeczownika przed lub po luce: potrzeba uniknięcia konfliktu, w toku ewolucji, ocena stopnia przekształcenia.</li>
+        <li>Przy zmianach spółgłosek zapisuj dokładnie: uiszczenie, obróbce, ucieczce, przesilenia.</li>
+      </ul>
+    </div>
+
+    <h3>Z arkuszy</h3>
+    <ul class="exs" data-ex="odczasownikowe"></ul>
+    <div class="more"><button type="button" class="primary" data-train="odczasownikowe">Trenuj: rzeczowniki odczasownikowe</button><button type="button" data-more="odczasownikowe">Inne przykłady</button></div>
+  </section>
+
+  <!-- ---------- IV. PRZYMIOTNIKI ---------- -->
+  <section class="card cheat" id="s-przymiotniki" data-typ="przymiotniki">
+    <h2><span>Przymiotniki</span><span class="pts">zwykle zad. IV, 10 x 0,5 p.</span></h2>
+    <p class="what">Od rzeczownika, przysłówka lub czasownika utwórz przymiotnik i dopasuj go do rzeczownika, który określa (rodzaj, liczba, przypadek).</p>
+
+    <h3>Jaki sufiks</h3>
+    <div class="tw"><table class="t">
+      <tr><th>sufiks</th><th>kiedy</th><th>przykłady z kluczy</th></tr>
+      <tr><td>-owy</td><td>najczęstszy: od rzeczowników twardych i obcych</td><td>anonim → anonimowy; prestiż → prestiżowy; przełom → przełomowy; życie → życiowy; ciśnienie → ciśnieniowy; wytrzymałość → wytrzymałościowy</td></tr>
+      <tr><td>-ny</td><td>od rzeczowników abstrakcyjnych i nazw cech</td><td>koszt → kosztowny; błąd → błędny; przesada → przesadny; istota → istotny; owoc → owocny; prawda → prawdziwy</td></tr>
+      <tr><td>-alny</td><td>wyrazy obce na -um, -ał, -ent</td><td>monument → monumentalny; instrument → instrumentalny; ekstremum → ekstremalny; banał → banalny</td></tr>
+      <tr><td>-iczny, -yczny, -czny</td><td>wyrazy na -ia, -ika, -yka, -ra</td><td>ironia → ironiczny; klasyka → klasyczny; tematyka → tematyczny; muzyka → muzyczny; atmosfera → atmosferyczny; architektura → architektoniczny</td></tr>
+      <tr><td>-yjny, -cyjny</td><td>wyrazy na -cja, -ja</td><td>innowacja → innowacyjny; cywilizacja → cywilizacyjny; konstrukcja → konstrukcyjny; rewelacja → rewelacyjny</td></tr>
+      <tr><td>-ski, -cki, -owski, -erski</td><td>przynależność, cecha, nazwy własne</td><td>Gdańsk → gdański; Trójmiasto → trójmiejski; mistrz → mistrzowski; wirtuoz → wirtuozerski</td></tr>
+      <tr><td>-ejszy</td><td>od przysłówków miejsca i czasu</td><td>tutaj → tutejszy; tam → tamtejszy; dziś → dzisiejszy; wczoraj → wczorajszy</td></tr>
+      <tr><td>-any, -iczy, -i</td><td>od nazw rzeczy, zawodów i zwierząt</td><td>budowla → budowlany; prawnik → prawniczy; gęś → gęsi (gęsia skórka)</td></tr>
+      <tr><td>złożone: przedrostek + wyraz, pisane łącznie</td><td>bez-, nie-, nad-, pod-, przy-, przeciw-, ponad-, poza-, między-, mimo-, do-, wielo-, pierwszo-</td><td>bez + awaria → bezawaryjny; bez + troska → beztroski; bez + krytyka → bezkrytyczny; bez + cena → bezcenny; nie + zawodzić → niezawodny; nad + opieka → nadopiekuńczy; nad + wrażliwość → nadwrażliwy; pod + miasto → podmiejski; przy + dom → przydomowy; przeciw + słońce → przeciwsłoneczny; ponad + program → ponadprogramowy; poza + szkoła → pozaszkolny; między + ludzie → międzyludzki; mimo + wola → mimowolny; do + cel → docelowy; wiele + wiek → wielowiekowy; pierwszy + rząd → pierwszorzędny; osiemnasty wiek → osiemnastowieczny</td></tr>
+    </table></div>
+
+    <h3>Odmiana przymiotnika</h3>
+    <ul>
+      <li><b>lp.:</b> m. -y/-i; ż. -a (D., C., Ms. -ej; B., N. -ą); n. -e. D. -ego, C. -emu, N. i Ms. -ym/-im.</li>
+      <li><b>lm. nieosobowe:</b> M. i B. -e (instrumentalne, ironiczne); D. i Ms. -ych/-ich, C. -ym/-im, N. -ymi/-imi.</li>
+      <li><b>lm. męskoosobowe (M.):</b> -i/-y ze zmianą: -ski → -scy (gdańscy, trójmiejscy), -cki → -ccy (niemieccy), -ny → -ni (monumentalni), -owy → -owi, -ry → -rzy (dobrzy).</li>
+      <li>Po k, g i spółgłoskach miękkich: -i, -iego, -iej (wielki, drogi, gęsi).</li>
+    </ul>
+
+    <div class="traps">
+      <h3>Pułapki</h3>
+      <ul>
+        <li>Mała litera: Gdańsk → gdański, Polska → polski.</li>
+        <li>Przymiotnik zgadza się z rzeczownikiem, który określa: dziedzictwo muzyczne → dziedzictwa muzycznego (D. n.); tekst anonimowego poety (D. m.).</li>
+        <li>Wybieraj sufiks po rodzinie wyrazów, nie po brzmieniu: monumentalny (nie: monumentowy), prestiżowy (nie: prestiżny), kosztowny (nie: kosztowy).</li>
+        <li>Przedrostek pisz łącznie: bezawaryjny, niezawodny, wielowiekowy.</li>
+        <li>Zmiany spółgłosek: k → cz (muzyka → muzyczny, tematyka → tematyczny, prawnik → prawniczy), g → ż (noga → nożny), a → e (miasto → miejski).</li>
+      </ul>
+    </div>
+
+    <h3>Z arkuszy</h3>
+    <ul class="exs" data-ex="przymiotniki"></ul>
+    <div class="more"><button type="button" class="primary" data-train="przymiotniki">Trenuj: przymiotniki</button><button type="button" data-more="przymiotniki">Inne przykłady</button></div>
+  </section>
+
+  <!-- ---------- V. RAMKA ---------- -->
+  <section class="card cheat" id="s-ramka" data-typ="ramka">
+    <h2><span>Wyrażenia z ramki</span><span class="pts">zwykle zad. V, 10 x 0,5 p.</span></h2>
+    <p class="what">Do luk wybierasz wyrażenia z ramki. Każdego użyj tylko raz, a dwa są zbędne. Wyrażenie ma pasować do znaczenia, szyku zdania i interpunkcji.</p>
+    <h3>Jak rozwiązywać</h3>
+    <ol>
+      <li><b>Pary:</b> nie tylko ... lecz także (ale także, ale również); wprawdzie ... ale/jednak; gdyby ... (by). Znajdź obie luki naraz.</li>
+      <li><b>Składnia wymusza wybór:</b> zamiast + bezokolicznik; niż po stopniu wyższym; gdyby + forma na -ł; gdzie = miejsce; których/którego = zaimek względny.</li>
+      <li><b>Znaczenie połączenia:</b> wynik (więc), przeciwstawienie (natomiast, tymczasem, przeciwnie), uzasadnienie (bowiem, bo przecież, skoro), dodanie (przy tym, w tym także, zresztą).</li>
+      <li><b>Na końcu</b> zostają dwa zbędne. Przeczytaj całe zdanie z wstawionym wyrażeniem.</li>
+    </ol>
+    <details class="glosd">
+      <summary>Słowniczek wyrażeń z kluczy (rozwiń): znaczenie i przykład z arkusza</summary>
+      <div id="glos"></div>
+    </details>
+    <div class="more"><button type="button" class="primary" data-train="ramka">Trenuj: wyrażenia z ramki</button></div>
+  </section>
+
+  <!-- ---------- VI. IMIESŁOWY ---------- -->
+  <section class="card cheat" id="s-imieslowy" data-typ="imieslowy">
+    <h2><span>Imiesłowy</span><span class="pts">zwykle zad. VI, 10 x 0,5 p.</span></h2>
+    <p class="what">Od czasownika w nawiasie utwórz imiesłów. Najpierw ustal, który: opisuje rzeczownik (przymiotnikowy, odmienia się) czy dotyczy czynności w zdaniu (przysłówkowy, nie odmienia się).</p>
+
+    <div class="tw"><table class="t">
+      <tr><th>imiesłów</th><th>od czego i jak</th><th>przykłady z kluczy</th></tr>
+      <tr><td>przymiotnikowy czynny: -ący, -ąca, -ące</td><td>czasowniki niedokonane; 3. os. lm teraźniejsza + -cy: kochają → kochający. Zastępuje „który + czas teraźniejszy”.</td><td>zajmujący się, rzucający, oferujące, przewyższającej, porywający, pasujący, wiążące się, odstające</td></tr>
+      <tr><td>przymiotnikowy bierny: -ny, -ty, -ony</td><td>czasowniki przechodnie. -ać → -any (nadać → nadany); -ić/-yć/-eć → -ony ze zmianą (potwierdzić → potwierdzony, spełnić → spełniony); -nąć → -nięty (zamknąć → zamknięty); -ąć → -ęty (przyjąć → przyjęty); jednosylabowe → -ty (pić → pity). Zastępuje „który został + ...”.</td><td>zagadnięty, zamknięty, okrzyknięty, strzeżony, dostrzeżone, ograniczone, potwierdzona, sprzedawane, udostępnionego, puszczony (ść → szcz), kryty</td></tr>
+      <tr><td>przysłówkowy współczesny: -ąc</td><td>czasowniki niedokonane, czynność równoczesna: 3. os. lm teraźniejsza + c: biorą → biorąc, tworzą → tworząc</td><td>współpracując, dopisując, nagłaśniając, biorąc, wiedząc, zaczynając, będąc, tonąc</td></tr>
+      <tr><td>przysłówkowy uprzedni: -wszy, -łszy</td><td>czasowniki dokonane, czynność wcześniejsza: od formy m. czasu przeszłego. Temat na samogłoskę: przeanalizował → przeanalizowawszy; -ął → -ąwszy: zaczął → zacząwszy. Temat na spółgłoskę: znalazł → znalazłszy.</td><td>odnalazłszy, zastąpiwszy, spostrzegłszy, usłyszawszy, przeprowadziwszy się, zacząwszy, stanąwszy, wyniósłszy, przeżywszy, zważywszy</td></tr>
+    </table></div>
+
+    <h3>Odmiana imiesłowów przymiotnikowych</h3>
+    <ul>
+      <li>Odmieniają się jak przymiotniki i zgadzają z rzeczownikiem: dobrze strzeżoną tajemnicą (N. ż.), dzieła sprzedawane (lm), twórcą pasującym (N. m.), przewyższającej gęstości (D. ż.).</li>
+      <li>M. lm męskoosobowe: -ony → -eni (prowadzeni), -ący → -ący (kochający).</li>
+    </ul>
+
+    <div class="traps">
+      <h3>Pułapki</h3>
+      <ul>
+        <li>„Się” zostaje przy imiesłowie: zajmujący się, przeprowadziwszy się.</li>
+        <li>Aspekt rozstrzyga: niedokonany → -ąc / -ący; dokonany → -wszy (przysłówkowy) albo bierny. Od czasownika dokonanego nie ma imiesłowu czynnego przymiotnikowego.</li>
+        <li>Imiesłów przysłówkowy ma ten sam podmiot co czasownik główny: „Odpowiadając na pytanie, Banksy ujawnia...”. Nie odmienia się.</li>
+        <li>Imiesłów bierny tylko od czasowników przechodnich (zamknąć sklep → sklep zamknięty). Często stoi po „być / zostać”: nie została potwierdzona.</li>
+        <li>Stałe zwroty: biorąc pod uwagę, wziąwszy pod uwagę, będąc w ..., nie wiedząc, że ....</li>
+      </ul>
+    </div>
+
+    <h3>Z arkuszy</h3>
+    <ul class="exs" data-ex="imieslowy"></ul>
+    <div class="more"><button type="button" class="primary" data-train="imieslowy">Trenuj: imiesłowy</button><button type="button" data-more="imieslowy">Inne przykłady</button></div>
+  </section>
+
+  <!-- ---------- VII. ASPEKT I CZASOWNIKI ---------- -->
+  <section class="card cheat" id="s-aspekt" data-typ="aspekt">
+    <h2><span>Aspekt i formy czasowników</span><span class="pts">zwykle zad. VII, 10 x 0,5 p.</span></h2>
+    <p class="what">Z pary „niedokonany/dokonany” wybierz aspekt i wpisz właściwą formę: osobę i rodzaj (zgodnie z podmiotem), czas, tryb. Podpowiedzi „my” i „wy” oznaczają 1. i 2. osobę lm (zwykle rozkaźnik: przypomnijmy, wpadnijcie).</p>
+
+    <h3>Który aspekt</h3>
+    <ul>
+      <li><b>Niedokonany</b> (co robić?): czynność trwa, powtarza się, jest tłem: przez lata, zwykle, często, cały czas, obecnie, w tej chwili, powoli, dopiero (dopiero uzgadniają). Po zacząć/zaczynać, przestać, skończyć bezokolicznik jest niedokonany: zaczął pisać.</li>
+      <li><b>Dokonany</b> (co zrobić?): zakończony skutek, jednorazowe zdarzenie: nagle, w końcu, wreszcie, już, z dnia na dzień, jeszcze nie + wynik (nie rozstrzygnęły się).</li>
+      <li>Czasownik dokonany nie ma czasu teraźniejszego: jego „teraźniejsza” forma znaczy przyszłość (odpowie, znajdziemy, dojdzie, wzrośnie). Przyszłość niedokonana: będzie + bezokolicznik albo forma na -ł (będzie wpływać, będzie wpływał).</li>
+      <li>Wskazówki czasu: parę lat temu, siedem lat temu → przeszły; wkrótce, za jakiś czas → przyszły; obecnie, dziś → teraźniejszy; gdyby → forma na -ł.</li>
+    </ul>
+
+    <h3>Formy</h3>
+    <div class="tw"><table class="t">
+      <tr><th>forma</th><th>jak</th><th>z kluczy</th></tr>
+      <tr><td>przeszły</td><td>-ł, -ła, -ło; lm -li (męskoosobowe), -ły (pozostałe). Osoba: -em, -eś, -śmy, -ście.</td><td>włodarze rozpoczęli; młyny uzyskały; budynki niszczały; grono doszło</td></tr>
+      <tr><td>bezosobowy</td><td>-no, -to tylko w czasie przeszłym (od imiesłowu biernego: -ny → -no, -ty → -to); w teraźniejszym „... się”.</td><td>wybudowano, podjęto (-ąć → -ęto), osiągnięto (-nąć → -nięto), odsłonięto, wsparto, odnaleziono, krytykowano; szacuje się, odnotowuje się</td></tr>
+      <tr><td>przypuszczający</td><td>forma na -ł + by (+ końcówka osobowa). W zdaniu z „gdyby” czasownik na -ł bez dodatkowego „by”.</td><td>popadłoby, odbyłoby się, dowiedzielibyśmy się; gdyby weszła</td></tr>
+      <tr><td>rozkazujący</td><td>2. os. lp. od tematu 3. os. lm: -ają → -aj (czytaj), -ują → -uj (pracuj), często sam temat (zrób, wyjdź), po grupie spółgłosek -ij/-yj (wpadnij, przypomnij). Dla 2. lm dodaj -cie, dla 1. lm -my.</td><td>wpadnijcie; przypomnijmy</td></tr>
+      <tr><td>nieregularne</td><td>ó ↔ o (przyniósł, przyniosła; wzrósł, wzrośnie); iść, dojść, wyjść, wejść (doszło, wyszedł, weszła); -ąć → -ęła, -ęli (rozpoczęła, podjęli); -nąć → -nęła (wpłynęła, popchnęła).</td><td>znalazły, znajdziemy; dojdzie; wyniosła; rozpoczęli</td></tr>
+    </table></div>
+
+    <div class="traps">
+      <h3>Pułapki</h3>
+      <ul>
+        <li>Najpierw podmiot: liczba, rodzaj, męskoosobowość: włodarze rozpoczęli, młyny uzyskały, grono socjologów doszło (grono = nijaki).</li>
+        <li>„Dopiero” + czynność w toku → niedokonany (dopiero uzgadniają). „Jeszcze nie” + wynik → dokonany.</li>
+        <li>Bez podmiotu często forma bezosobowa: nie podjęto, wyposażono, odnotowano.</li>
+        <li>„Się” zostaje przy czasowniku: odbywa się, odbyłoby się, stanie się, dowiedzieliby się.</li>
+        <li>Wpisz jedną formę w jednym aspekcie, nie obie z nawiasu.</li>
+      </ul>
+    </div>
+
+    <h3>Z arkuszy</h3>
+    <ul class="exs" data-ex="aspekt"></ul>
+    <div class="more"><button type="button" class="primary" data-train="aspekt">Trenuj: aspekt i czasowniki</button><button type="button" data-more="aspekt">Inne przykłady</button></div>
+  </section>
+
+  <!-- ---------- VIII. ODMIANA ---------- -->
+  <section class="card cheat" id="s-odmiana" data-typ="odmiana">
+    <h2><span>Odmiana rzeczowników, przymiotników, zaimków</span><span class="pts">zwykle zad. VIII, 10 x 0,5 p.</span></h2>
+    <p class="what">Wstaw słowo z nawiasu w poprawnej formie. Przypadek wynika z przyimka lub czasownika, „lm” oznacza liczbę mnogą. Uważaj na zmiany rdzenia w Ms. i w M. lm męskoosobowym.</p>
+
+    <h3>Trudne formy z kluczy</h3>
+    <div class="pairs">
+      <span>koń → <b>z końmi</b> (N. lm)</span>
+      <span>Węgier → <b>Węgrzy</b> (M. lm), <b>Węgrów</b> (D. lm)</span>
+      <span>przodek → <b>przodkowie</b> (M. lm)</span>
+      <span>myśliwy → <b>myśliwi</b> (M. lm)</span>
+      <span>książę → <b>książęta</b> (M. lm)</span>
+      <span>miłośnik → <b>miłośnicy</b> (M. lm)</span>
+      <span>sąsiad → <b>sąsiedzi</b> (M. lm)</span>
+      <span>majsterkowicz → <b>majsterkowicze</b> (M. lm)</span>
+      <span>benedyktyn → <b>benedyktyni</b>, franciszkanin → <b>franciszkanie</b></span>
+      <span>ubogi → <b>ubodzy</b>, głuchy → <b>głusi</b> (M. lm os.)</span>
+      <span>brat → <b>z braćmi</b> (N. lm)</span>
+      <span>sędzia → <b>sędziemu</b> (C.)</span>
+      <span>Rzymianin → <b>Rzymian</b> (D. lm)</span>
+      <span>przechodzień → <b>przechodniów</b> (D. lm)</span>
+      <span>strzecha → <b>w strzesze</b> (Ms.)</span>
+      <span>obręb → <b>w obrębie</b> (Ms.)</span>
+      <span>głębia → <b>w głębi</b> (Ms.)</span>
+      <span>podjazd → <b>na podjeździe</b> (Ms.)</span>
+      <span>wieś → <b>na wsiach</b> (Ms. lm)</span>
+      <span>Włochy → <b>we Włoszech</b> (Ms.)</span>
+      <span>bogini → <b>bogiń</b> (D. lm)</span>
+      <span>muzeum → <b>muzeów</b>, trofeum → <b>trofeów</b> (D. lm)</span>
+      <span>willa → <b>willi, will</b> (D. lm)</span>
+      <span>cela → <b>cel</b>, wrota → <b>wrót</b> (D. lm)</span>
+      <span>gwóźdź → <b>gwoździ</b> (D. lm)</span>
+      <span>nadwozie → <b>nadwozi</b>, wiertło → <b>wierteł</b> (D. lm)</span>
+      <span>tuja → <b>tui, tuj</b> (D. lm)</span>
+      <span>księżna → <b>księżnej</b> (D.)</span>
+      <span>epitafium → <b>epitafia</b> (M. lm)</span>
+      <span>weganin → <b>weganie</b>, chrześcijanin → <b>chrześcijanie</b></span>
+      <span>uczony → <b>uczeni</b>, współczesny → <b>współcześni</b>, smukły → <b>smukli</b></span>
+      <span>młodzieniec → <b>młodzieńcy</b>, dziejopis → <b>dziejopisowie</b></span>
+      <span>zwierzę → <b>zwierzęta</b>, <b>zwierząt</b> (D. lm), <b>zwierzęciu</b> (C.)</span>
+      <span>imię → <b>imion</b> (D. lm), znamię → <b>znamiona</b> (M. lm)</span>
+      <span>siemię → <b>siemieniem</b> (N.), krew → <b>krwią</b> (N.)</span>
+      <span>księga → <b>ksiąg</b>, źródło → <b>źródeł</b> (D. lm)</span>
+      <span>słoń → <b>słoni</b>, badacz → <b>badaczy</b> (D. lm)</span>
+      <span>tułów → <b>tułowia</b>, książę → <b>księcia</b> (D.)</span>
+      <span>tofu → <b>tofu</b> (nieodmienne)</span>
+      <span>staż → <b>staże</b>, trudność → <b>trudności</b> (M. lm)</span>
+      <span>ów → <b>owym</b> (C. lm)</span>
+      <span>któryś → <b>któremuś</b> (C.), ktokolwiek → <b>komukolwiek</b> (C.)</span>
+    </div>
+
+    <h3>Reguły</h3>
+    <ul>
+      <li><b>M. lm męskoosobowe:</b> zmiana spółgłoski i -i/-y: Węgier → Węgrzy, student → studenci, Polak → Polacy, artysta → artyści, myśliwy → myśliwi, miłośnik → miłośnicy; -owie przy tytułach, nazwiskach i pokrewieństwie (przodkowie, profesorowie).</li>
+      <li><b>D. lm:</b> -ów (muzeów, trofeów, studentów), po miękkich -y/-i (malarzy, lekarzy), bez końcówki (wierteł, bogiń, willi, źródeł, ksiąg); nieregularne: ludzi, dzieci, przyjaciół, koni, imion, zwierząt.</li>
+      <li><b>Nazwy mieszkańców i wyznawców na -anin, -yn:</b> M. lm -anie, -yni: weganie, chrześcijanie, Rzymianie, benedyktyni. Nijakie na -ę: imię → imiona, zwierzę → zwierzęta (D. lm imion, zwierząt).</li>
+      <li><b>B. lm:</b> rzeczy, zwierzęta, kobiety: B. = M. (je, trudności, staże). Mężczyźni: B. = D. (widzę przodków).</li>
+      <li><b>Ms.:</b> rzeczowniki męskie na -k, -g, -ch, -h mają -u (w Gdańsku, o śmiechu). Pozostałe -e/-ie ze zmianą spółgłoski: w obrębie (b → bi), o kwiecie (t → ci), o stole (ł → l), w lesie (s → ś). Żeńskie i w lm: w strzesze (ch → sz), we Włoszech (ch → sz), na wsiach, w głębi.</li>
+      <li><b>Zaimki osobowe:</b> bez przyimka go, ich, je; po przyimku z n-: do niego, w nim, z nią, o nich, na nie, przez nie. Przenoszono je (B. lm nieosobowe: osady).</li>
+      <li><b>który, jaki, nasz, jakiś:</b> w M. lm męskoosobowym zmieniają się: nasi, jacyś, niektórzy; w D. i Ms. lm: których, jakich. Którykolwiek → którymkolwiek (Ms.), którąkolwiek (B. ż.).</li>
+      <li><b>Rekcja:</b> pozbyć się, spodziewać się, obawiać się, wstydzić się + D.; zajmować się, interesować się, fascynacja + N. (fascynacja końmi); wierzyć w, reakcja na, czekać na + B.; ufać, podać + C. (podać dokumenty sędziemu).</li>
+    </ul>
+
+    <div class="traps">
+      <h3>Pułapki</h3>
+      <ul>
+        <li>Męskoosobowe czy nie: nasi przodkowie (osoby), ale nasze domy; koczowniczy Węgrzy, ale koczownicze plemiona.</li>
+        <li>Przymiotnik w M. lm męskoosobowym ma inną końcówkę niż w nieosobowym: koczowniczy (nie: koczownicze), węgierscy, trójmiejscy.</li>
+        <li>Po przyimku zaimek dostaje n-: dla niego, o nich. Bez przyimka: go, ich, je.</li>
+        <li>„lm” w nawiasie: wpisz liczbę mnogą: trofeum - lm → trofeów, nadwozie - lm → nadwozi.</li>
+        <li>Ms. zmienia rdzeń: strzecha → strzesze, wieś → wsiach; sprawdź, czy forma „brzmi” poprawnie po przyimku w/na/o.</li>
+      </ul>
+    </div>
+
+    <h3>Z arkuszy</h3>
+    <ul class="exs" data-ex="odmiana"></ul>
+    <div class="more"><button type="button" class="primary" data-train="odmiana">Trenuj: odmiana</button><button type="button" data-more="odmiana">Inne przykłady</button></div>
+  </section>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- dane (assets/trening-dane.js, budowane przez c1/tools/zbuduj_trening.js) ----------
+  const Q = Array.isArray(window.C1_TRENING) ? window.C1_TRENING : [];
+  const TR = Array.isArray(window.C1_PRZEKSZTALCENIA) ? window.C1_PRZEKSZTALCENIA : [];
+  const META = window.C1_TRENING_META || {};
+  const ROUND = 20;
+  const EX_N = 5;
+  const STORE_KEY = 'c1_trening_gram_v1';
+
+  // typy zadań w kolejności arkusza (II to przekształcanie zdań: tylko w ściądze)
+  const TYPY = [
+    { id: 'liczebniki', zad: '', nazwa: 'Liczebniki z rzeczownikami', polecenie: 'Zapisz liczbę słowami albo odmień rzeczownik. W nawiasie jest liczba do zapisania słowami albo rzeczownik w mianowniku.' },
+    { id: 'odczasownikowe', zad: '', nazwa: 'Rzeczowniki odczasownikowe', polecenie: 'Utwórz rzeczownik od słowa w nawiasie i odmień go tak, jak wymaga zdanie.' },
+    { id: 'przymiotniki', zad: '', nazwa: 'Przymiotniki', polecenie: 'Utwórz przymiotnik od słowa w nawiasie i dopasuj go do rzeczownika (rodzaj, liczba, przypadek).' },
+    { id: 'ramka', zad: '', nazwa: 'Wyrażenia z ramki', polecenie: 'Wybierz wyrażenie z ramki. W arkuszu każdego użyjesz raz, a dwa są zbędne; tu każde pytanie jest osobne.' },
+    { id: 'imieslowy', zad: '', nazwa: 'Imiesłowy', polecenie: 'Utwórz imiesłów od czasownika w nawiasie i dopasuj jego formę do zdania.' },
+    { id: 'aspekt', zad: '', nazwa: 'Aspekt i formy czasowników', polecenie: 'Wybierz aspekt i wpisz właściwą formę czasownika (osoba, rodzaj, czas, tryb).' },
+    { id: 'odmiana', zad: '', nazwa: 'Odmiana rzeczowników, przymiotników, zaimków', polecenie: 'Wstaw słowo z nawiasu w poprawnej formie (przypadek, liczba; „lm” to liczba mnoga).' }
+  ];
+  const TYP_BY_ID = {};
+  TYPY.forEach(t => { TYP_BY_ID[t.id] = t; });
+  function typInfo(id) {
+    return TYP_BY_ID[id] || { id: id, zad: '', nazwa: (META.etykiety && META.etykiety[id]) || id, polecenie: 'Uzupełnij lukę poprawną formą.' };
+  }
+  // typy, które faktycznie mają pytania (nowe sesje mogą dodać inne)
+  const present = {};
+  Q.forEach(q => { present[q.typ] = (present[q.typ] || 0) + 1; });
+  const TYP_LIST = TYPY.filter(t => present[t.id]);
+  Object.keys(present).forEach(id => { if (!TYP_BY_ID[id]) TYP_LIST.push(typInfo(id)); });
+
+  const MIES = { '01': 'styczeń', '02': 'luty', '03': 'marzec', '04': 'kwiecień', '05': 'maj', '06': 'czerwiec', '07': 'lipiec', '08': 'sierpień', '09': 'wrzesień', '10': 'październik', '11': 'listopad', '12': 'grudzień' };
+  function sesjaEtykieta(s) {
+    const m = /^(\d{4})-(\d{2})$/.exec(s);
+    if (m) return (MIES[m[2]] || m[2]) + ' ' + m[1];
+    if (/^\d{4}$/.test(s)) return s + ' (test przykładowy)';
+    return s;
+  }
+
+  // ---------- pomocnicze ----------
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  function norm(s) {
+    return String(s || '').toLowerCase()
+      .replace(/[„”"'’‘.,!?;:()]/g, ' ')
+      .replace(/\s+/g, ' ').trim();
+  }
+  function fold(s) {
+    return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+  }
+  function shuffle(a) {
+    a = a.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+  function pytan(n) {
+    if (n === 1) return 'pytanie';
+    const d = n % 10, dd = n % 100;
+    return (d >= 2 && d <= 4 && !(dd >= 12 && dd <= 14)) ? 'pytania' : 'pytań';
+  }
+
+  // ---------- zapis (localStorage, zawsze w try/catch) ----------
+  function loadStore() {
+    try {
+      const o = JSON.parse(localStorage.getItem(STORE_KEY));
+      if (o && typeof o === 'object') return o;
+    } catch (e) {}
+    return {};
+  }
+  function saveStore() { try { localStorage.setItem(STORE_KEY, JSON.stringify(store)); } catch (e) {} }
+  const store = loadStore();
+  if (!store.typy || typeof store.typy !== 'object') store.typy = {};
+  if (!Array.isArray(store.bledy)) store.bledy = [];
+  store.rekord = +store.rekord || 0;
+  store.rundy = +store.rundy || 0;
+
+  function recordAnswer(q, ok) {
+    const t = store.typy[q.typ] || (store.typy[q.typ] = { n: 0, ok: 0 });
+    t.n++;
+    if (ok) t.ok++;
+    const i = store.bledy.indexOf(q.id);
+    if (ok) { if (i >= 0) store.bledy.splice(i, 1); }
+    else if (i < 0) { store.bledy.push(q.id); if (store.bledy.length > 300) store.bledy.shift(); }
+    saveStore();
+  }
+
+  // ---------- wybór typu i losowanie rundy ----------
+  // najsłabszy typ: najniższy odsetek poprawnych odpowiedzi (od 5 odpowiedzi wzwyż)
+  function weakestType() {
+    let best = null;
+    TYP_LIST.forEach(t => {
+      const st = store.typy[t.id];
+      if (!st || st.n < 5) return;
+      const acc = st.ok / st.n;
+      if (!best || acc < best.acc || (acc === best.acc && st.n < best.n)) best = { id: t.id, acc: acc, n: st.n };
+    });
+    return best ? best.id : null;
+  }
+  // adres może wskazać typ i start: gramatyka_sciaga.html?typ=liczebniki&start=1
+  let params = { get: () => null };
+  try { params = new URLSearchParams(location.search); } catch (e) {}
+  const wantTyp = params.get('typ');
+  let chosen = 'wszystkie';
+  if (wantTyp && (wantTyp === 'wszystkie' || wantTyp === 'bledy' || present[wantTyp])) chosen = wantTyp;
+  else if (weakestType()) chosen = weakestType();
+  else if (store.ostatni === 'wszystkie' || store.ostatni === 'bledy' || present[store.ostatni]) chosen = store.ostatni;
+  const seen = new Set();   // pytania już pokazane od otwarcia strony (żeby się nie powtarzały)
+  let round = null;
+
+  function pool(typ) {
+    if (typ === 'wszystkie') return Q.slice();
+    if (typ === 'bledy') { const s = new Set(store.bledy); return Q.filter(q => s.has(q.id)); }
+    return Q.filter(q => q.typ === typ);
+  }
+  function pickRound(typ) {
+    const p = pool(typ);
+    const n = Math.min(ROUND, p.length);
+    let fresh = shuffle(p.filter(q => !seen.has(q.id)));
+    if (fresh.length < n) { p.forEach(q => seen.delete(q.id)); fresh = shuffle(p); }
+    return fresh.slice(0, n);
+  }
+  function statsAll() {
+    let n = 0, ok = 0;
+    Object.keys(store.typy).forEach(k => { n += store.typy[k].n; ok += store.typy[k].ok; });
+    return { n: n, ok: ok };
+  }
+
+  function renderTypes() {
+    const nBledy = pool('bledy').length;
+    const weak = weakestType();
+    const items = [{ id: 'wszystkie', nazwa: 'Wszystkie typy', n: Q.length, st: statsAll() }];
+    TYP_LIST.forEach(t => items.push({ id: t.id, nazwa: t.nazwa, n: present[t.id], st: store.typy[t.id] }));
+    items.push({ id: 'bledy', nazwa: 'Moje błędy z poprzednich rund', n: nBledy, st: null });
+    $('types').innerHTML = items.map(it => {
+      const pct = (it.st && it.st.n >= 5) ? ' · ' + Math.round(it.st.ok / it.st.n * 100) + '% dotąd' : '';
+      const sub = it.id === 'bledy' ? (it.n ? it.n + ' do powtórki' : 'brak zapisanych błędów') : it.n + ' ' + pytan(it.n) + pct + (it.id === weak ? ' · najsłabszy typ' : '');
+      return '<button type="button" class="typebtn' + (it.id === weak ? ' weak' : '') + '" data-typ="' + esc(it.id) + '" aria-pressed="' + (chosen === it.id) + '"' + (it.n ? '' : ' disabled') + '><b>' + esc(it.nazwa) + '</b><span>' + esc(sub) + '</span></button>';
+    }).join('');
+    const sizeNow = Math.min(ROUND, pool(chosen).length);
+    $('startBtn').disabled = sizeNow === 0;
+    $('startBtn').textContent = sizeNow ? 'Zacznij rundę (' + sizeNow + ' ' + pytan(sizeNow) + ')' : 'Brak pytań w tej puli';
+    const st = statsAll();
+    $('setupInfo').textContent = st.n ? 'Dotąd: ' + st.ok + '/' + st.n + ' (' + Math.round(st.ok / st.n * 100) + '%), rekord serii: ' + store.rekord : '';
+  }
+
+  // ---------- runda ----------
+  function startRound(typ, listaPytan, etykieta) {
+    const qs = listaPytan || pickRound(typ);
+    if (!qs.length) { renderTypes(); return; }
+    chosen = typ;
+    store.ostatni = typ;
+    saveStore();
+    round = { typ: typ, qs: qs, i: 0, ok: 0, answered: 0, streak: 0, best: 0, wrong: [], phase: 'ask', sel: -1,
+      label: etykieta || (typ === 'wszystkie' ? 'Wszystkie typy' : typ === 'bledy' ? 'Moje błędy' : typInfo(typ).nazwa) };
+    $('setup').hidden = true;
+    $('summary').hidden = true;
+    $('quiz').hidden = false;
+    showQuestion();
+    $('quiz').scrollIntoView({ block: 'start' });
+  }
+
+  function updateCounters() {
+    const r = round;
+    $('qstreak').innerHTML = 'Seria: <b>' + r.streak + '</b>' + (r.best > 1 ? ' (najlepsza w rundzie: ' + r.best + ')' : '');
+    $('qscore').innerHTML = r.answered ? 'Wynik: <b>' + Math.round(r.ok / r.answered * 100) + '%</b> (' + r.ok + '/' + r.answered + ')' : 'Wynik: jeszcze brak';
+  }
+
+  function showQuestion() {
+    const r = round, q = r.qs[r.i];
+    r.phase = 'ask';
+    r.sel = -1;
+    seen.add(q.id);
+    const info = typInfo(q.typ);
+    $('qnum').innerHTML = 'Pytanie <b>' + (r.i + 1) + '</b> z ' + r.qs.length;
+    updateCounters();
+    $('qbar').style.width = Math.round(r.i / r.qs.length * 100) + '%';
+    $('qmeta').textContent = info.nazwa + ' · arkusz: ' + sesjaEtykieta(q.sesja) + ', zadanie ' + q.zad;
+    $('qinstr').textContent = info.polecenie;
+    const select = q.tryb === 'select';
+    const gap = select
+      ? '<span class="gap" id="gap"><span class="slot" id="slot">&nbsp;</span></span>'
+      : '<span class="gap" id="gap"><input type="text" id="ans" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="done" aria-label="Twoja odpowiedź"></span>';
+    $('qtext').innerHTML = esc(q.przed) + gap + (q.hint ? '<span class="qh">(' + esc(q.hint) + ')</span>' : '') + esc(q.po);
+    const opts = $('opts');
+    if (select) {
+      opts.hidden = false;
+      opts.innerHTML = q.ramka.map((w, i) => '<button type="button" class="opt" data-i="' + i + '" aria-pressed="false">' + (i < 9 ? '<span class="k">' + (i + 1) + '</span>' : '') + esc(w) + '</button>').join('');
+    } else {
+      opts.hidden = true;
+      opts.innerHTML = '';
+    }
+    $('qfb').innerHTML = '';
+    flash('');
+    $('checkBtn').textContent = 'Sprawdź';
+    $('skipBtn').hidden = false;
+    $('qkeys').textContent = select
+      ? 'Wybierz wyrażenie (kliknij, naciśnij cyfrę albo pierwszą literę), Enter sprawdza, drugi Enter przechodzi dalej.'
+      : 'Enter sprawdza odpowiedź, drugi Enter przechodzi do następnego pytania.';
+    if (!select) { const a = $('ans'); if (a) a.focus(); }
+    else if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  }
+
+  let flashTimer = null;
+  function flash(msg) {
+    const el = $('qflash');
+    clearTimeout(flashTimer);
+    el.textContent = msg;
+    el.classList.toggle('show', !!msg);
+    if (msg) flashTimer = setTimeout(() => el.classList.remove('show'), 2600);
+  }
+
+  function pick(i) {
+    const r = round;
+    if (!r || r.phase !== 'ask') return;
+    const q = r.qs[r.i];
+    if (q.tryb !== 'select' || i < 0 || i >= q.ramka.length) return;
+    r.sel = i;
+    document.querySelectorAll('#opts .opt').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.i === i)));
+    const slot = $('slot');
+    if (slot) slot.textContent = q.ramka[i];
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  }
+
+  function evaluate(q, raw) {
+    const v = norm(raw);
+    if (!v) return 'empty';
+    if (q.odp.some(a => norm(a) === v)) return 'ok';
+    const f = fold(raw);
+    if (q.odp.some(a => fold(a) === f)) return 'almost';
+    return 'bad';
+  }
+
+  function fullHtml(q, ans, withHint) {
+    const a = q.pelne[0], b = q.pelne[1];
+    let w = ans;
+    if (!a.trim() && w) w = w.charAt(0).toUpperCase() + w.slice(1);
+    return esc(a) + '<b>' + esc(w) + '</b>' + (withHint && q.hint ? ' <span class="qh">(' + esc(q.hint) + ')</span>' : '') + esc(b);
+  }
+
+  function check() {
+    const r = round;
+    if (!r || r.phase !== 'ask') return;
+    const q = r.qs[r.i];
+    let raw;
+    if (q.tryb === 'select') {
+      if (r.sel < 0) { flash('Wybierz jedno wyrażenie z listy.'); return; }
+      raw = q.ramka[r.sel];
+    } else {
+      raw = $('ans').value;
+      if (!norm(raw)) { flash('Wpisz odpowiedź albo kliknij „Nie wiem”.'); return; }
+    }
+    settle(q, raw, false);
+  }
+  function giveUp() {
+    const r = round;
+    if (!r || r.phase !== 'ask') return;
+    settle(r.qs[r.i], '', true);
+  }
+
+  function settle(q, raw, skipped) {
+    const r = round;
+    const res = skipped ? 'bad' : evaluate(q, raw);
+    r.phase = 'fb';
+    r.answered++;
+    const ok = res === 'ok';
+    if (ok) { r.ok++; r.streak++; if (r.streak > r.best) r.best = r.streak; }
+    else { r.streak = 0; r.wrong.push({ q: q, raw: skipped ? '' : raw, res: res, skipped: skipped }); }
+    recordAnswer(q, ok);
+
+    $('gap').classList.add(res);
+    const a = $('ans');
+    if (a) a.readOnly = true;
+    document.querySelectorAll('#opts .opt').forEach(b => { b.disabled = true; });
+
+    const info = typInfo(q.typ);
+    const alts = q.odp.join(' / ');
+    let head;
+    if (ok) {
+      const others = q.odp.filter(x => norm(x) !== norm(raw));
+      head = '<b>Dobrze!</b>' + (others.length ? ' Uznawane też: ' + others.map(esc).join(' / ') : '');
+    } else if (res === 'almost') {
+      head = '<b>Prawie: sprawdź polskie znaki.</b> Poprawnie: <b>' + esc(alts) + '</b>';
+    } else {
+      head = '<b>Poprawna odpowiedź: ' + esc(alts) + '</b>' + (skipped ? '' : '<span class="you">Twoja odpowiedź: ' + esc(raw) + '</span>');
+    }
+    const shown = ok ? (q.odp.find(x => norm(x) === norm(raw)) || q.odp[0]) : q.odp[0];
+    const link = ok ? '' : '<span class="you">Reguła: <a href="#s-' + esc(q.typ) + '" data-card="' + esc(q.typ) + '">ściąga, ' + esc(info.nazwa) + '</a></span>';
+    $('qfb').innerHTML = '<div class="fb ' + res + '">' + head + '<span class="full">' + fullHtml(q, shown, false) + '</span>' + link + '</div>';
+
+    const last = r.i + 1 >= r.qs.length;
+    $('checkBtn').textContent = last ? 'Zobacz wynik' : 'Następne pytanie';
+    $('skipBtn').hidden = true;
+    $('qkeys').textContent = last ? 'Enter pokazuje wynik rundy.' : 'Enter przechodzi do następnego pytania.';
+    updateCounters();
+    $('qbar').style.width = Math.round((r.i + 1) / r.qs.length * 100) + '%';
+  }
+
+  function next() {
+    const r = round;
+    if (!r || r.phase !== 'fb') return;
+    if (r.i + 1 >= r.qs.length) { finish(); return; }
+    r.i++;
+    showQuestion();
+  }
+
+  function finish() {
+    const r = round;
+    r.phase = 'done';
+    store.rundy++;
+    if (r.best > store.rekord) store.rekord = r.best;
+    saveStore();
+    renderSummary();
+    $('quiz').hidden = true;
+    $('summary').hidden = false;
+    $('summary').scrollIntoView({ block: 'start' });
+  }
+
+  function renderSummary() {
+    const r = round;
+    const pct = r.answered ? Math.round(r.ok / r.answered * 100) : 0;
+    const pass = pct >= 60;
+    let h = '<h2><span>Koniec rundy</span><span class="pts">' + esc(r.label) + '</span></h2>';
+    h += '<div class="big">' + r.ok + ' / ' + r.answered + ' (' + pct + '%)</div>';
+    h += '<div class="verdict ' + (pass ? 'pass' : 'fail') + '">' + (pass ? 'Powyżej progu 60%' : 'Poniżej progu 60%') + '</div>';
+    h += '<p class="stats">Najlepsza seria w tej rundzie: <b>' + r.best + '</b>. Rekord: <b>' + store.rekord + '</b>.</p>';
+    if (r.wrong.length) {
+      h += '<h3>Do powtórki (' + r.wrong.length + ')</h3><ul class="errs">' + r.wrong.map(w => {
+        const q = w.q, info = typInfo(q.typ);
+        const you = w.skipped ? 'Bez odpowiedzi.' : (w.res === 'almost' ? 'Prawie, sprawdź polskie znaki: ' + esc(w.raw) : 'Twoja odpowiedź: ' + esc(w.raw));
+        return '<li><span class="mt">' + esc(info.nazwa + ' · ' + sesjaEtykieta(q.sesja) + ', zadanie ' + q.zad) + '</span>'
+          + fullHtml(q, q.odp[0], true) + (q.odp.length > 1 ? ' <span class="mt">uznawane: ' + esc(q.odp.join(' / ')) + '</span>' : '')
+          + '<span class="you">' + you + '</span></li>';
+      }).join('') + '</ul>';
+    } else {
+      h += '<p>Bez błędów w tej rundzie.</p>';
+    }
+    h += '<div class="actions">'
+      + (r.wrong.length ? '<button type="button" class="primary" id="againWrong">Powtórz błędy (' + r.wrong.length + ')</button>' : '')
+      + '<button type="button"' + (r.wrong.length ? '' : ' class="primary"') + ' id="againSame">Nowa runda</button>'
+      + '<button type="button" id="chooseType">Zmień typ</button></div>';
+    $('summary').innerHTML = h;
+    $('againSame').addEventListener('click', () => startRound(r.typ));
+    $('chooseType').addEventListener('click', backToSetup);
+    const aw = $('againWrong');
+    if (aw) aw.addEventListener('click', () => startRound(r.typ, shuffle(r.wrong.map(w => w.q)), 'Powtórka błędów'));
+  }
+
+  function backToSetup() {
+    round = null;
+    $('quiz').hidden = true;
+    $('summary').hidden = true;
+    $('setup').hidden = false;
+    renderTypes();
+    $('setup').scrollIntoView({ block: 'start' });
+  }
+
+  // ---------- klawiatura: Enter = sprawdź / dalej, w ramce cyfry, litery i strzałki ----------
+  document.addEventListener('keydown', function (e) {
+    if (!round || round.phase === 'done' || $('viewTrening').hidden || $('quiz').hidden) return;
+    if (e.isComposing || e.keyCode === 229) return;
+    if (e.key === 'Enter') {
+      if (e.repeat || e.ctrlKey || e.metaKey || e.altKey) return;
+      const t = e.target;
+      if (t && t.closest && t.closest('button, a, select, textarea, summary')) return;   // niech obsłuży sam przycisk lub link
+      e.preventDefault();
+      if (round.phase === 'ask') check(); else next();
+      return;
+    }
+    const q = round.qs[round.i];
+    if (round.phase !== 'ask' || q.tryb !== 'select' || e.ctrlKey || e.metaKey || e.altKey) return;
+    const n = q.ramka.length;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); pick((round.sel + 1) % n); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); pick(round.sel < 0 ? n - 1 : (round.sel - 1 + n) % n); }
+    else if (/^[1-9]$/.test(e.key)) { const i = +e.key - 1; if (i < n) { e.preventDefault(); pick(i); } }
+    else if (e.key.length === 1 && /\p{L}/u.test(e.key)) {
+      const c = fold(e.key);
+      const idx = [];
+      q.ramka.forEach((w, i) => { if (fold(w).charAt(0) === c) idx.push(i); });
+      if (idx.length) {
+        e.preventDefault();
+        const after = idx.find(i => i > round.sel);
+        pick(after !== undefined ? after : idx[0]);
+      }
+    }
+  });
+
+  // ---------- zdarzenia widoku treningu ----------
+  $('types').addEventListener('click', function (e) {
+    const b = e.target.closest('.typebtn');
+    if (!b || b.disabled) return;
+    chosen = b.dataset.typ;
+    renderTypes();
+  });
+  $('startBtn').addEventListener('click', () => startRound(chosen));
+  $('checkBtn').addEventListener('click', () => { if (!round) return; if (round.phase === 'ask') check(); else next(); });
+  $('skipBtn').addEventListener('click', giveUp);
+  $('stopBtn').addEventListener('click', () => { if (round && round.answered > 0) finish(); else backToSetup(); });
+  $('opts').addEventListener('click', function (e) {
+    const b = e.target.closest('.opt');
+    if (b && !b.disabled) pick(+b.dataset.i);
+  });
+  $('qfb').addEventListener('click', function (e) {
+    const a = e.target.closest('a[data-card]');
+    if (!a) return;
+    e.preventDefault();
+    showView('sciaga', 's-' + a.dataset.card);
+  });
+
+  // ---------- ściąga: przykłady z kluczy ----------
+  const exOff = {};
+  function interleave(groups) {
+    const out = [];
+    let i = 0, more = true;
+    while (more) {
+      more = false;
+      groups.forEach(g => { if (i < g.length) { out.push(g[i]); more = true; } });
+      i++;
+    }
+    return out;
+  }
+  const weight = q => (q.przed + q.po).length + (/…/.test(q.przed + q.po) ? 150 : 0);
+  function exampleItems(typ) {
+    const per = {};
+    if (typ === 'przeksztalcenia') {
+      TR.filter(x => !x.przyklad).forEach(x => { (per[x.sesja] = per[x.sesja] || []).push(x); });
+      return interleave(Object.keys(per).sort().reverse().map(s => per[s]));
+    }
+    Q.filter(q => q.typ === typ).forEach(q => { (per[q.sesja] = per[q.sesja] || []).push(q); });
+    return interleave(Object.keys(per).sort().reverse().map(s => per[s].slice().sort((a, b) => weight(a) - weight(b))));
+  }
+  function snippet(q, max) {
+    let l = q.pelne[0], r = q.pelne[1];
+    const half = Math.round(max / 2);
+    if (l.length > half) {
+      l = l.slice(l.length - half);
+      const sp = l.indexOf(' ');
+      l = '… ' + (sp >= 0 ? l.slice(sp + 1) : l);
+    }
+    if (r.length > half) {
+      r = r.slice(0, half);
+      const sp = r.lastIndexOf(' ');
+      r = (sp > 0 ? r.slice(0, sp) : r) + ' …';
+    }
+    return { l: l, r: r, start: !q.pelne[0].trim() };
+  }
+  function snipHtml(q, ans, max, withHint) {
+    const s = snippet(q, max);
+    const w = s.start ? ans.charAt(0).toUpperCase() + ans.slice(1) : ans;
+    return esc(s.l) + '<b>' + esc(w) + '</b>' + (withHint && q.hint ? ' <span class="h">(' + esc(q.hint) + ')</span>' : '') + esc(s.r);
+  }
+  const boldKey = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+
+  function renderExamples(typ) {
+    const ul = document.querySelector('ul.exs[data-ex="' + typ + '"]');
+    if (!ul) return;
+    const items = exampleItems(typ);
+    if (!items.length) { ul.innerHTML = '<li class="h">Brak przykładów w danych. Uruchom node c1/tools/zbuduj_trening.js.</li>'; return; }
+    const n = Math.min(EX_N, items.length);
+    const off = (exOff[typ] || 0) * n;
+    const chosenItems = [];
+    for (let i = 0; i < n; i++) chosenItems.push(items[(off + i) % items.length]);
+    ul.innerHTML = chosenItems.map(x => {
+      const tag = ' <span class="tag">' + esc(sesjaEtykieta(x.sesja)) + '</span>';
+      if (typ === 'przeksztalcenia') {
+        return '<li><span class="o">' + esc(x.orig) + ' <span class="kwb">(' + esc(x.kw) + ')</span></span><span class="k">→ ' + boldKey(x.klucz) + tag + '</span></li>';
+      }
+      return '<li>' + snipHtml(x, x.odp[0], 170, true) + tag + '</li>';
+    }).join('');
+  }
+
+  // ---------- ściąga: słowniczek wyrażeń z ramki ----------
+  const GLOS = [
+    { g: 'Przeciwstawienie i ustępstwo', r: [
+      { t: 'ale, jednak', w: ['ale', 'jednak'], d: 'Przeciwstawienie. „Ale” po przecinku łączy dwie części; „jednak” może stać też w środku zdania.' },
+      { t: 'natomiast', w: ['natomiast'], d: 'Zestawia dwie rzeczy: jedna jest taka, a druga inna.' },
+      { t: 'tymczasem', w: ['tymczasem'], d: 'Kontrast z wcześniejszą opinią (a w rzeczywistości) albo „w tym czasie”.' },
+      { t: 'przeciwnie', w: ['przeciwnie'], d: 'Wręcz odwrotnie niż w poprzedniej części zdania.' },
+      { t: 'a', w: ['a'], d: 'Łagodne przeciwstawienie albo dodanie; „między X a Y”.' },
+      { t: 'podczas gdy', w: ['podczas gdy'], d: 'Zestawia dwie równoległe sytuacje (a tymczasem).' },
+      { t: 'z drugiej strony', w: ['z drugiej strony'], d: 'Druga racja do poprzedniej („z jednej strony ..., z drugiej strony ...”).' },
+      { t: 'chociaż, choć, mimo że, pomimo że, aczkolwiek', w: ['chociaż', 'choć', 'aczkolwiek', 'mimo że', 'pomimo że'], d: 'Ustępstwo. „Aczkolwiek” = choć, ale (może łączyć przymiotniki: sugestywna, aczkolwiek niejednoznaczna).' },
+      { t: 'wprawdzie ... ale / jednak', w: ['wprawdzie'], d: 'Ustępstwo: „wprawdzie” zapowiada przeciwstawienie w drugiej części (ale, jednak, lecz). Bez takiej drugiej części jest zbędne.' },
+      { t: 'to jednak', w: ['to jednak'], d: 'Po „choć / mimo że”: „Choć ..., to jednak ...”.' },
+      { t: 'mimo wszystko', w: ['mimo wszystko'], d: 'Jednak, pomimo przeszkód.' },
+      { t: 'bynajmniej', w: ['bynajmniej'], d: 'Wzmacnia przeczenie: bynajmniej nie = wcale nie.' }
+    ] },
+    { g: 'Przyczyna, skutek, wniosek', r: [
+      { t: 'bowiem, gdyż', w: ['bowiem', 'gdyż'], d: 'Przyczyna. „Bowiem” stoi po pierwszym słowie lub w środku zdania, nigdy na początku; „gdyż” otwiera zdanie podrzędne.' },
+      { t: 'skoro', w: ['skoro'], d: 'Przyczyna znana: „skoro ..., to ...”.' },
+      { t: 'przecież, bo przecież', w: ['bo przecież', 'przecież'], d: 'Argument oczywisty, przypomina znany fakt.' },
+      { t: 'więc, zatem', w: ['więc', 'zatem'], d: 'Wniosek lub skutek.' },
+      { t: 'dlatego też', w: ['dlatego też'], d: 'Początek zdania, które wynika z poprzedniego.' }
+    ] },
+    { g: 'Czas', r: [
+      { t: 'gdy, kiedy', w: ['gdy', 'kiedy'], d: 'Czas: „w czasach, gdy ...”.' },
+      { t: 'zanim', w: ['zanim'], d: 'Przed czynnością z głównego zdania.' },
+      { t: 'dopóki', w: ['dopóki'], d: 'Tak długo jak: „dopóki nie ...”.' },
+      { t: 'ilekroć', w: ['ilekroć'], d: 'Za każdym razem, gdy.' },
+      { t: 'a gdy', w: ['a gdy'], d: 'Ciąg dalszy i zmiana sytuacji: „..., a gdy zawodził, następstwa bywały tragiczne”.' },
+      { t: 'jeszcze', w: ['jeszcze'], d: 'Nadal, do tej pory: „jeszcze dziś”, „jeszcze przez pewien czas”.' },
+      { t: 'dopiero', w: ['dopiero'], d: 'Nie wcześniej niż, późno: „dopiero w kolejnym stuleciu”.' },
+      { t: 'zaledwie', w: ['zaledwie'], d: 'Tylko, niewiele: „zaledwie rok temu”.' },
+      { t: 'aż', w: ['aż'], d: 'Aż do momentu, z naciskiem na długi czas: „aż w końcu zamknięta”.' },
+      { t: 'wkrótce, i ledwie', w: ['wkrótce', 'i ledwie'], d: 'wkrótce = po krótkim czasie; „ilekroć ... i ledwie ..., wkrótce ...”: ledwie = tuż po tym, jak.' }
+    ] },
+    { g: 'Cel, warunek, porównanie, pytanie zależne', r: [
+      { t: 'by, żeby', w: ['by', 'żeby'], d: 'Cel albo życzenie: „postulat, by ratować”. Po „by” bezokolicznik lub forma na -ł.' },
+      { t: 'po co', w: ['po co'], d: 'Pytanie o cel: „zastanawiał się, po co to robi”.' },
+      { t: 'gdyby, jeśli, o ile, chyba że', w: ['gdyby', 'jeśli', 'o ile', 'chyba że'], d: 'Warunek: gdyby = nierealny (forma na -ł), jeśli = realny, o ile = pod warunkiem, chyba że = wyjątek.' },
+      { t: 'niż, niżby, aniżeli', w: ['niż', 'niżby', 'aniżeli'], d: 'Porównanie po stopniu wyższym; „niżby” i „aniżeli” są bardziej książkowe.' },
+      { t: 'jako', w: ['jako'], d: 'W roli, w charakterze: „jako student”, „jako jedyny”.' },
+      { t: 'jakby', w: ['jakby'], d: 'Porównanie nierealne: tak, jak gdyby.' },
+      { t: 'czy', w: ['czy'], d: 'Pytanie zależne: „zależy od tego, czy ...”.' },
+      { t: 'na tyle', w: ['na tyle'], d: 'Stopień: „na tyle zmęczy, że ...”, „na tyle bezpieczny, żeby ...”.' },
+      { t: 'zamiast', w: ['zamiast'], d: 'Z bezokolicznikiem: „zamiast odrzucać”.' }
+    ] },
+    { g: 'Zaimki i spójniki względne', r: [
+      { t: 'gdzie', w: ['gdzie'], d: 'Miejsce: w którym miejscu.' },
+      { t: 'który, jaki, co, których, dla których', w: ['które', 'jaki', 'co', 'dla których', 'których', 'którego'], d: 'Zaimki względne. „Co” odnosi się do całej poprzedniej informacji; „jaki” po wyrazach typu taki, jedyny; „dla których” to przyimek + zaimek.' },
+      { t: 'iż', w: ['iż'], d: 'Książkowe „że”: „twierdzi, iż ...”.' }
+    ] },
+    { g: 'Dodawanie, wyjaśnianie, wzmocnienie', r: [
+      { t: 'nie tylko ... lecz także', w: ['nie tylko', 'lecz także'], d: 'Para: dodaje drugi element (też: ale także, ale również). Jedna luka to „nie tylko”, druga „lecz także”.' },
+      { t: 'a także, w tym także', w: ['a także', 'w tym także'], d: 'a także = oraz; w tym także = włącznie z.' },
+      { t: 'i chociaż', w: ['i chociaż'], d: 'Dodaje i jednocześnie ustępuje: „i chociaż ..., jest to wciąż ...”.' },
+      { t: 'lecz wkrótce', w: ['lecz wkrótce'], d: 'Po opisie początku: „Na początku ..., lecz wkrótce ...”.' },
+      { t: 'przy tym', w: ['przy tym'], d: 'Dodaje: a przy tym = a jednocześnie.' },
+      { t: 'zresztą', w: ['zresztą'], d: 'Uwaga na marginesie: poza tym.' },
+      { t: 'mianowicie, a mianowicie, otóż', w: ['mianowicie', 'a mianowicie', 'otóż'], d: 'Wyjaśniają, o co dokładnie chodzi.' },
+      { t: 'słowem', w: ['słowem'], d: 'Podsumowanie: krótko mówiąc.' },
+      { t: 'zarazem', w: ['zarazem'], d: 'Jednocześnie.' },
+      { t: 'ani', w: ['ani'], d: 'Przeczące wyliczenie: „nie ... ani ...”.' },
+      { t: 'właśnie, wręcz, naprawdę, raczej', w: ['właśnie', 'wręcz', 'naprawdę', 'raczej'], d: 'Wzmacniają: właśnie = dokładnie; wręcz = wprost; naprawdę = w istocie; raczej = bardziej.' },
+      { t: 'choćby, chociażby', w: ['choćby', 'chociażby'], d: 'Na przykład albo nawet tylko: „wśród nich chociażby ...”, „choćby dlatego, że ...”.' },
+      { t: 'zapewne, niestety, zwłaszcza gdy', w: ['zapewne', 'niestety', 'zwłaszcza gdy'], d: 'zapewne = prawdopodobnie; niestety = wyraża żal; zwłaszcza gdy = szczególnie wtedy, gdy.' },
+      { t: 'jakoby', w: ['jakoby'], d: 'Podobno, według niepotwierdzonej pogłoski: „plotka, jakoby ...”.' },
+      { t: 'czyżby', w: ['czyżby'], d: 'Pytanie z powątpiewaniem.' },
+      { t: 'to', w: ['to'], d: 'Łącznik „X to Y” albo po zdaniu warunkowym i przyczynowym: „jeśli ..., to ...”.' }
+    ] }
+  ];
+  function renderGlos() {
+    const box = $('glos');
+    if (!box) return;
+    const ramka = Q.filter(q => q.typ === 'ramka');
+    const used = new Set();
+    const exFor = w => {
+      const q = ramka.find(x => x.odp.some(a => norm(a) === norm(w)));
+      return q ? snipHtml(q, q.odp.find(a => norm(a) === norm(w)), 130, false) : '';
+    };
+    let h = GLOS.map(grp => '<h3>' + esc(grp.g) + '</h3><ul class="glos">' + grp.r.map(g => {
+      const ex = [];
+      g.w.forEach(w => { used.add(norm(w)); const e = exFor(w); if (e) ex.push(e); });
+      const exHtml = ex.length ? ex.slice(0, 3).map(x => '<span class="gex">' + x + '</span>').join('') : '<span class="gex">W arkuszach bywa zbędne (jest w ramce, ale bez luki).</span>';
+      return '<li><b class="a">' + esc(g.t) + '</b>: ' + esc(g.d) + exHtml + '</li>';
+    }).join('') + '</ul>').join('');
+    // wyrażenia z nowych arkuszy, których nie opisano powyżej
+    const rest = {};
+    ramka.forEach(q => { const k = norm(q.odp[0]); if (!used.has(k) && !rest[k]) rest[k] = q; });
+    const keys = Object.keys(rest).sort();
+    if (keys.length) {
+      h += '<h3>Pozostałe z kluczy (bez opisu)</h3><ul class="glos">' + keys.map(k => {
+        const q = rest[k];
+        return '<li><b class="a">' + esc(q.odp[0]) + '</b><span class="gex">' + snipHtml(q, q.odp[0], 130, false) + '</span></li>';
+      }).join('') + '</ul>';
+    }
+    box.innerHTML = h;
+  }
+
+  // ---------- przełączanie widoków ----------
+  function showView(name, anchor) {
+    const sciaga = name === 'sciaga';
+    $('viewTrening').hidden = sciaga;
+    $('viewSciaga').hidden = !sciaga;
+    $('tabTrening').setAttribute('aria-selected', String(!sciaga));
+    $('tabSciaga').setAttribute('aria-selected', String(sciaga));
+    try { history.replaceState(null, '', sciaga ? '#' + (anchor || 'sciaga') : '#trening'); } catch (e) {}
+    const target = anchor ? document.getElementById(anchor) : null;
+    if (sciaga && target) target.scrollIntoView({ block: 'start' });
+    else window.scrollTo(0, 0);
+  }
+  function viewFromHash() {
+    const h = location.hash.replace(/^#/, '');
+    if (h === 'sciaga') showView('sciaga');
+    else if (/^s-/.test(h) && document.getElementById(h)) showView('sciaga', h);
+    else if (h === 'trening') showView('trening');
+  }
+  $('tabTrening').addEventListener('click', () => showView('trening'));
+  $('tabSciaga').addEventListener('click', () => showView('sciaga'));
+  window.addEventListener('hashchange', viewFromHash);
+  document.querySelectorAll('[data-train]').forEach(b => b.addEventListener('click', () => {
+    showView('trening');
+    startRound(b.dataset.train);
+  }));
+  document.querySelectorAll('[data-more]').forEach(b => b.addEventListener('click', () => {
+    exOff[b.dataset.more] = (exOff[b.dataset.more] || 0) + 1;
+    renderExamples(b.dataset.more);
+  }));
+  // przyciski „Trenuj” tylko dla typów, które mają pytania
+  document.querySelectorAll('[data-train]').forEach(b => { if (!present[b.dataset.train]) b.hidden = true; });
+
+  // ---------- start ----------
+  const sesje = new Set(Q.map(q => q.sesja));
+  if (!Q.length) {
+    $('noData').classList.add('show');
+    $('setup').hidden = true;
+  } else {
+    $('leadTrening').textContent = 'Szybkie pytania z prawdziwych kluczy arkuszy C1: jedno zdanie, jedna luka. Bank: ' + Q.length + ' ' + pytan(Q.length) + ' z ' + sesje.size + ' sesji.';
+    renderTypes();
+  }
+  ['liczebniki', 'przeksztalcenia', 'odczasownikowe', 'przymiotniki', 'imieslowy', 'aspekt', 'odmiana'].forEach(renderExamples);
+  renderGlos();
+  viewFromHash();
+  if (Q.length && params.get('start') === '1' && pool(chosen).length && $('viewTrening') && !$('viewTrening').hidden) startRound(chosen);
+})();
+</script>
+</body>
+</html>

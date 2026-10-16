@@ -1,0 +1,819 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Czytanie C1 marzec 2022</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.opt { display: block; padding: 4px 8px; border-radius: 6px; margin: 2px 0; cursor: pointer; }
+.opt input { margin-right: 8px; }
+.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 600; }
+.opt.bad { background: var(--bad-bg); color: var(--bad); }
+.opt.key { outline: 2px solid var(--ok); }
+.qfix { font: 600 14px/1.3 system-ui, sans-serif; color: var(--ok); margin-top: 4px; }
+.tf { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.tf .opt { margin: 0; border: 1px solid var(--line); padding: 4px 12px; }
+.frag { padding: 6px 10px; margin: 4px 0; background: var(--example); border-radius: 8px; font-size: 15px; }
+.frag b { margin-right: 6px; }
+.frag.used { opacity: .45; }
+.frag.struck { opacity: .6; font-style: italic; }
+.mrow { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.mrow .t { flex: 1 1 240px; font-weight: 600; }
+.mrow select { font: 16px system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; }
+.mrow.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.mrow.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.mrow .fix { flex-basis: 100%; }
+.gap .fix { display: inline; }
+.gap select { width: auto; max-width: 72vw; }
+.gap.cloze select { width: 9em; }
+.gap.letter select { width: 5em; }
+.mrow .slots { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mrow .slot.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.mrow .slot.bad select { border-color: var(--bad); background: var(--bad-bg); }
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie tekstów pisanych C1 - marzec 2022</span>
+    <span class="timer" id="timer">60:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Rozumienie tekstów pisanych</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja marzec 2022. 5 zadań, 60 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji.</p>
+  <div class="notice" id="timeUp">Czas minął (60 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: arkusz C1 marzec 2022, część "Rozumienie tekstów pisanych" + oficjalny klucz ----------
+const TASKS = [
+ {
+  "id": "I",
+  "type": "mc",
+  "per": 1,
+  "max": 10,
+  "n": 10,
+  "title": "Zadanie I",
+  "instr": "Proszę przeczytać tekst, a następnie - zgodnie z przykładem - zaznaczyć właściwą odpowiedź.",
+  "textTitle": "Średniowieczne miasto w Wielkopolsce",
+  "paras": [
+   "Po raz pierwszy na terenie Polski - za pomocą zdjęć wykonanych z lotu ptaka - uchwycono jednocześnie ślady średniowiecznego miasta lokacyjnego, sąsiadującej z nim wsi o układzie owalnicowym oraz rezydencji dawnych właścicieli.",
+   "„Sekwencje klatka po klatce są tak dokładne, że na polach w rejonie wsi Niedźwiedziny umożliwiły dostrzeżenie odróżniających się barwą upraw, które były rozlokowane na kształt domostw rozmieszczonych wokół centralnego placu o planie kwadratu. Zinterpretowałem to jako średniowieczny układ miejski” - mówi Marcin Krzepkowski, archeolog współpracujący od wielu lat z Muzeum Regionalnym w Wągrowcu.",
+   "Niektóre z rozpoznanych budynków musiały być pokaźnych rozmiarów. Według wstępnych szacunków naukowców na terenie średniowiecznego zespołu miejskiego znajdowało się około 30 zagospodarowanych działek mieszczańskich, z czego 20 przy rynku i około 10 przy ulicach wylotowych. Prawdopodobnie zamieszkiwało je co najwyżej 200 osób.",
+   "Na północ od zabudowy miejskiej widoczne jest rozmieszczenie obiektów stanowiących pozostałość wsi o układzie owalnicowym. Centrum tego typu osiedla zajmował plac, często ze stawem, niekiedy kościołem lub karczmą. Około 300 metrów na południowy wschód od miasta, na wyniesieniu położonym w dnie doliny rzeki Dzwonówki, prawdopodobnie istnieją relikty średniowiecznej siedziby rycerskiej i dworu staropolskiego. W rejonie znaleziska wytypowano również miejsce lokalizacji cmentarza związanego najpewniej z istniejącym tu niegdyś kościołem.",
+   "Odnalezienie pozostałości było możliwe dzięki zastosowaniu tradycyjnej metody poszukiwań archeologicznych, czyli pieszych oględzin terenu: otóż na powierzchni pól zauważono skupiska gliny z sieczką, kładzionej niegdyś w chatach zamiast podłogi oraz liczne fragmenty wyrobów rzemiosła garncarskiego, które zostały wyrzucone na powierzchnię podczas niedawnej orki.",
+   "Miejsce odkrycia położone jest w obszarze słabo rozpoznanym przez archeologów - to Puszcza Zielonka zdominowana przez zbite zagajniki i gęstwiny. Naukowcy natrafiają na stanowiska najczęściej w czasie obserwacji powierzchniowych, jednak gęste drzewostany mogą skutecznie utrudniać takie działania. Miasto w rejonie wsi Niedźwiedziny odkryto tylko dzięki temu, że jego relikty znajdują się na polach uprawnych, które są jednak ściśle ograniczone przez powierzchnię kompleksu drzewnego.",
+   "Odnalezione miasto nazywało się Dzwonowo - najczęściej występowało w literaturze w odmianie Swanow lub Zwanowo. Pierwsze wzmianki o nim pochodzą jeszcze z początku XIV wieku, kiedy to miejscowość należała do późniejszego wojewody poznańskiego Dobrogosta, z czasem zaś do jego potomków. Badacze przypuszczają, że przebiegał tędy trakt łączący Poznań z Pomorzem Gdańskim, wiodący przez Łekno, Kcynię i Nakło, z którego chętnie korzystali kupcy. Konkurencja ze strony nieco później lokowanych osad prywatnych w pobliżu Dzwonowa (Gośliny Kościelnej, Skokowa) spowodowała zapewne jego powolny upadek. Niewykluczone, że miasto ucierpiało również podczas wojny domowej toczącej się u schyłku XIV w."
+  ],
+  "src": "Na podstawie: https://www.focus.pl/artykul/zaginione-sredniowieczne-miasto-w-wielkopolsce",
+  "example": {
+   "stem": "Z tekstu dowiadujemy się, że",
+   "opts": [
+    "fotografia lotnicza umożliwiła zidentyfikowanie zespołu zabudowań.",
+    "lotnicy odkryli zespół wiejsko-miejskich zabudowań.",
+    "zdjęcia potwierdziły istnienie warownych budynków."
+   ],
+   "ans": 0
+  },
+  "qs": [
+   {
+    "stem": "Na rozpoznanie dawnej zabudowy miejskiej naprowadził",
+    "opts": [
+     "równoboczny wymiar pól.",
+     "osobliwy odcień terenów uprawnych.",
+     "zachowany typ zabudowy jednorodzinnej."
+    ],
+    "ans": "b"
+   },
+   {
+    "stem": "Liczbę domostw odkrytego miasta określa się za pomocą",
+    "opts": [
+     "przybliżonych danych.",
+     "żmudnych pomiarów.",
+     "zmiennych wartości."
+    ],
+    "ans": "a"
+   },
+   {
+    "stem": "Zagrody wiejskie skupione były wokół placu",
+    "opts": [
+     "ze studnią kopaną.",
+     "z wysoką wieżą.",
+     "ze zbiornikiem wodnym."
+    ],
+    "ans": "c"
+   },
+   {
+    "stem": "Ustalanie lokalizacji znaleziska polegało na",
+    "opts": [
+     "uważnym przemierzaniu terenu.",
+     "skanowaniu przestrzeni ze wzniesień.",
+     "lekturze zachowanych świadectw."
+    ],
+    "ans": "a"
+   },
+   {
+    "stem": "Istnienie dawnej miejscowości zostało potwierdzone na podstawie",
+    "opts": [
+     "badania gleby z użyciem siarki.",
+     "analizy składu podłoża.",
+     "analizy zachowanych fragmentów kości."
+    ],
+    "ans": "b"
+   },
+   {
+    "stem": "Na terenie prac archeologicznych rozpoznano",
+    "opts": [
+     "fragmenty narzędzi rolniczych.",
+     "miejsca kultu pogańskiego.",
+     "pozostałości naczyń."
+    ],
+    "ans": "c"
+   },
+   {
+    "stem": "Miejsce rozpoznania archeologicznego, o którym mowa w tekście, znajduje się na terenie",
+    "opts": [
+     "o pełnym zalesieniu zupełnie uniemożliwiającym badania.",
+     "nieużytków rolnych z dużymi skupiskami drzewostanów.",
+     "wykorzystywanym obecnie jako użytki rolne."
+    ],
+    "ans": "c"
+   },
+   {
+    "stem": "Z tekstu wynika, że",
+    "opts": [
+     "odkryte miasto było dawniej objęte prawem dziedziczenia.",
+     "o statusie odkrytego miasta decydowały konflikty zbrojne.",
+     "odkryte miasto podlegało kiedyś prawu wykupu przez wojewodów."
+    ],
+    "ans": "a"
+   },
+   {
+    "stem": "Z tekstu wynika, że odkryte miejscowości (wieś i miasto)",
+    "opts": [
+     "zaopatrywały okoliczne grody w towary garncarskie.",
+     "leżały na szlaku handlowym.",
+     "pełniły funkcję spichlerza."
+    ],
+    "ans": "b"
+   },
+   {
+    "stem": "Tekst zawiera informacje",
+    "opts": [
+     "o ochronie tożsamości regionalnej mieszkańców Wielkopolski.",
+     "o sposobach i technikach pracy stosowanych w archeologii.",
+     "o celach i metodach prowadzenia dalszych badań archeologicznych w Wielkopolsce."
+    ],
+    "ans": "b"
+   }
+  ]
+ },
+ {
+  "id": "II",
+  "type": "gapfrag",
+  "per": 1,
+  "max": 7,
+  "n": 7,
+  "title": "Zadanie II",
+  "instr": "Proszę przeczytać tekst i - zgodnie z przykładem - dopasować usunięte z niego fragmenty (A-I). Uwaga! Jeden fragment jest niepotrzebny.",
+  "textTitle": "Ważne i ważniejsze",
+  "frags": {
+   "A": "Takie właśnie pytanie zadał mi mój czternastoletni potomek.",
+   "B": "Uśmiech na twarzy mi gaśnie, mina rzednie, słowa stają ością w gardle.",
+   "C": "Od Ajschylosa po Shakespeare’a, od Homera po Blankę Lipińską.",
+   "D": "Otworzyłem przepastną księgę, wziąłem łyk świeżego powietrza i odetchnąłem z ulgą.",
+   "E": "Rodziciele stają się zatruwającymi życie figurami, a wyrocznią zostają kumple z liceum.",
+   "F": "Sądzę jednak, że mówiąc, pisząc, opowiadając, wiele na świecie można zmienić.",
+   "G": "Uśmiechnąłem się pod nieistniejącym wąsem, wziąłem wdech i zamierzałem odpowiedzieć.",
+   "H": "Zatem opowieści to niezaprzeczalnie największy wynalazek człowieka!",
+   "I": "Przypomniały mi się te wszystkie brawurowe anegdoty, bajki, opowiastki, żarty."
+  },
+  "used": "A",
+  "paras": [
+   "Co jest najważniejszym wynalazkiem ludzkości? [[A]] Nie bez powodu podkreślam, że czternastoletni. Ten wiek to bowiem ostatni moment w życiu człowieka, kiedy się jeszcze o cokolwiek pyta rodziców. Potem, wiadomo. {1}",
+   "Mając więc na uwadze podniosłość tego wydarzenia i zdając sobie sprawę, że jest to moment dziejowy i być może ostatnie ważne pytanie, jakie zadaje mi w życiu dziecko, postanowiłem rzeczy nie bagatelizować - mimo że problem do trudnych nie należy. {2} Zgodnie z zasadami dramaturgii miało to wyglądać tak: „Drogi synu, cieszę się, że wciąż mi ufasz i w zasadniczych kwestiach zwracasz się właśnie do mnie. A teraz zapamiętaj na całe życie, co jest największym osiągnięciem gatunku ludzkiego”. No i tu mnie przytkało. Bo z jednej strony, wiadomo: koło, ale z drugiej żarówka, z trzeciej pilot do telewizora. Albo druk, do tego penicylina, piramidy, komputer, piłka nożna, Internet i maszyna parowa. {3} Latorośl z kolei mówi: „Dobra, nieważne, myślałem, że wiesz. Idę na deskę”. No i poszedł, zostawiwszy mnie z tą kwestią.",
+   "Siedząc tak z podkulonym ogonem po wyjściu syna, próbowałem sobie wyobrazić, co też na to pytanie odpowiedzieliby moi szanowni przodkowie. Zacne babcie, dziadkowie, różne ciotki i stryjenki oraz wyjątkowo ekscentryczny stryjek. {4} I nagle pomyślałem, że w jakiś zupełnie zadziwiający sposób wciąż czuję obecność tych ludzi. A wszystko dzięki snutym przez nich historiom, dzięki wyobraźni i słowom, jakich używali. {5} Pomijając sześćdziesiąt procent wody w naszym organizmie, z tego chyba się składamy. Przeczytane książki, zasłyszane dowcipy, podsłuchane plotki, obejrzane filmy. Baśnie, mity, wierzenia, legendy. {6} „Sztuka snucia opowiadań (…) jest tak stara jak ludzkość. Podejrzewam, że już w jaskiniach matki i ojcowie opowiadali je swoim dzieciom. O bizonach, najprawdopodobniej”, zauważył Julio Cortázar.",
+   "Nie wiemy, co się stanie z nami jutro. {7} Jeśli nie podobają się Wam stare legendy i narracje, piszcie nowe. W zasadzie wszystko, co osiągnęła ludzkość, zaczynało się od słów. Najważniejsze to po prostu nie bać się mówić."
+  ],
+  "src": "Na podstawie: G. Małecki, Ważne i ważniejsze, „Pani” 2021, nr 10 (373), s. 92.",
+  "answers": {
+   "1": "E",
+   "2": "G",
+   "3": "B",
+   "4": "I",
+   "5": "H",
+   "6": "C",
+   "7": "F"
+  },
+  "note": "Zbędne zdanie: D."
+ },
+ {
+  "id": "III",
+  "type": "tf",
+  "per": 1,
+  "max": 8,
+  "n": 8,
+  "title": "Zadanie III",
+  "instr": "Proszę przeczytać tekst, a następnie - jak w przykładzie - zaznaczyć: TAK - gdy zdanie jest zgodne z tekstem; NIE - gdy nie jest zgodne z tekstem; BI - gdy w tekście brakuje informacji na dany temat.",
+  "textTitle": "Autostrady w Polsce",
+  "paras": [
+   "Budowa autostrad w kraju nad Wisłą jest od lat piętą achillesową rządzących. Z różnych przyczyn realizacja zamierzeń przebiega opornie i mimo licznych projektów wybudowano zaledwie kilkaset kilometrów takich dróg podzielonych na kilka niepołączonych ze sobą odcinków, co sprawia, że żadną autostradą nie można przejechać od początku jej biegu do planowanego celu. Przyczyny stagnacji budownictwa autostradowego są powszechnie znane: trudności w wytyczaniu tras wskutek braku lokalnych planów zagospodarowania przestrzennego, nieporozumienia co do formy organizacji wykonawstwa, brak środków na finansowanie oraz problemy ekologiczne. Przytoczone argumenty stanowią oręż w walce przeciwko rozbudowie sieci autostradowej dla tych wszystkich, którzy nie negując rozlicznych korzyści, wysuwają jednak zastrzeżenia trudne do zlekceważenia. Ekologiczne aspekty budownictwa autostradowego, mimo że stanowią o nich odpowiednie rozporządzenia, w odróżnieniu od uwarunkowań technicznych i ekonomiczno-organizacyjnych, nie doczekały się dotychczas poważnej debaty publicznej.",
+   "Negatywny wpływ ruchu autostradowego na środowisko przejawia się na wielu płaszczyznach. Spaliny zatruwają atmosferę i glebę na przyległych obszarach. Wody spływające z nawierzchni (zanieczyszczone paliwem) obniżają jakość wód powierzchniowych i podziemnych w sąsiedztwie tras. Hałas wywołany przez przejeżdżające pojazdy pogarsza okoliczne warunki akustyczne. Bywa też, że określona lokalizacja autostrady hamuje możliwość wydobywania wartościowych surowców mineralnych. Ekologowie sprzeciwiają się przebiegom autostrad przez obszary cenne krajobrazowo; zwłaszcza przez tereny będące ostoją zwierzyny i ptactwa. Z kolei służby ochrony zabytków zarzucają projektantom autostrad nie dość rygorystyczne uwzględnianie zasobów i walorów dziedzictwa kulturowego, w szczególności zespołów archeologicznych znajdujących się w pobliżu planowanych tras.",
+   "Nikt rozsądny nie lekceważy aspektu ochrony środowiska. Wobec daleko posuniętej degradacji dużych obszarów naszego kraju ruch ekologiczny cieszy się powszechną sympatią, ale jak to często bywa, słuszne postulaty ekologów stają się nieadekwatne do wymogów współczesnej cywilizacji. Tak jakby nie zdawano sobie sprawy z tego, że nauka i technologia budowlana dysponują rozległymi możliwościami zapewnienia bezpieczeństwa ekologicznego. Zachowujemy się tak, jakby na świecie autostrady przebiegały przez pustkowia, omijając szerokim łukiem aglomeracje miejskie, osiedla, lasy, nie przecinały rzek, obszarów rolnych. A przecież wystarczy spojrzeć na mapy drogowe rozwiniętych krajów zachodnioeuropejskich, aby dostrzec, jak gęstą siecią autostrad oplecione są wielkie miasta. Mieszkańcy nauczyli się już żyć ze swoimi autostradami; doceniają ich wpływ na rozwój cywilizacyjny. Dobrym przykładem jest zastosowane w Lizbonie rozwiązanie, gdzie po modernizacji autostrady przebiegającej przez centrum miasta, stała się ona nowoczesnym i ciekawym architektonicznie i urbanistycznie fragmentem stolicy Portugalii. Jej wylot tak pomysłowo wkomponowano w leżący opodal park krajobrazowy, że projekt ten uhonorowano specjalną nagrodą."
+  ],
+  "src": "Na podstawie: https://bzg.pl/poradnik/artykul/ekologiczne-aspekty-budowy-autostrad/id/14119",
+  "example": {
+   "stem": "Działania podjęte przy budowie polskich autostrad można ocenić jako kompleksowe.",
+   "ans": "NIE"
+  },
+  "qs": [
+   {
+    "stem": "Prace nad wyznaczeniem biegu planowanych autostrad są prowadzone zwykle na szczeblu lokalnym.",
+    "ans": "BI"
+   },
+   {
+    "stem": "Powody słabego rozwoju infrastruktury drogowej są dostępne opinii publicznej.",
+    "ans": "TAK"
+   },
+   {
+    "stem": "Przeciwnicy budowania autostrad dostrzegają tylko ich wady.",
+    "ans": "NIE"
+   },
+   {
+    "stem": "Konieczność zabezpieczenia środowiska naturalnego podczas budowy autostrady jest zagwarantowana prawnie.",
+    "ans": "TAK"
+   },
+   {
+    "stem": "Do oczyszczania skażonego gruntu wzdłuż autostrad wykorzystuje się odpowiednio dobraną roślinność.",
+    "ans": "BI"
+   },
+   {
+    "stem": "Roboty prowadzone przy budowie autostrad przyczyniają się do eksploatacji cennych złóż.",
+    "ans": "NIE"
+   },
+   {
+    "stem": "Rolą mediatora jest łagodzenie konfliktów, które podczas planowania autostrad powstają między projektantami a instytucjami zajmującymi się ochroną zabytków.",
+    "ans": "BI"
+   },
+   {
+    "stem": "Autostrady mogą stać się integralną częścią obszarów chronionych przyrodniczo.",
+    "ans": "TAK"
+   }
+  ]
+ },
+ {
+  "id": "IV",
+  "type": "match",
+  "per": 0.5,
+  "max": 5,
+  "n": 10,
+  "title": "Zadanie IV",
+  "instr": "Proszę - zgodnie z przykładem - połączyć tytuły z kolumny I z fragmentami tekstów z kolumny II. Odpowiedzi proszę wpisać do tabeli. Wybierz literę fragmentu przy każdym tytule.",
+  "textTitle": "Pingwiny",
+  "frags": {
+   "A": "Niezwykłe jest to, że kiedy samiec i samica zwracają na siebie uwagę, rozpoczynają widowiskowy taniec, podczas którego partnerzy wykonują dokładnie te same ruchy. Odnosi się wrażenie, jakby oba ptaki były idealnie zsynchronizowane.",
+   "B": "W sezonie lęgowym pingwiny przylądkowe wykopują płytkie dołki na plaży osłoniętej przed intruzami. Potem wyścielają je gałązkami i wodorostami i w ten sposób szykują miejsce na wysiadywanie jaj.",
+   "C": "Pingwiny nie ulegają wychłodzeniu, bo ich układ krwionośny działa tak, że napływającą z całego ciała krwią ogrzewają zimną krew odpływającą z łap.",
+   "D": "Siedzibą jednej z największych kolonii pingwinów przylądkowych jest niewielka sielankowa zatoka otoczona skałami z przepiękną plażą usypaną z drobnych ziaren piasku. To miejsce leży na przedmieściach Kapsztadu.",
+   "E": "Młode pingwiny wykluwają się zazwyczaj w październiku. Choć ojcowie są zmęczeni wysiadywaniem, to przez pewien czas sprawują opiekę nad potomstwem i karmią pisklęta specjalną wydzieliną wytwarzaną w przełyku.",
+   "F": "Pingwiny cesarskie to gatunek zwany, z racji swych zwyczajów, seryjnym monogamistą. Zaobserwowano, że na początku każdej pory lęgowej osobniki dobierają się w nowe pary i za każdym razem wysiadują i wychowują pisklęta w nowym związku.",
+   "G": "Dla ludzkiego oka wszystkie pingwiny są takie same. Zwierzęta te mają jednak niezawodne sposoby, aby wśród setek innych przedstawicieli własnego gatunku - na pozór identycznych - rozpoznać swojego partnera i pozostać mu wiernym.",
+   "H": "Pingwiny monogamiczne, do których należą pingwiny przylądkowe, co roku bezbłędnie trafiają do tych samych gniazd. Naukowcy odkryli niedawno, że ptaki doskonale znają raz wybrane miejsca lęgowe.",
+   "I": "Zadziwiające, jak niezwykle rozwinięty instynkt rodzicielski mają pingwiny. Okazuje się, że przez większą część swojego życia rok w rok wszystkie siły poświęcają odchowaniu potomstwa, czyniąc to w ekstremalnych warunkach.",
+   "J": "Kiedy pingwiny wychodzą z wody, na ich piórach nie tworzą się nawet najmniejsze kryształki lodu. Pióra te są wyposażone w maleńkie, nanomilimetrowe pory, dzięki którym woda do nich nie przylega, lecz osiada w formie kropli i spływa, zanim zdąży zamarznąć.",
+   "K": "Do tej pory umiejętność integrowania różnych informacji o innych przedstawicielach gatunku została potwierdzona jedynie u kilku gatunków ssaków żyjących w stadach, poza tym u wron oraz właśnie u pingwinów."
+  },
+  "used": "C",
+  "example": "System grzewczy",
+  "titles": [
+   "Jak po kaczce",
+   "Jak własną kieszeń",
+   "Nadrodzice",
+   "Do grobowej deski",
+   "Pingwini móżdżek",
+   "Harmonijne gody",
+   "Gardłowa strawa",
+   "Ptasi raj",
+   "Sezonowy mariaż",
+   "Piaszczyste gniazdko"
+  ],
+  "src": "Na podstawie: K. Burda, Miłosny taniec pingwinów, „Newsweek”, 44/2021, s. 72-74.",
+  "answers": {
+   "1": "J",
+   "2": "H",
+   "3": "I",
+   "4": "G",
+   "5": "K",
+   "6": "A",
+   "7": "E",
+   "8": "D",
+   "9": "F",
+   "10": "B"
+  }
+ },
+ {
+  "id": "V",
+  "type": "multi",
+  "per": 1,
+  "max": 10,
+  "n": 10,
+  "title": "Zadanie V",
+  "instr": "Proszę - zgodnie z przykładem - wpisać do tabeli, który fragment tekstu (A,B,C,D,E) zawiera wskazane treści. Uwaga! Jeden fragment (A,B,C,D,E) może pasować do więcej niż jednej informacji podanej w tabeli. Wybierz litery z list (kolejność w obrębie jednego punktu jest dowolna).",
+  "textTitle": "Sposób na oglądalność",
+  "frags": {
+   "A": "Obrazem telewizyjnym rządzą dwie siły. Potęga, bo za pomocą ściskających za serce relacji telewizja mobilizuje sumienia. Nędza, bo każda relacja, nawet najrzetelniejsza, jest zawsze tylko cząstką prawdy, a nakarmione tą namiastką sumienie telewidza siedzącego w domowym zaciszu może ulec złudzeniu, że sam odruch współczucia wystarczy, by ulżyć ludzkiemu cierpieniu.",
+   "B": "Media nie są świętą krową: rządzą się odpowiednimi zasadami i podlegają krytyce jak każda instytucja publiczna. Surowa ocena wychodzi zresztą zwykle na zdrowie prawości i równości oraz jakości komunikacji społecznej. Krytyki nie należy jednak mylić z teorią spiskową, głoszącą, że massmedia służą tylko do prania mózgów, ogłupiania, wyciskania łez i forsy.",
+   "C": "Co to znaczy mieć sumienie? To umieć odróżnić dobro od zła, także w odniesieniu do samego siebie. Nawet najbardziej rozrywkowe i żądne zysku media mają swoje, niekoniecznie spisane, wewnętrzne kodeksy postępowania, chroniące je choćby przed procesami sądowymi. A w mediach publicznych pisane kodeksy etyki zawodowej są obowiązkowe.",
+   "D": "Michael Ignatieff podsuwa dwie możliwe interpretacje moralnego wpływu telewizji na współczesne społeczeństwo. Są one całkowicie sprzeczne. Pierwsza głosi, że telewizja buduje więź między ludźmi. Druga - że jest ona obrzydliwym masowym podglądactwem, które karmi się obrazami ludzkiego cierpienia pod pretekstem pokazywania realnego świata.",
+   "E": "Sekret dobrej produkcji to umiejętność rewizji przekonań odnośnie do tego, co jest tylko tematem medialnym, a co ma głęboką wartość moralną. Jeśli telewizja potrafi wyczuć rytualną atrakcyjność czysto świeckich wydarzeń, jeśli transmituje wielogodzinne imprezy religijne, powinna także docenić sakralność ludzkiego cierpienia i oddać też jemu, a nie tylko sprawom ziemskim, należny szacunek."
+  },
+  "src": "Na podstawie: Adam Szostkiewicz, Media i dziennikarze, w: Niezbędnik inteligenta, „Polityka”, nr 27/2004.",
+  "example": {
+   "stem": "Przed współczesnymi mediami stoi doniosłe zadanie wnikliwego spojrzenia na prezentowane zagadnienia.",
+   "ans": "E"
+  },
+  "items": [
+   {
+    "stem": "Oglądanie programów daje telewidzom złudne wrażenie przynależności do wspólnoty i zastępuje uczestnictwo w życiu społecznym.",
+    "key": [
+     "A",
+     "D"
+    ]
+   },
+   {
+    "stem": "Media stosują podstępne wybiegi oparte na fragmentaryczności przekazywanej informacji.",
+    "key": [
+     "A"
+    ]
+   },
+   {
+    "stem": "Media unikają igrania z etyką, świadome prawnych konsekwencji i społecznej dezaprobaty wobec takich działań.",
+    "key": [
+     "B",
+     "C"
+    ]
+   },
+   {
+    "stem": "W wartościowym przekazie telewizyjnym powinien zostać uwzględniony indywidualny wymiar ludzkiej egzystencji.",
+    "key": [
+     "E"
+    ]
+   },
+   {
+    "stem": "Czwarta władza bywa uważana za bezwzględne narzędzie wykorzystywane do manipulowania widzami i ograniczania im dostępu do prawdy.",
+    "key": [
+     "A",
+     "B",
+     "D"
+    ]
+   },
+   {
+    "stem": "Nietykalność instytucji przemysłu medialnego jest zagrożona, co więcej - media mają swoich zagorzałych przeciwników.",
+    "key": [
+     "B"
+    ]
+   }
+  ]
+ }
+];
+
+const MAX = 40, PASS = 24;
+const TEST_ID = 'czytanie-2022-03';
+const STORE_KEY = 'c1_czyt_2022_03_v1';
+const TOTAL_SEC = 60 * 60;
+const SELFTEST = /[?&]selftest\b/.test(location.search);
+
+// ---------- pomocnicze ----------
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+function load() { if (SELFTEST) return {}; try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { if (SELFTEST) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {} }
+
+// ---------- budowanie arkusza ----------
+function textBlock(t, gapFn) {
+  let h = `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>`;
+  h += t.paras.map(p => {
+    let x = esc(p);
+    x = x.replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+    if (gapFn) x = x.replace(/\{(\d+)(?::([^}]*))?\}/g, (m, n, o) => gapFn(n, o));
+    return `<p>${x}</p>`;
+  }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+  return h;
+}
+function letterSelect(t, id, n, letters) {
+  const opts = letters.map(l => `<option value="${l}">${l}</option>`).join('');
+  return `<span class="gap letter" id="g-${id}"><select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select><sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+}
+function fragList(t) {
+  return `<div id="frags-${t.id}">` + Object.keys(t.frags).map(l =>
+    `<div class="frag${l === t.used ? ' struck' : ''}" data-l="${l}"><b>${l}.</b>${esc(t.frags[l])}${l === t.used ? ' <span class="src">(PRZYKŁAD)</span>' : ''}</div>`).join('') + `</div>`;
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${t.n} x ${pl(t.per)} p. = ${t.max} p.</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    if (t.type === 'mc' || t.type === 'tf') {
+      html += `<div class="text">${t.textTitle ? '<p class="noindent"><b>' + esc(t.textTitle) + '</b></p>' : ''}${t.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div><div class="src">${esc(t.src)}</div>`;
+      if (t.type === 'mc') {
+        const e = t.example;
+        html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div><b>${esc(e.stem)}</b><br>` +
+          e.opts.map((o, i) => `<span style="${i === e.ans ? 'font-weight:700;text-decoration:underline dotted' : ''}">${'abc'[i]}) ${esc(o)}</span>`).join('<br>') + `</div>`;
+        t.qs.forEach((q, i) => {
+          const id = `${t.id}-${i + 1}`;
+          html += `<div class="q" id="q-${id}"><div class="stem">${i + 1}. ${esc(q.stem)}</div>` +
+            q.opts.map((o, j) => `<label class="opt" data-v="${'abc'[j]}"><input type="radio" name="${id}" value="${'abc'[j]}">${'abc'[j]}) ${esc(o)}</label>`).join('') +
+            `<div class="qfix"></div></div>`;
+        });
+      } else {
+        html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div>${esc(t.example.stem)} <b>- ${t.example.ans}</b></div>`;
+        t.qs.forEach((q, i) => {
+          const id = `${t.id}-${i + 1}`;
+          html += `<div class="q" id="q-${id}"><div class="stem">${i + 1}. ${esc(q.stem)}</div><div class="tf">` +
+            ['TAK', 'NIE', 'BI'].map(v => `<label class="opt" data-v="${v}"><input type="radio" name="${id}" value="${v}">${v}</label>`).join('') +
+            `</div><div class="qfix"></div></div>`;
+        });
+      }
+    } else if (t.type === 'gapfrag') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="example-box"><div class="lbl">FRAGMENTY (A-I)</div></div>` + fragList(t);
+      html += textBlock(t, (n) => letterSelect(t, `${t.id}-${n}`, n, letters));
+    } else if (t.type === 'match') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p></div>`;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(t.example)} - <b>${t.used}</b></div>`;
+      html += `<div class="example-box"><div class="lbl">KOLUMNA II - FRAGMENTY</div></div>` + fragList(t);
+      html += `<div class="example-box" style="margin-top:12px"><div class="lbl">KOLUMNA I - TYTUŁY: wybierz literę</div></div>`;
+      t.titles.forEach((ti, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="mrow" id="g-${id}"><span class="t">${i + 1}. ${esc(ti)}</span><select data-id="${id}" aria-label="Tytuł ${i + 1}"><option value=""></option>${letters.map(l => `<option value="${l}">${l}</option>`).join('')}</select><span class="fix"></span></div>`;
+      });
+      html += `<div class="src">${esc(t.src)}</div>`;
+    } else if (t.type === 'multi') {
+      const letters = Object.keys(t.frags);
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p></div>`;
+      html += fragList(t);
+      html += `<div class="src">${esc(t.src)}</div>`;
+      html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD - O tym mówi się w:</div>${esc(t.example.stem)} <b>- ${t.example.ans}</b></div>`;
+      html += `<div class="example-box" style="margin-top:12px"><div class="lbl">O TYM MÓWI SIĘ W: wybierz litery (liczba pól = liczba fragmentów do wskazania)</div></div>`;
+      t.items.forEach((it, i) => {
+        const base = `${t.id}-${i + 1}`;
+        const sels = it.key.map((_, k) => `<span class="slot" id="g-${base}-${k + 1}"><select data-id="${base}-${k + 1}" aria-label="Informacja ${i + 1}, pole ${k + 1}"><option value=""></option>${letters.map(l => `<option value="${l}">${l}</option>`).join('')}</select></span>`).join('');
+        html += `<div class="mrow" id="g-${base}"><span class="t">${i + 1}. ${esc(it.stem)}</span><span class="slots">${sels}</span><span class="fix"></span></div>`;
+      });
+    }
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('select[data-id]').forEach(el => {
+    if (saved[el.dataset.id] != null) el.value = saved[el.dataset.id];
+    el.addEventListener('change', () => { save(); updateProgress(); updateFrags(); });
+  });
+  root.querySelectorAll('input[type=radio]').forEach(el => {
+    if (saved[el.name] === el.value) el.checked = true;
+    el.addEventListener('change', () => { save(); updateProgress(); });
+  });
+  updateProgress(); updateFrags();
+}
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('select[data-id]').forEach(el => { o[el.dataset.id] = el.value; });
+  document.querySelectorAll('input[type=radio]:checked').forEach(el => { o[el.name] = el.value; });
+  return o;
+}
+function totalQuestions() {
+  return document.querySelectorAll('select[data-id]').length + document.querySelectorAll('.q').length;
+}
+function updateProgress() {
+  const o = collect();
+  const filled = Object.values(o).filter(v => v).length;
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${totalQuestions()}`;
+}
+function updateFrags() {
+  for (const t of TASKS) {
+    if (!t.frags || t.type === 'multi') continue;
+    const chosen = [...document.querySelectorAll(`#task-${t.id} select`)].map(s => s.value).filter(Boolean);
+    document.querySelectorAll(`#frags-${t.id} .frag`).forEach(f => {
+      if (f.dataset.l === t.used) return;
+      f.classList.toggle('used', chosen.includes(f.dataset.l));
+    });
+  }
+}
+
+// ---------- sprawdzanie ----------
+function checkAll(noScroll) {
+  const vals = collect();
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const got = vals[id] || '';
+        const box = document.getElementById(`q-${id}`);
+        box.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad', 'key');
+          if (l.dataset.v === q.ans) l.classList.add('key');
+          if (l.dataset.v === got) l.classList.add(got === q.ans ? 'ok' : 'bad');
+        });
+        const fx = box.querySelector('.qfix');
+        if (got === q.ans) { score += t.per; fx.textContent = ''; }
+        else fx.textContent = '→ poprawna odpowiedź: ' + (t.type === 'mc' ? q.ans + ') ' + q.opts['abc'.indexOf(q.ans)] : q.ans);
+      });
+    } else if (t.type === 'multi') {
+      t.items.forEach((it, i) => {
+        const base = `${t.id}-${i + 1}`;
+        const got = it.key.map((_, k) => vals[`${base}-${k + 1}`] || '');
+        let n = 0;
+        got.forEach((v, k) => {
+          const ok = v !== '' && it.key.includes(v) && got.indexOf(v) === k;
+          const el = document.getElementById(`g-${base}-${k + 1}`);
+          el.classList.remove('ok', 'bad'); el.classList.add(ok ? 'ok' : 'bad');
+          if (ok) n++;
+        });
+        score += n * t.per;
+        document.querySelector(`#g-${base} .fix`).textContent = n === it.key.length ? '' : '→ ' + it.key.join(', ') + ' (kolejność dowolna)';
+      });
+    } else {
+      for (const n in t.answers) {
+        const id = `${t.id}-${n}`;
+        const a = t.answers[n];
+        const raw = vals[id] || '';
+        const ok = raw !== '' && raw === a;
+        const gap = document.getElementById(`g-${id}`);
+        const fix = gap.querySelector('.fix');
+        gap.classList.remove('ok', 'bad', 'almost');
+        if (ok) { score += t.per; gap.classList.add('ok'); fix.textContent = ''; }
+        else {
+          gap.classList.add('bad');
+          fix.textContent = '→ ' + a + (t.frags ? ' (' + t.frags[a].slice(0, 60) + '...)' : '');
+        }
+      }
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / ${t.max} p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    per.push({ t, score });
+  }
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błąd, obok poprawna odpowiedź z klucza. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  if (!noScroll) res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+let left = TOTAL_SEC, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL_SEC ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  clearInterval(tick); running = false; left = TOTAL_SEC; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', () => checkAll());
+document.getElementById('checkBottom').addEventListener('click', () => checkAll());
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+// ---------- kontrakt Trenera C1 (wypełnianie kluczem + automatyczne sprawdzanie) ----------
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.qs.forEach((q, i) => {
+        const el = document.querySelector(`input[name="${t.id}-${i + 1}"][value="${q.ans}"]`);
+        if (el) el.checked = true;
+      });
+    } else if (t.type === 'multi') {
+      t.items.forEach((it, i) => it.key.forEach((v, k) => {
+        const el = document.querySelector(`select[data-id="${t.id}-${i + 1}-${k + 1}"]`);
+        if (el) el.value = v;
+      }));
+    } else {
+      for (const n in t.answers) {
+        const el = document.querySelector(`select[data-id="${t.id}-${n}"]`);
+        if (el) el.value = t.answers[n];
+      }
+    }
+  }
+  save(); updateProgress(); updateFrags();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'czytanie', session: '2022-03', max: MAX, fillCorrect, check: () => checkAll() });
+</script>
+</body>
+</html>

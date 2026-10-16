@@ -1,0 +1,777 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Czytanie C1 kwiecień 2023</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.opt { display: block; padding: 4px 8px; border-radius: 6px; margin: 2px 0; cursor: pointer; }
+.opt input { margin-right: 8px; }
+.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 600; }
+.opt.bad { background: var(--bad-bg); color: var(--bad); }
+.opt.key { outline: 2px solid var(--ok); }
+.qfix { font: 600 14px/1.3 system-ui, sans-serif; color: var(--ok); margin-top: 4px; }
+.tf { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.tf .opt { margin: 0; border: 1px solid var(--line); padding: 4px 12px; }
+.frag { padding: 6px 10px; margin: 4px 0; background: var(--example); border-radius: 8px; font-size: 15px; }
+.frag b { margin-right: 6px; }
+.frag.used { opacity: .45; }
+.frag.struck { opacity: .6; font-style: italic; }
+.mrow { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.mrow .t { flex: 1 1 240px; font-weight: 600; }
+.mrow select { font: 16px system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; }
+.mrow.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.mrow.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.mrow .fix { flex-basis: 100%; }
+.gap .fix { display: inline; }
+.gap select { width: auto; max-width: 72vw; }
+.gap.cloze select { width: 9em; }
+.gap.letter select { width: 5em; }
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie tekstów pisanych C1 - kwiecień 2023</span>
+    <span class="timer" id="timer">60:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Rozumienie tekstów pisanych</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja kwiecień 2023. 5 zadań, 60 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji.</p>
+  <div class="notice" id="timeUp">Czas minął (60 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: arkusz C1 kwiecień 2024, część "Rozumienie tekstów pisanych" + oficjalny klucz ----------
+const TASKS = [
+ {
+  "id": "I",
+  "type": "mc",
+  "per": 1,
+  "max": 10,
+  "title": "Zadanie I",
+  "instr": "Proszę przeczytać tekst, a następnie - zgodnie z przykładem - zaznaczyć właściwą odpowiedź.",
+  "textTitle": "Laptop zamiast łopaty",
+  "paras": [
+   "Jeszcze w 2. połowie XX stulecia historycy nie wierzyli, że korzystanie z komputerów wzbogaci stan wiedzy o dawnych wiekach. I rzeczywiście - dopóki moc obliczeniowa pierwszych maszyn była mała, nie odgrywały one większej roli w różnorakich badaniach archeologicznych. Jednak rewolucja cyfrowa sprawiła, że humaniści zaczęli coraz śmielej sięgać po programy komputerowe. - Mamy do czynienia z wielkim skokiem - tłumaczy dr Sebastian Szymański, filozof i kierownik Centrum Badania Ryzyka Systemowego UW, w którym analizuje się m.in. przeszłość. - Zaczęło się od prostych programów prześwietlających za nas duże ilości danych, a teraz systemy są tak zaawansowane, że same tworzą algorytmy, które pomagają znaleźć odpowiedź na zadawane przez nas pytania badawcze. Sztuczna inteligencja pomaga m.in. w zrozumieniu starożytnych tekstów, na przykład tych zapisanych pismem klinowym. Tabliczek z sumeryjskimi, akadyjskimi, elamickimi, hetyckimi czy staroperskimi rytami zachowały się setki tysięcy. W dodatku wiele z nich jest we fragmentach rozproszonych po muzeach. Tłumaczenia zlecane poszczególnym ekspertom, których na świecie jest garstka, trwałyby latami.",
+   "Sztuczna inteligencja radzi sobie doskonale także z przeszukiwaniem różnych obiektów archeologicznych, które kryją się pod warstwą ściółki, ziemi czy w wodzie. Dla komputerów to pestka, bo struktury zbudowane przez człowieka są dość regularne - czego przykładem są odkrycia systemu piramid i kanałów Majów w 2020 roku czy sieci osiedli w Puszczy Amazońskiej dwa lata później. Niedługo nasz rodzimy świat naukowy też będzie miał nowe dane, bo profesor Piotr Wroniecki z Uniwersytetu Warszawskiego „nakarmił” zdjęciami satelitarnymi z całej Polski sztuczną sieć neuronową, która weźmie pod uwagę wyróżniki roślinne (tam gdzie są podziemne obiekty archeologiczne, zieleń wygląda inaczej) i wskaże nieznane obiekty. Sztuczna inteligencja zaczyna zarzucać uczonych informacjami o tysiącach nowych stanowisk. Nawet jeśli się myli, łatwo to zweryfikować w terenie również w sposób nieinwazyjny, np. za pomocą metod geofizycznych. - Archeologia cyfrowa ma tę przewagę nad klasyczną, że nie niszczy stanowiska podczas wykopalisk - mówi Wroniecki i dodaje, że analizy danych cyfrowych można powtarzać na okrągło i na różne sposoby.",
+   "Badacze przeszłości wykorzystują też modelowanie agentowe. Punktem wyjścia tej metody jest refleksja dotycząca jakiegoś zjawiska lub procesu z przeszłości. Algorytmowi podsuwa się dane, na podstawie których tworzy on kilka symulacji - alternatywnych odpowiedzi. Spośród modeli, jakie przedstawi, człowiek wybiera ten, który statystycznie wydaje się najbardziej prawdopodobny i zgadza się z materiałem archeologicznym lub danymi historycznymi. Nawet dysponując niewielką ilością danych, można uzyskać ciekawe wnioski, ale symulacje są trafniejsze, jeśli bazy danych są otwarte i każdy specjalista może dodać do nich nowe informacje lub poprawić te błędne. W Polsce z modelowania agentowego korzysta zeszłoroczna finalistka nagród naukowych czasopisma „Polityka” dr Paulina Komar z Uniwersytetu Kardynała Stefana Wyszyńskiego w Warszawie. Naukowczyni sprawdza, czy dystrybucja wina w Cesarstwie Rzymskim rozwijała się na zasadach wolnego rynku, czy jak w gospodarce sterowanej. Symulacje te porównuje ze znaną z materiału archeologicznego dystrybucją amfor."
+  ],
+  "src": "Na podstawie: A. Krzemińska, Łopatologia komputerowa, „Polityka” nr 36, 31.08-6.09.2022, s. 63-64.",
+  "example": {
+   "stem": "W pierwszych komputerach",
+   "opts": [
+    "upatrywano niezawodnego środka analizy danych.",
+    "nie dostrzegano ich potencjału poszukiwawczo-odkrywczego.",
+    "doszukiwano się czynnika pozaziemskiego."
+   ],
+   "ans": 1
+  },
+  "qs": [
+   {
+    "stem": "Wyjątkowość nowego oprogramowania tkwi",
+    "opts": [
+     "w jego nieomylności i niezawodności.",
+     "w dużych możliwościach przerobowych.",
+     "w zdolności do stawiania hipotez badawczych."
+    ],
+    "ans": "b"
+   },
+   {
+    "stem": "Sztuczna inteligencja ułatwia ekspertom",
+    "opts": [
+     "lokalizację materiału i zebranie go w jedno miejsce.",
+     "zapisywanie tekstów starożytnymi znakami.",
+     "odszyfrowanie inskrypcji rozsianych po świecie."
+    ],
+    "ans": "c"
+   },
+   {
+    "stem": "Grupa specjalistów w dziedzinie starożytnego pisma",
+    "opts": [
+     "gromadzi się regularnie.",
+     "jest bardzo wąska.",
+     "prowadzi projekty porównawcze."
+    ],
+    "ans": "b"
+   },
+   {
+    "stem": "Niebagatelną zaletą sztucznej inteligencji jest",
+    "opts": [
+     "odnajdywanie obiektów w podłożu lub w głębinach.",
+     "sprawność w trudnych warunkach atmosferycznych.",
+     "efektywność w odnajdywaniu ludzkich szczątków."
+    ],
+    "ans": "a"
+   },
+   {
+    "stem": "Profesor polskiej uczelni",
+    "opts": [
+     "poddał rozpoznaniu terytorium kraju.",
+     "bada dna różnych zbiorników.",
+     "skanuje wybrane obszary leśne."
+    ],
+    "ans": "a"
+   },
+   {
+    "stem": "Nowoczesne oprogramowanie pomaga odnaleźć",
+    "opts": [
+     "nowe stanowiska pracy.",
+     "cenne paliwa kopalne.",
+     "porosłe florą artefakty."
+    ],
+    "ans": "c"
+   },
+   {
+    "stem": "Archeologia cyfrowa jest lepsza od tradycyjnej, ponieważ",
+    "opts": [
+     "nie naraża na szwank terenu badawczego.",
+     "dewastuje szatę roślinną.",
+     "nie wymaga podejmowania dodatkowych badań."
+    ],
+    "ans": "a"
+   },
+   {
+    "stem": "Modele agentowe",
+    "opts": [
+     "wyręczają archeologa w interpretacji zjawiska badawczego.",
+     "dokonują wyczerpujących analiz nieprzystających do siebie danych.",
+     "przedstawiają scenariusze domniemanych wydarzeń."
+    ],
+    "ans": "c"
+   },
+   {
+    "stem": "Szacunki uzyskane w wyniku modelowania będą dokładniejsze, kiedy",
+    "opts": [
+     "informatycy wprowadzą poprawki systemowe.",
+     "materiał źródłowy będzie na bieżąco uzupełniany.",
+     "system będzie dokonywać autokorekty danych."
+    ],
+    "ans": "b"
+   },
+   {
+    "stem": "Polska badaczka",
+    "opts": [
+     "została doceniona i wyróżniona za swoje badania.",
+     "otrzymała grant na badania porównawcze.",
+     "bada dawne metody wytwarzania trunków."
+    ],
+    "ans": "a"
+   }
+  ]
+ },
+ {
+  "id": "II",
+  "type": "match",
+  "per": 0.5,
+  "max": 5,
+  "title": "Zadanie II",
+  "instr": "Proszę - zgodnie z przykładem - połączyć tytuły z kolumny I z fragmentami tekstów z kolumny II. Odpowiedzi proszę wpisać do tabeli.",
+  "instrExtra": "Tutaj wybierz literę fragmentu przy każdym tytule.",
+  "textTitle": "Osobliwości mieszkaniowe",
+  "frags": {
+   "A": "Ptaszniki często towarzyszą płazom, z niektórymi koegzystują nawet w norach. W tym symbiotycznym układzie żaby żywią się larwami pasożytującymi na ciele pajęczego gospodarza.",
+   "B": "Muszle ślimaków służą krabowi do ochrony miękkiego odwłoka. Kiedy stworzenie rośnie, wprowadza się do kolejnego „domu”, uprzednio pozbywszy się właściciela.",
+   "C": "Japońska wyspa Okunoshima opanowana jest przez króliki. Zwierzęta uciekły z laboratorium, w którym badano na nich działanie gazu musztardowego.",
+   "D": "Natura nie lubi pustki, szczególnie jeśli chodzi o miejsce zamieszkiwania organizmów. Pomysłowość przyrody na zajmowanie najdziwaczniejszych siedlisk bywa zaskakująca.",
+   "E": "Bakteria Deinococcus radiodurans potrafi przeżyć zarówno w wysokich temperaturach, jak i zamrożona w ciekłym gazie; nie straszny jest jej ani stężony kwas, ani próżnia. Wytrzymuje również promieniowanie gamma.",
+   "F": "Bywa, że krab hoduje na muszli swojego ukwiała. Parzydełka gościa gwarantują gospodarzowi ochronę, a ukwiał ma zapewniony transport i możliwość zbierania pożywienia.",
+   "G": "Dalecy krewni dżdżownicy, rurkoczułkowce, zamiast sterty kompostu wybierają na miejsce zamieszkania dna oceanów, a dokładniej okolice podmorskich szczelin w skorupie ziemskiej, przez które wydobywają się gorące gazy wulkaniczne.",
+   "H": "Na jednej z wysp na Bahamach mieszka spore stado świń, które szukają pożywienia na łódkach turystów. Skąd się tam wzięły? Prawdopodobnie uciekły z jakiegoś wraku.",
+   "I": "Krewetka i ryba zwana babką mieszkają razem w norze wykopanej przez poruszającą się po omacku krewetkę. Gdy w pobliżu siedliska pojawia się drapieżnik, babka ostrzega współlokatora za pomocą określonego ruchu ogona i oba stworzenia chowają się w jamie.",
+   "J": "Bakteria Ferroplasma acidarmanus zamieszkuje podziemne żrące bajorka nasycone rozpuszczonymi metalami. Temperatura przekracza w nich 40 stopni Celsjusza.",
+   "K": "Niesporczaki odkryto na szczytach Himalajów i w osadach na dnie rowów oceanicznych. Latają wokół naszej planety na granicy stratosfery i nieuszkodzone wracają do życia po 120 latach bez wody."
+  },
+  "used": "D",
+  "example": "Ekscentryczne lokum",
+  "titles": [
+   "Dom w bąbelkach",
+   "Toksyczny basenik",
+   "Twardy zawodnik",
+   "Podniebne sucharki",
+   "Posiłek u współlokatora",
+   "Znak umowny",
+   "Nowy lokator",
+   "Bryczką na żer",
+   "Rajskie rozbitki",
+   "Zbieg doświadczalny"
+  ],
+  "src": "Na podstawie: O. Woźniak, Dziwne domy zwierząt, „Wysokie Obcasy”, 09.2022, s. 166-167.",
+  "answers": {
+   "1": "G",
+   "2": "J",
+   "3": "E",
+   "4": "K",
+   "5": "A",
+   "6": "I",
+   "7": "B",
+   "8": "F",
+   "9": "H",
+   "10": "C"
+  }
+ },
+ {
+  "id": "III",
+  "type": "tf",
+  "per": 1,
+  "max": 10,
+  "title": "Zadanie III",
+  "instr": "Proszę przeczytać tekst, a następnie - jak w przykładzie - zaznaczyć: TAK - gdy zdanie jest zgodne z tekstem; NIE - gdy nie jest zgodne z tekstem; BI - gdy w tekście brakuje informacji na dany temat.",
+  "textTitle": "Walutowy prapradziadek",
+  "paras": [
+   "Na przestrzeni dziejów Europejczycy posługiwali się de facto wspólnym pieniądzem - srebrem, które swobodnie krążyło po kontynencie. Odnajdywane wczesnośredniowieczne skarby składają się w dużej części z połówek lub nawet ćwiartek monet. Przecięcie pieniądza nie pozbawiało go wartości, a często było jedyną metodą uregulowania drobnych rachunków. Stemple mennicze były zresztą mało wyraźne, więc nawet gdyby kontrahenci umieli czytać, to trudno byłoby im rozstrzygnąć, czy srebro pochodziło z książęcej mennicy, czy też dotarło do nich w formie arabskich dirhemów lub denarów z Cesarstwa Rzymskiego.",
+   "W czasach gdy państwo Mieszka I integrowało się gospodarczo z resztą kontynentu, denary miały już ponadtysiącletnią historię. Pierwszy rzymski denar wybito w 211 r. p.n.e. jako równowartość dziesięciu asów (dotychczasowej rzymskiej waluty) i w proporcji 72 sztuki monet na jeden funt srebra (choć wobec niedoskonałości przyrządów menniczych rzadko która moneta miała dokładnie tę wagę). Nowy pieniądz się pojawił, ponieważ Rzymianie chcieli handlować z Grekami, którzy tradycyjnie posługiwali się srebrem i dla których oparte na brązie asy nie były atrakcyjne. Przez następne dwa i pół wieku denar stanowił stabilną podstawę rzymskiej gospodarki. Bito go, tak samo jak sporadycznie pojawiające się monety złote, jedynie w Rzymie, mniejszym miastom imperium pozwalając na produkcję własnych brązowych asów i tzw. sestercji (od semis tertius, dosłownie ‘półtrzecia’, czyli 2,5 asa).",
+   "Przez trzy pierwsze stulecia od wprowadzenia denara ilość zawartego w nim srebra powoli malała. W ciągu następnych dwóch wieków tempo deprecjacji przyspieszyło. Na przełomie III i IV wieku cesarz Dioklecjan próbował ustabilizować system monetarny. Towarzyszyło temu ustanowienie maksymalnych cen na ponad tysiąc produktów oraz wybicie pierwszych solidów, czyli złotych monet rzymskich. Ich masową produkcję według nieco obniżonej stopy podjął w kilkanaście lat po Dioklecjanie Konstantyn Wielki, ustanawiając standard, który przetrwał przez kilkaset lat.",
+   "Solidy produkowano także za drugą granicą Bizancjum, w barbarzyńskich królestwach powstałych na gruzach zachodniego cesarstwa. Zasoby złota w Europie Zachodniej były skromne i by móc wybić własne monety, trzeba było stoczyć zwycięską wojnę. Srebro było łatwiej dostępne i bardziej użyteczne w codziennych transakcjach, ale poszczególni władcy bili pieniądz różnej wagi i z kruszcu różnej próby. By więc handel stał się łatwiejszy, stale myślano o ustandaryzowaniu systemu. Dokonał tego Karol Wielki - twórca pierwszego imperium europejskiego.",
+   "Denary, czyli monety Mieszka I oraz Bolesława Chrobrego, które możemy zobaczyć na rewersach współczesnych banknotów, bito na podobieństwo pieniędzy wprowadzonych przez Karola Wielkiego i miały służyć równolegle z nimi. Również współczesne grosze i złote mają zagraniczny rodowód. Grosze pojawiły się za panowania Kazimierza Wielkiego jako gruba (łac. grossus) moneta srebrna, równa 16 denarom. Kupcy przywozili je z Czech (grosze praskie) lub Francji (grosze turońskie), ale w 1367 roku zaczęto bić je w spolonizowanej formie w Krakowie, bardziej ze względów prestiżowych niż ekonomicznych - w przeciwieństwie do Czech Polska nie miała własnych kopalń srebra i metal do ich produkcji pochodził głównie z przetopu obcych monet. Gdy w 1663 roku złoty pojawił się jako moneta, nie tylko nie był ze złota, ale nawet nie zawierał tyle srebra, ile powinno być w 30 groszach."
+  ],
+  "src": "Na podstawie: K. Iszkowski, Prapraeuro, [w:] Dzieje wspólnej Europy, „Polityka. Pomocnik Historyczny”, 1/2017, s. 59-62.",
+  "example": {
+   "stem": "Wspólny pieniądz w Europie to wynalazek XX wieku.",
+   "ans": "NIE"
+  },
+  "qs": [
+   {
+    "stem": "Dzielenie średniowiecznych monet czyniło je bezużytecznymi.",
+    "ans": "NIE"
+   },
+   {
+    "stem": "Średniowieczni kupcy musieli płacić monetami, które pochodziły z tego samego kraju.",
+    "ans": "NIE"
+   },
+   {
+    "stem": "Przed uregulowaniem płatności monety ważono i badano pod lupą czystość użytego kruszcu.",
+    "ans": "BI"
+   },
+   {
+    "stem": "W przeciągu wieków cena srebra podlegała istotnym wahaniom.",
+    "ans": "BI"
+   },
+   {
+    "stem": "Konstantyn Wielki wywodził się z tego samego rodu co cesarz Dioklecjan.",
+    "ans": "BI"
+   },
+   {
+    "stem": "W Rzymie ustanowiono monopol na produkcję pieniądza dla całego imperium.",
+    "ans": "NIE"
+   },
+   {
+    "stem": "Środki na produkcję pieniądza w Europie Zachodniej pochodziły z łupów od pokonanego wroga.",
+    "ans": "TAK"
+   },
+   {
+    "stem": "Na dzisiejszych polskich papierowych środkach płatniczych widnieją wizerunki starych monet.",
+    "ans": "TAK"
+   },
+   {
+    "stem": "Za czasów pierwszych władców w Polsce obowiązywała jedna waluta.",
+    "ans": "NIE"
+   },
+   {
+    "stem": "Czechy - w odróżnieniu od Polski - eksploatowały własne złoża cennego kruszcu.",
+    "ans": "TAK"
+   }
+  ]
+ },
+ {
+  "id": "IV",
+  "type": "gapfrag",
+  "per": 1,
+  "max": 10,
+  "title": "Zadanie IV",
+  "instr": "Proszę przeczytać tekst i - zgodnie z przykładem - dopasować usunięte z niego fragmenty (A-L). Jeden fragment jest zbędny.",
+  "textTitle": "Życie w wodzie",
+  "frags": {
+   "A": "Imponujący koncept podbija świat, w którym ekstremalne zjawiska pogodowe stają się normą.",
+   "B": "Krótko mówiąc, betonowanie trzeba ograniczyć, a chodniki i drogi powinny w jak największym stopniu pozwolić wodzie docierać do gleby.",
+   "C": "Przykładem mogą być przepełnione kanały ściekowe, które w trakcie intensywnych opadów nie odprowadzają nadmiaru wody.",
+   "D": "Powodzie spowodowane ulewnymi deszczami od zamierzchłych czasów są tu prawdziwą zmorą.",
+   "E": "Dodatkowo w okolicznym morzu betonu takie skwery czy zagajniki stanowią oazę bioróżnorodności i miejsce ukojenia dla mieszkańców.",
+   "F": "Zatem dlaczego niektóre kraje już teraz zbierają gorzkie owoce pozbywania się szaty roślinnej z aglomeracji i ośrodków przemysłowych?",
+   "G": "W arsenale miast gąbek znajdują się m.in. ogrody deszczowe, łąki kwietne czy też zielone dachy i ściany.",
+   "H": "Należy zaplanować gruntowne, wielopłaszczyznowe i systemowe przeobrażenie tkanki miejskiej.",
+   "I": "Miasta bunkry to pokłosie niegdysiejszych potrzeb urbanizacyjnych, które dziś nie są aktualne.",
+   "J": "Zamiast czym prędzej pozbywać się deszczówki, trzeba ją wchłonąć przy pomocy specjalnie zaprojektowanej infrastruktury.",
+   "K": "Założenie jest takie, że 80 procent terenów tych miast powinno ponownie wykorzystywać 70 procent deszczówki.",
+   "L": "Na zmianie zyskała też estetyka samego miasta, którego krajobraz jest teraz zdominowany przez florę."
+  },
+  "used": "A",
+  "paras": [
+   "Wśród urbanistów coraz większe zainteresowanie budzi idea tzw. miast gąbek. [[A]] Jak budować, żeby przeżyć w betonie uciążliwe warunki pogodowe?",
+   "Idea miasta gąbki pochodzi z Chin - kraju, którego wielka woda nie oszczędza. {1} Z jednej strony na znacznych obszarach Państwa Środka mamy do czynienia z klimatem monsunowym oraz obfitymi opadami, z drugiej - z potężnymi rzekami, które często występują ze swych brzegów. W perspektywie deficytu wody grzechem jest marnotrawienie tej, która dosłownie spada z nieba. {2} Po pierwsze należy pozwolić wodzie na swobodny spływ, po drugie - przechwycić ją i zrobić z niej użytek. Główna idea jest więc taka, aby zamiast walczyć z wodą - żyć z nią.",
+   "{3} Oprócz tego zbiorniki retencyjne oraz oczka wodne. W myśl chińskiej idei jak najwięcej miast musi skończyć z dominacją nieprzepuszczalnych nawierzchni. {4} Rozwiązania takie są znane także w niektórych polskich miastach, tyle że kluczem do sukcesu ma być skala zastosowanych rozwiązań. Przeobrażenie powinno być widoczne gołym okiem: wszechstronne i kompleksowe. {5} Od poziomu ulicy po dachy, ponieważ zmiana musi być totalna.",
+   "W 2015 roku rząd Chin ogłosił, że miasta gąbki w ciągu kolejnych piętnastu lat mają stać się powszechnym elementem krajobrazu. {6} To niezwykle istotne, ponieważ przechwycona woda przeciwdziała pasmom udręk związanych z kanalizacją, które już teraz dają się we znaki mieszkańcom. {7} Inną bolączką jest pojawianie się miejskich wysp ciepła. Dlatego też architekci stawiają na tzw. zielone płuca miast obniżające temperaturę za sprawą wilgoci zgromadzonej w roślinach. {8} Poprawia się też jakość powietrza, ponieważ specjalnie dobrana flora nie tylko filtruje wodę, ale i pochłania nagromadzone w atmosferze zanieczyszczenia.",
+   "Opisana idea rozpowszechnia się na całym świecie. Pośrodku jednej z nowo wybudowanych dzielnic miasta Harbin w Chinach stworzono park o powierzchni 34 hektarów, który służy jako wielki pochłaniacz wody. {9} Z kolei na wyspie Hajnan, na terenie ośrodka turystycznego, powstał m.in. park pełen namorzynów, które mają działać jak bufor chroniący przed podtopieniami.",
+   "W Polsce chińska koncepcja powoli też się przyjmuje. Tylko czy miasto gąbka stanowi wystarczającą odpowiedź na wyzwania klimatyczne? Z pewnością nie może nią być beton. {10} To dodatkowy argument, by nie tkwić w zastanych systemach, lecz postawić na transformację."
+  ],
+  "src": "Na podstawie: A. Świerczewski, Życie w wodzie, „Polityka” nr 36, 31.08-6.09.2022, s. 100-105.",
+  "answers": {
+   "1": "D",
+   "2": "J",
+   "3": "G",
+   "4": "B",
+   "5": "H",
+   "6": "K",
+   "7": "C",
+   "8": "E",
+   "9": "L",
+   "10": "I"
+  },
+  "note": "Zbędne fragmenty: F"
+ },
+ {
+  "id": "V",
+  "type": "cloze",
+  "per": 0.5,
+  "max": 5,
+  "title": "Zadanie V",
+  "instr": "Proszę - zgodnie z przykładem - podkreślić najlepszą spośród możliwości podanych w nawiasach.",
+  "instrExtra": "Na egzaminie podkreślasz ją, tutaj wybierasz z listy.",
+  "textTitle": "Poznańska książnica",
+  "paras": [
+   "Biblioteka Raczyńskich została założona przez Edwarda Raczyńskiego, wielkopolskiego magnata, miłośnika sztuki i nauki, obrońcę polskości. Uroczyste otwarcie nastąpiło 5 maja 1829 r., co czyni tę placówkę najstarszą z obecnie istniejących bibliotek publicznych w Polsce. Mecenas nie (zarzucił, [[obciążył]], przygniótł, przycisnął) miasta kosztami utrzymania instytucji, lecz zabezpieczył jej byt funduszami pochodzącymi z własnego majątku.",
+   "Pomysł założenia biblioteki w Poznaniu zrodził się z przekonania Raczyńskiego, że pod pruskim panowaniem podstawowe znaczenie dla zachowania {1:rozbieżności|rozdzielności|indywidualności|odrębności} narodowej ma pielęgnowanie polszczyzny i pamiątek historycznych. „Ponieważ nie było w tej części kraju publicznego księgozbioru, który by dla nas i następców przechowywał skarby dziejopisarstwa i piśmiennictwa ojczystego, a {2:sadził|nasilał|krzewił|wytężał} przy tym wiedzę i kulturę, stworzył Raczyński taką instytucję; kosztowała ona jednak {3:krocie|mrowie|szereg|pełno}”. Biblioteka miała służyć wszystkim osobom żądnym wiedzy, bez {4:kryterium|względu|przesłanki|wymogu} na narodowość, wyznanie, pochodzenie społeczne i wykształcenie. Placówka stała się dla nich miejscem {5:spędów|zbiórek|zgromadzeń|zlotów}, pracy naukowej i edukacyjnej, a także symbolem polskości.",
+   "Księgozbiór, który podarował Raczyński, był później {6:uzupełniany|doładowany|wypełniany|nadrabiany}. Zbiory te, uratowane w dużej części z pożogi II wojny światowej, z uwagi na wysoką wartość zabytkową, naukową i oświatową, pozwoliły {7:umieścić|posadzić|rozłożyć|rozmieścić} Bibliotekę Raczyńskich w gronie najważniejszych polskich książnic. Instytucja systematycznie wzbogaca swoją kolekcję i prowadzi działalność zgodnie z {8:profilami|zabiegami|zapędami|wymogami} stawianymi tego typu placówkom. Służy zarówno tym, którzy mają {9:swobodę|poczucie|pojęcie|wrażenie} przynależności do globalnego społeczeństwa informacyjnego, jak i tym, którzy z rozmaitych przyczyn są z niego {10:zawieszeni|wykluczeni|odwołani|wyodrębnieni} i choć nigdy nie staną się jego członkami, to chcą korzystać z elementarnych dóbr kultury."
+  ],
+  "src": "Na podstawie: http://www.bracz.edu.pl/rozbudowa-biblioteki-raczynskich/",
+  "answers": {
+   "1": "odrębności",
+   "2": "krzewił",
+   "3": "krocie",
+   "4": "względu",
+   "5": "zgromadzeń",
+   "6": "uzupełniany",
+   "7": "umieścić",
+   "8": "wymogami",
+   "9": "poczucie",
+   "10": "wykluczeni"
+  }
+ }
+];
+
+const MAX = 40, PASS = 24;
+const STORE_KEY = 'c1_czyt_2023_04_v1';
+
+// ---------- pomocnicze ----------
+function norm(s) {
+  return String(s || '').toLowerCase()
+    .replace(/[„”"'’‘.,!?;:()]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function fold(s) {
+  return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+}
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+const SELFTEST = /[?&]selftest\b/.test(location.search);
+function load() { if (SELFTEST) return {}; try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { if (SELFTEST) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {} }
+
+// ---------- budowanie arkusza ----------
+function textBlock(t, gapFn) {
+  let h = `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>`;
+  h += t.paras.map(p => {
+    let x = esc(p);
+    x = x.replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+    if (gapFn) x = x.replace(/\{(\d+)(?::([^}]*))?\}/g, (m, n, o) => gapFn(n, o));
+    return `<p>${x}</p>`;
+  }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+  return h;
+}
+function letterSelect(t, id, n, letters) {
+  const opts = letters.map(l => `<option value="${l}">${l}</option>`).join('');
+  return `<span class="gap letter" id="g-${id}"><select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select><sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+}
+function fragList(t, letters) {
+  return `<div id="frags-${t.id}">` + Object.keys(t.frags).map(l =>
+    `<div class="frag${l === t.used ? ' struck' : ''}" data-l="${l}"><b>${l}.</b>${esc(t.frags[l])}${l === t.used ? ' <span class="src">(PRZYKŁAD)</span>' : ''}</div>`).join('') + `</div>`;
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    const n = t.qs ? t.qs.length : Object.keys(t.answers).length;
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${n} x ${pl(t.per)} p. = ${t.max} p.</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}${t.instrExtra ? ' ' + esc(t.instrExtra) : ''}</p>`;
+    if (t.type === 'mc' || t.type === 'tf') {
+      html += `<div class="text">${t.textTitle ? '<p class="noindent"><b>' + esc(t.textTitle) + '</b></p>' : ''}${t.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div><div class="src">${esc(t.src)}</div>`;
+      if (t.type === 'mc') {
+        const e = t.example;
+        html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div><b>${esc(e.stem)}</b><br>` +
+          e.opts.map((o, i) => `<span style="${i === e.ans ? 'font-weight:700;text-decoration:underline dotted' : ''}">${'abc'[i]}) ${esc(o)}</span>`).join('<br>') + `</div>`;
+        t.qs.forEach((q, i) => {
+          const id = `${t.id}-${i + 1}`;
+          html += `<div class="q" id="q-${id}"><div class="stem">${i + 1}. ${esc(q.stem)}</div>` +
+            q.opts.map((o, j) => `<label class="opt" data-v="${'abc'[j]}"><input type="radio" name="${id}" value="${'abc'[j]}">${'abc'[j]}) ${esc(o)}</label>`).join('') +
+            `<div class="qfix"></div></div>`;
+        });
+      } else {
+        html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div>${esc(t.example.stem)} <b>- ${t.example.ans}</b></div>`;
+        t.qs.forEach((q, i) => {
+          const id = `${t.id}-${i + 1}`;
+          html += `<div class="q" id="q-${id}"><div class="stem">${i + 1}. ${esc(q.stem)}</div><div class="tf">` +
+            ['TAK', 'NIE', 'BI'].map(v => `<label class="opt" data-v="${v}"><input type="radio" name="${id}" value="${v}">${v}</label>`).join('') +
+            `</div><div class="qfix"></div></div>`;
+        });
+      }
+    } else if (t.type === 'gapfrag') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="example-box"><div class="lbl">FRAGMENTY (A-${Object.keys(t.frags).pop()})</div></div>` + fragList(t);
+      html += textBlock(t, (n) => letterSelect(t, `${t.id}-${n}`, n, letters));
+    } else if (t.type === 'match') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p></div>`;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(t.example)} - <b>${t.used}</b></div>`;
+      html += `<div class="example-box"><div class="lbl">KOLUMNA II - FRAGMENTY</div></div>` + fragList(t);
+      html += `<div class="example-box" style="margin-top:12px"><div class="lbl">KOLUMNA I - TYTUŁY: wybierz literę</div></div>`;
+      t.titles.forEach((ti, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="mrow" id="g-${id}"><span class="t">${i + 1}. ${esc(ti)}</span><select data-id="${id}" aria-label="Tytuł ${i + 1}"><option value=""></option>${letters.map(l => `<option value="${l}">${l}</option>`).join('')}</select><span class="fix"></span></div>`;
+      });
+      html += `<div class="src">${esc(t.src)}</div>`;
+    } else if (t.type === 'cloze') {
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>` + t.paras.map(p => {
+        let x = esc(p).replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+        x = x.replace(/\{(\d+):([^}]*)\}/g, (m, n, o) => {
+          const id = `${t.id}-${n}`;
+          const opts = o.split('|').map(w => `<option value="${w}">${w}</option>`).join('');
+          return `<span class="gap cloze" id="g-${id}"><select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select><sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+        });
+        return `<p>${x}</p>`;
+      }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+    }
+    if (t.note && t.type !== 'cloze') html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('select[data-id]').forEach(el => {
+    if (saved[el.dataset.id] != null) el.value = saved[el.dataset.id];
+    el.addEventListener('change', () => { save(); updateProgress(); updateFrags(); });
+  });
+  root.querySelectorAll('input[type=radio]').forEach(el => {
+    if (saved[el.name] === el.value) el.checked = true;
+    el.addEventListener('change', () => { save(); updateProgress(); });
+  });
+  updateProgress(); updateFrags();
+}
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('select[data-id]').forEach(el => { o[el.dataset.id] = el.value; });
+  document.querySelectorAll('input[type=radio]:checked').forEach(el => { o[el.name] = el.value; });
+  return o;
+}
+function totalQuestions() {
+  return document.querySelectorAll('select[data-id]').length + document.querySelectorAll('.q').length;
+}
+function updateProgress() {
+  const o = collect();
+  const filled = Object.values(o).filter(v => v).length;
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${totalQuestions()}`;
+}
+function updateFrags() {
+  for (const t of TASKS) {
+    if (!t.frags) continue;
+    const chosen = [...document.querySelectorAll(`#task-${t.id} select`)].map(s => s.value).filter(Boolean);
+    document.querySelectorAll(`#frags-${t.id} .frag`).forEach(f => {
+      if (f.dataset.l === t.used) return;
+      f.classList.toggle('used', chosen.includes(f.dataset.l));
+    });
+  }
+}
+
+// ---------- sprawdzanie ----------
+function checkAll() {
+  const vals = collect();
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const got = vals[id] || '';
+        const box = document.getElementById(`q-${id}`);
+        box.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad', 'key');
+          if (l.dataset.v === q.ans) l.classList.add('key');
+          if (l.dataset.v === got) l.classList.add(got === q.ans ? 'ok' : 'bad');
+        });
+        const fx = box.querySelector('.qfix');
+        if (got === q.ans) { score += t.per; fx.textContent = ''; }
+        else fx.textContent = '→ poprawna odpowiedź: ' + (t.type === 'mc' ? q.ans + ') ' + q.opts['abc'.indexOf(q.ans)] : q.ans);
+      });
+    } else {
+      for (const n in t.answers) {
+        const id = `${t.id}-${n}`;
+        const a = t.answers[n];
+        const raw = vals[id] || '';
+        const ok = raw !== '' && (t.type === 'cloze' ? raw === a : raw === a);
+        const gap = document.getElementById(`g-${id}`);
+        const fix = gap.querySelector('.fix');
+        gap.classList.remove('ok', 'bad', 'almost');
+        if (ok) { score += t.per; gap.classList.add('ok'); fix.textContent = ''; }
+        else {
+          gap.classList.add('bad');
+          fix.textContent = '→ ' + a + (t.frags ? ' (' + t.frags[a].slice(0, 60) + '...)' : '');
+        }
+      }
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / ${t.max} p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    per.push({ t, score });
+  }
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błąd, obok poprawna odpowiedź z klucza. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  return total;
+}
+
+// ---------- zegar ----------
+let left = 60 * 60, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < 3600 ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  clearInterval(tick); running = false; left = 3600; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', checkAll);
+document.getElementById('checkBottom').addEventListener('click', checkAll);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+const TEST_ID = 'czytanie-2023-04';
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.qs.forEach((q, i) => {
+        const r = document.querySelector(`input[type=radio][name="${t.id}-${i + 1}"][value="${q.ans}"]`);
+        if (r) r.checked = true;
+      });
+    } else {
+      for (const n in t.answers) {
+        const el = document.querySelector(`[data-id="${t.id}-${n}"]`);
+        if (el) el.value = t.answers[n];
+      }
+    }
+  }
+  save(); updateProgress(); updateFrags();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'czytanie', session: '2023-04', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

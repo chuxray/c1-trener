@@ -1,0 +1,617 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Słuchanie C1 2019</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); font-weight: 500; }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.q label.opt { display: flex; gap: 8px; align-items: flex-start; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+.q label.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.q label.opt.bad { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.q.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.q.row .stem { flex: 1 1 320px; margin: 0; font-weight: 400; }
+.q select { font: 16px/1.2 system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; max-width: 72vw; }
+.q .slot.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.q .slot.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.slots { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.q .fix { font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); }
+.audio { background: var(--example); border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; }
+.audio audio { width: 100%; margin-top: 8px; }
+.audio .fname { font-size: 13px; color: var(--muted); margin-left: 6px; }
+details.tr { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--input-bg); }
+details.tr summary { cursor: pointer; font-weight: 700; }
+details.tr .warn { color: var(--warn); font-size: 14px; font-weight: 600; }
+details.tr p { font-family: Georgia, serif; font-size: 16px; margin: 8px 0; }
+.legend { display: grid; gap: 4px; margin: 0 0 12px; padding: 10px 12px; background: var(--example); border-radius: 8px; font-size: 15px; }
+.tf { display: flex; gap: 14px; }
+
+.slots-open { display: flex; gap: 8px 16px; flex-wrap: wrap; align-items: center; }
+.slot-open { display: inline-flex; gap: 6px; align-items: center; max-width: 100%; }
+.slot-open label { display: inline-flex; gap: 6px; align-items: center; max-width: 100%; }
+.slot-open input[type=text] {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink); min-width: 0;
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 6px 8px; width: 24em; max-width: 100%;
+}
+.slot-open input[type=text]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.slot-open.ok input[type=text] { border-color: var(--ok); background: var(--ok-bg); }
+.slot-open.bad input[type=text] { border-color: var(--bad); background: var(--bad-bg); }
+.slot-open.almost input[type=text] { border-color: var(--warn); background: var(--warn-bg); }
+.pp { color: var(--muted); font-weight: 500; font-size: 14px; white-space: nowrap; }
+.openfix { display: block; margin-top: 6px; line-height: 1.45; }
+.tfrag { font-weight: 400; color: var(--muted); margin-top: 2px; }
+.hint-open { color: var(--muted); font-size: 14px; margin: 0 0 10px; }
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie ze słuchu C1 - test przykładowy 2019</span>
+    <span class="timer" id="timer">30:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+<div class="wrap">
+  <h1>Rozumienie ze słuchu</h1>
+  <p class="lead">Oficjalny test przykładowy egzaminu certyfikatowego C1 (Państwowa Komisja, wersja z 2019 roku). 5 zadań, do 30 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji. W każdym zadaniu wczytaj plik z nagraniem. Na egzaminie każde nagranie słucha się dwa razy.</p>
+  <div class="notice" id="timeUp">Czas minął (30 minut). Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+<script>
+// ---------- dane: oficjalny test przykładowy C1 (2019), część "Rozumienie ze słuchu" + transkrypcje i klucz ----------
+const TASKS = [
+ { id:'I', title:'Zadanie I', max:6, ptsLabel:'6 x 1 p. = 6 p.', plays:'Nagranie zostanie odtworzone dwukrotnie.',
+   instr:'Proszę wysłuchać kolejnych nagrań i zaznaczyć właściwe odpowiedzi.',
+   example:{ stem:'', opts:['a) W żołądku żółwia znaleziono skarbonkę z monetami.','b) Zwyczaje turystów mogą być niebezpieczne dla zwierząt.','c) Zwierzęcia nie udało się uratować.'], ans:'b' },
+   kind:'radio',
+   items:[
+    {stem:'', opts:{a:'W wyniku zejścia lawiny życie straciło kilka osób.',b:'Akcję ratunkową utrudniały warunki atmosferyczne.',c:'Ratownicy dostali się na miejsce katastrofy śmigłowcami.'}, key:['b']},
+    {stem:'', opts:{a:'Budowa tunelu zakończy się najwcześniej w 2020 roku.',b:'Inwestycja pochłonie ponad miliard złotych.',c:'Tunel będzie prowadził do kopalni.'}, key:['a']},
+    {stem:'', opts:{a:'Pożar był spowodowany podpaleniami samochodów.',b:'Mieszkańcy zagrożonego terenu musieli opuścić swoje domy.',c:'Akcja ratownicza nie przyniosła oczekiwanych rezultatów.'}, key:['b']},
+    {stem:'', opts:{a:'Wsparcie finansowe przeznaczane jest wyłącznie na zakup nowego mieszkania.',b:'Każda z gmin dostanie 25 tys. zł na przyjęcie repatriantów.',c:'Zatwierdzono ustawę gwarantującą pomoc mieszkaniową dla repatriantów.'}, key:['c']},
+    {stem:'', opts:{a:'W Australii prawo dotyczące przemysłu tytoniowego jest łagodne.',b:'Wszystkie paczki papierosów będą wyglądać podobnie.',c:'Na opakowaniach papierosów nie ma napisów informujących o chorobach.'}, key:['b']},
+    {stem:'', opts:{a:'Policjanci potrzebują szybkich radiowozów.',b:'Motocykliści nie respektują zasad ruchu drogowego.',c:'W okolicach Bydgoszczy znajdują się tory wyścigowe.'}, key:['b']}
+   ],
+   src:'Na podstawie programów informacyjnych: „Wiadomości” i „Panorama”',
+   tr:[
+    'Przykład: Żywa skarbonka, której życie z trudem udało się uratować. Weterynarze z Tajlandii wyjęli z żołądka żółwia morskiego prawie tysiąc monet. Zwierzę żyjące w rezerwacie niedaleko Bangkoku od lat połykało monety, które turyści wrzucają do wody.',
+    '1. Lawina we francuskich Alpach porwała kilkunastu narciarzy. Operacja ratunkowa była bardzo skomplikowana. Słaba widoczność uniemożliwiła wysłanie śmigłowców. Ratownicy musieli pieszo dotrzeć do poszkodowanych. Wszystkich narciarzy udało się uratować.',
+    '2. Rozpoczęła się budowa najdłuższego tunelu będącego częścią drogi ekspresowej S7. Inwestycja dotyczy odcinka tak zwanej Zakopianki. Budowa ponad 2-kilometrowego tunelu kosztować będzie blisko miliard złotych. Kierowcy nową drogą pojadą najwcześniej w 2020 roku. Na razie plac budowy oficjalnie ma status kopalni.',
+    '3. Ludzie zmuszeni do ewakuacji, zamknięte drogi i spalone samochody to efekty pożaru, do jakiego doszło na Ibizie. Ogień rozprzestrzenił się na obszarze chronionym wyspy. Z wysokimi na kilka metrów płomieniami walczyli strażacy z Ibizy, którym pomagali ratownicy z sąsiedniej Majorki.',
+    '4. Rząd przyjął projekt nowelizacji ustawy o repatriacji. Każdy repatriant dostanie dwadzieścia pięć tysięcy złotych na cel mieszkaniowy. To wsparcie mieszkaniowe będzie repatriant mógł wykorzystać w sposób, jaki sobie wybierze. Albo jako dopłatę do czynszu - na dziesięć lat, nie dłużej, albo dopłatę do zakupu mieszkania albo może gmina wykorzystać, jeśli takie mieszkanie repatriantowi zapewni.',
+    '5. Australia chyba jest takim krajem na świecie, który najostrzej walczy z koncernami tytoniowymi, z paleniem. Sąd Najwyższy Australii utrzymał zakaz umieszczania logo producentów na paczkach papierosów. I w Australii wygląda to tak, że paczki są, czy będą właściwie, jednolitego szarooliwkowego koloru i umieszczone są na nich napisy ostrzegające przed szkodliwością palenia oraz zdjęcia ust zaatakowanych przez raka.',
+    '6. Ulice Bydgoszczy. Policjanci co kilka dni odbierają alarmujące sygnały o szalejących w mieście i okolicach motocyklistach. Na szosy wyjeżdżają więc funkcjonariusze - nie radiowozami, lecz motocyklami. Samochodami nie mają szans złapać takich motocyklistów. Choć to niewiarygodne, ci ludzie jeżdżą po drogach publicznych z prędkościami, jakie osiąga się na torach wyścigowych.',
+    'Na podstawie programów informacyjnych: „Wiadomości” i „Panorama”'] },
+ { id:'II', title:'Zadanie II', max:10, ptsLabel:'10 x 1 p. = 10 p.', plays:'Nagranie zostanie odtworzone dwukrotnie.',
+   instr:'Proszę wysłuchać relacji z targów książki, a następnie zaznaczyć: TAK - gdy zdanie jest zgodne z tekstem; NIE - gdy nie jest zgodne z tekstem.',
+   example:{ stem:'Podczas targów Olga Tokarczuk prezentowała jedną ze swoich książek.', ans:'TAK' },
+   kind:'tf',
+   items:[
+    {stem:'„Moment niedźwiedzia” to pozycja zawierająca różne formy literackie.', key:['TAK']},
+    {stem:'Akcja książki „Moment niedźwiedzia” trwa 15 lat.', key:['NIE']},
+    {stem:'W książce „Moment niedźwiedzia” autorka odwzorowuje otaczającą nas rzeczywistość.', key:['NIE']},
+    {stem:'Autorka ma swoją receptę na uporządkowanie przedstawionego przez siebie świata.', key:['TAK']},
+    {stem:'Olga Tokarczuk jest pisarką bardzo wszechstronną.', key:['TAK']},
+    {stem:'Dzięki głosom czytelniczym autorka trzykrotnie otrzymała Nagrodę Nike.', key:['NIE']},
+    {stem:'Twórczość Olgi Tokarczuk dostępna jest także w języku fińskim.', key:['NIE']},
+    {stem:'Opinie krytyków literackich i czytelników na temat twórczości Olgi Tokarczuk są rozbieżne.', key:['NIE']},
+    {stem:'Jednym z elementów cenionych przez czytelników jest realistyczny charakter twórczości Olgi Tokarczuk.', key:['NIE']},
+    {stem:'Prozę Tokarczuk cechuje rozpoznawalny styl pisarski.', key:['TAK']}
+   ],
+   src:'',
+   tr:[
+    'Gościem zakończonych właśnie warszawskich targów książki była Olga Tokarczuk, która promowała swoją książkę „Moment niedźwiedzia”. To zbiór przenikliwych esejów, artykułów i zapisków podróżnych z 15 lat. Poznajemy ją jako osobę angażującą się w walkę o prawa zwierząt i feministkę o zdecydowanych poglądach politycznych. Tokarczuk wprowadza pojęcie heterofobii, czyli świata, który funkcjonuje inaczej niż nasz i zdradza swoje pomysły na jego urządzenie. Olga Tokarczuk jest jedną z najpopularniejszych i najchętniej czytanych polskich powieściopisarek. Jest eseistką, autorką scenariuszy i poetką. Była trzykrotnie nominowana do literackiej Nagrody Nike i za każdym razem zwyciężała w głosowaniu czytelników. Nike otrzymała za powieść „Bieguni”. Jej książki przetłumaczono na wiele języków, między innymi: angielski, niemiecki, litewski, węgierski, duński, czeski, estoński, serbski, włoski, szwedzki. Jest ceniona, co niezwykle rzadkie, zarówno przez krytykę literacką, jak i czytelników:',
+    '- za taką niepatetyczną metafizyczność,',
+    '- za światy, jakie tworzy,',
+    '- za taką trochę tajemniczość w jej książkach, taką niedosłowność, oryginalność, taką inność,',
+    '- styl, chyba styl przede wszystkim,',
+    '- za to, że ubóstwia zwierzęta.'] },
+ { id:'III', title:'Zadanie III', max:8, ptsLabel:'8 x 1 p. = 8 p.', plays:'Nagranie zostanie odtworzone dwukrotnie.',
+   instr:'Proszę wysłuchać reportażu dotyczącego mobbingu i zaznaczyć właściwe odpowiedzi.',
+   example:{ stem:'Mobbingiem określamy', opts:['a) rywalizację pomiędzy pracownikami i przełożonymi.','b) różnego rodzaju formy prześladowania w pracy.','c) trudne relacje między współpracownikami.'], ans:'b' },
+   kind:'radio',
+   items:[
+    {stem:'Marta nie pracuje już w korporacji, gdyż', opts:{a:'po 17 latach potrzebowała zmiany.',b:'zwolniła się z pracy.',c:'dostała wypowiedzenie.'}, key:['b']},
+    {stem:'Za główny powód działań mobbingowych wobec Marty należy uznać', opts:{a:'prywatny konflikt pomiędzy nią a głównym prezesem.',b:'brak zgody prezesa na stworzenie nowego działu.',c:'niezadowolenie z wyników jej pracy.'}, key:['b']},
+    {stem:'Zadaniem Marty w nowym miejscu pracy była', opts:{a:'likwidacja jednego z działów w firmie.',b:'kontrola działu zarządzanego przez prezesa.',c:'organizacja pracy w nowym dziale.'}, key:['c']},
+    {stem:'Mobbing w pracy Marty polegał na', opts:{a:'odsuwaniu jej od większych projektów.',b:'deprecjonowaniu osiągnieć zespołu.',c:'ograniczaniu jej możliwości działania.'}, key:['c']},
+    {stem:'Problemy w firmie Aleksandry', opts:{a:'trwały od momentu rozpoczęcia przez nią pracy.',b:'związane były ze zmianą przełożonych.',c:'wynikały z nieporozumień ze współpracownikami.'}, key:['b']},
+    {stem:'Awantury robione przez kierownictwo były', opts:{a:'sposobem odreagowania negatywnych emocji.',b:'reakcją na nieprecyzyjne wykonywanie zadań przez Aleksandrę.',c:'objawem słabości psychicznej przełożonych.'}, key:['a']},
+    {stem:'Aleksandra podjęła decyzję o odejściu z pracy', opts:{a:'od razu po rozpoczęciu się awantur.',b:'dopiero po dłuższym czasie.',c:'po zmianie w zarządzie firmy.'}, key:['b']},
+    {stem:'Zdaniem Aleksandry osoby, wobec których stosuje się mobbing, powinny', opts:{a:'szukać wsparcia psychologicznego.',b:'spróbować rozwiązywać konflikty w miejscu pracy.',c:'walczyć o swoje prawa.'}, key:['c']}
+   ],
+   src:'Na podstawie: „Dzień dobry TVN”',
+   tr:[
+    'Mobbing to w skrócie prześladowanie w miejscu pracy przez przełożonego albo współpracowników. Ośmieszanie, poniżanie lub rozpowszechnianie plotek - to najczęstsze sposoby na dręczenie pracownika.',
+    'Marta przez 17 lat pracowała w korporacjach. Rok temu postanowiła odejść. W jej firmie mobbing był normalną rzeczą.',
+    'Marta: - Zostałam zatrudniona do nowotworzonego działu, który to dział został utworzony prawdopodobnie wbrew pragnieniom głównego prezesa i w momencie, w którym ten dział tworzyłam, czułam, że ten dział jest w jakiś sposób mobbingowany, czyli brak możliwości większych decyzji, odsuwanie budżetów, zabranie ludzi, którzy pracowali na początku, a cały czas wyśrubowane oczekiwania i osiągnięcia, których prawie… były nierealne, było trudno je osiągnąć tymi środkami, które mi w końcu w rękach zostały.',
+    'Kłopoty Aleksandry zaczęły się ze zmianą kierownictwa. Nowi szefowie postanowili pozbyć się jej.',
+    'Aleksandra: - Tak naprawdę awantury były o nic, awantury były praktycznie o każdy szczegół, o to, że czegoś nie zrobiłam, że coś tam zapomniałam, a tak naprawdę ktoś mi o tym nie mówił, a wmawiano mi to, że miałam to zrobić, więc tak naprawdę o każdy szczegół były awantury - o to tylko, żeby po prostu nie wiem, żeby ktoś się wyładował. Ja mogę powiedzieć, że byłam słaba psychicznie, bo przez tyle czasu wytrzymywałam i tkwiłam w tym. Dopiero po jakimś czasie powiedziałam „dosyć!” i zrezygnowałam z tej pracy. Myślę, że w takich sytuacjach ludzie powinni pójść do sądu. Ja nie poszłam, czego żałuję, ale powinni ludzie chodzić do sądu, ponieważ taki szef czuje się bezkarny.',
+    'Na podstawie: „Dzień dobry TVN”'] },
+ { id:'IV', title:'Zadanie IV', max:7, ptsLabel:'7 x 1 p. = 7 p.', plays:'Nagranie zostanie odtworzone dwukrotnie.',
+   instr:'Proszę wysłuchać informacji na temat artystów nominowanych do nagrody „Paszporty Polityki” w kategorii sztuki audiowizualne i zdecydować, do której osoby pasuje ten opis, a następnie połączyć informacje z dwóch kolumn. Odpowiedzi proszę wpisać do tabeli (tutaj wybierasz literę opisu przy każdej osobie).',
+   legend:['A - Umieszcza swoje produkcje artystyczne w przestrzeni miejskiej.','B - Nadaje nową jakość gatunkowi, który dotąd w Polsce traktowany był raczej odtwórczo.','C - Nominację zawdzięcza wyznaczeniu nowego punktu na teatralnej mapie Polski.','D - Zarówno improwizowane wystąpienia publiczne, jak i produkcje filmowe czynią tę osobę sławną.','E - Nie próbuje szokować widza niekonwencjonalnymi zabiegami reżyserskimi.','F - W swojej twórczości porusza bieżące tematy społeczne.','G - Swoją popularność zawdzięcza produkcjom filmowym o charakterze dokumentalnym.','H - Łączy aktualnie dominujące konwencje z niestandardowymi formami teatralnymi.'],
+   example:{ stem:'Paweł Passini', ans:'H - Łączy aktualnie dominujące konwencje z niestandardowymi formami teatralnymi.' },
+   kind:'select',
+   selOpts:[['A','A'],['B','B'],['C','C'],['D','D'],['E','E'],['F','F'],['G','G'],['H','H']],
+   items:[
+    {tag:'1', stem:'Oskar Dawicki', key:['D'], plain:true},
+    {tag:'2', stem:'Iwona Kempa', key:['E'], plain:true},
+    {tag:'3', stem:'Piotr Wysocki', key:['G'], plain:true},
+    {tag:'4', stem:'Wojciech Kościelniak', key:['B'], plain:true},
+    {tag:'5', stem:'Maciej Kurak', key:['A'], plain:true},
+    {tag:'6', stem:'Paweł Łysak', key:['F'], plain:true},
+    {tag:'7', stem:'Sebastian Majewski', key:['C'], plain:true}
+   ],
+   src:'Na podstawie: https://www.youtube.com/watch?v=UXplQA9PCkw&t=17s',
+   tr:[
+    'Przykład: Paweł Passini - reżyser, aktor, muzyk i kompozytor. Człowiek, który skończył zarówno reżyserię w Akademii Teatralnej w Warszawie, jak i uczestnik Akademii Praktyk w Gardzienicach. To jest z kolei reprezentant młodego pokolenia reżyserów, którzy swobodnie poruszają się między mainstreamem a alternatywą i teatrem nieinstytucjonalnym.',
+    '1. Oskar Dawicki - głównie jest znany jako tak zwany performer, czyli twórca wykonujący pewne akcje spontaniczne, zorganizowane przed widownią, ale też członek, znany jako członek grupy Azzorro, znany z filmów szyderczych, żartobliwych filmów o sztuce.',
+    '2. Iwona Kempa - reżyserka, dyrektor artystyczna teatru w Toruniu, to przykład teatru rzetelnego, teatru repertuarowego, bez reżyserskich fajerwerków, za to z ciekawymi kreacjami aktorskimi, a widzowi dająca możliwość utożsamienia się z bohaterem, przeżycia chwil zarówno radości, jak i wzruszenia.',
+    '3. Piotr Wysocki - z tej trójki może najmniej znany, ale bardzo szybko przebijający się do czołówki polskiej sztuki, z kolei specjalizujący się w tak zwanym wideoarcie. Najwyżej cenione są jego filmy - takie paradokumentalne, artystyczne produkcje.',
+    '4. Wojciech Kościelniak - dosyć nieoczekiwana nominacja z punktu widzenia teatru, ponieważ jest to świetny reżyser musicalowy. Musical przez wiele lat w Polsce, no, nie był gatunkiem sztuki jakoś szalenie odkrywczym, można powiedzieć, raczej powielaliśmy pewne zachodnie wzorce - i w repertuarze, i w sposobie realizacji. Bardzo ciekawy, eksperymentujący, w ramach gatunku dosyć komercyjnego, twórca.',
+    '5. Maciej Kurak - artysta z kolei specjalizujący się w instalacjach przestrzennych, umieszczanych gdzieś w mieście, często iluzorycznych, zaskakujących przechodni swoim nagłym pojawieniem się.',
+    '6. Paweł Łysak - reżyser, dyrektor teatrów poprzednio w Poznaniu, tym razem w Bydgoszczy, to zaś przykład reprezentanta teatru politycznego, politycznie zaangażowanego, społecznie zaangażowanego, wchodzącego programowo w dysputy, maksymalnie aktualnego, gorącego, podejmującego tematy takie, jak emigracja, patriotyzm po polsku czy status kobiet.',
+    '7. Sebastian Majewski - człowiek orkiestra, dramaturg, dramatopisarz, reżyser, twórca offowego teatru wrocławskiego Sceny Witkacego, od trzech lat dyrektor artystyczny, twórca programowy Teatru imienia Szaniawskiego w Wałbrzychu. Mogą państwo wierzyć bądź nie, ale jest to właściwie teatralne centrum Polski. Wałbrzych oddalony od Warszawy 9 godzin jazdy pociągiem - tam stworzyła się fantastyczna grupa ludzi, którzy zrobili rodzaj laboratorium teatralnego.',
+    'Na podstawie: https://www.youtube.com/watch?v=UXplQA9PCkw&t=17s'] },
+ { id:'V', title:'Zadanie V', max:9, ptsLabel:'9 p. (7 pytań)', plays:'Nagranie zostanie odtworzone dwukrotnie.',
+   instr:'Proszę wysłuchać reportażu na temat największego producenta rzodkiewki w Polsce i odpowiedzieć na pytania. Uwaga! Forma gramatyczna odpowiedzi musi być dopasowana do pytania.',
+   hint:'Wpisz odpowiedzi własnymi słowami. Po kliknięciu Sprawdź zobaczysz klucz. Jeśli Twoja odpowiedź jest inna, ale zgodna z transkrypcją, możesz ją uznać ręcznie.',
+   example:{ stem:'Z jakiej miejscowości pochodzi pan Zdzisław?', ans:'Z Nowego Miasteczka.' },
+   kind:'open',
+   items:[
+    {stem:'W jaki sposób pan Zdzisław wszedł w posiadanie gospodarstwa rolnego?', slots:1, pts:[1],
+     keyShow:'przejął/odziedziczył/dostał gospodarstwo po rodzicach',
+     frag:'Przejąłem gospodarstwo po rodzicach - nieduże, tradycyjne, wszystkiego po trochu.',
+     fill:['przejął gospodarstwo po rodzicach'],
+     pool:[{ ok:['po rodzicach','od rodziców', v => /(^|\s)(przejął|odziedziczył|dostał)(\s|$)/.test(v) && /(^|\s)gospodarstwo(\s|$)/.test(v)], root:/rodzic/ }]},
+    {stem:'Kiedy wyspecjalizował się głównie w uprawie rzodkiewki?', slots:1, pts:[1],
+     keyShow:'6 (sześć) lat temu / po kupieniu linii do mycia',
+     frag:'Jednak sześć lat temu ukierunkował swoje gospodarstwo na produkcję rzodkiewki. Po kupieniu linii do mycia dopiero mogłem sobie pozwolić na zwiększenie produkcji.',
+     fill:['6 lat temu'],
+     pool:[{ ok:['6 lat','sześć lat','linii do mycia','linię do mycia'], root:/lini[aei] do mycia/ }]},
+    {stem:'Jakie są naturalne zagrożenia uprawy rzodkiewki?', slots:1, pts:[1],
+     keyShow:'plaga gołębi/gołębie',
+     frag:'Rzodkiewka, tak jak każda inna uprawa, ma swoich naturalnych wrogów. Podczas każdego zasiewu rolnik z Nowego Miasteczka musi się zmierzyć z plagą gołębi, przez które traci znaczną część upraw.',
+     fill:['plaga gołębi'],
+     pool:[{ ok:['gołębie','gołębi'], root:/golab|golebi/ }]},
+    {stem:'Jakie warzywa uprawia syn pana Zdzisława (proszę wymienić dwa gatunki)?', slots:2, pts:[0.5,0.5],
+     keyShow:'a) szczypiorek, b) marchewkę lub bób (wystarczy podać dwa warzywa)',
+     frag:'Zajmuję się uprawą szczypiorku, marchewki, bobu.',
+     fill:['szczypiorek','marchewkę'],
+     pool:[{ ok:['szczypiorek'], root:/szczypior/ },{ ok:['marchewkę'], root:/marchew/ },{ ok:['bób'], root:/(^|\s)bob/ }]},
+    {stem:'Ile wynosi najwyższy dzienny zarobek w gospodarstwie pana Zdzisława?', slots:1, pts:[1],
+     keyShow:'160 zł',
+     frag:'a najlepsi mogą zarobić nawet 160 złotych dziennie.',
+     fill:['160 zł'],
+     pool:[{ ok:[/(^|\s)160(?!\d)/,'sto sześćdziesiąt'], root:null }]},
+    {stem:'Jaki jest dzienny rekord zbioru pęczków rzodkiewki?', slots:1, pts:[1],
+     keyShow:'230 tysięcy pęczków',
+     frag:'Rekordowy dzienny zbiór w gospodarstwie Zdzisława Wawrzyńczyka to 230 tysięcy pęczków.',
+     fill:['230 tysięcy pęczków'],
+     pool:[{ ok:[/(^|\s)230\s?tys/,/(^|\s)230\s?000(?!\d)/,'dwieście trzydzieści tysięcy'], root:null }]},
+    {stem:'Co jest ważne, aby odnieść sukces w rolnictwie (proszę wymienić trzy elementy)?', slots:3, pts:[1,1,1],
+     keyShow:'a) dobra gleba, b) najlepsze nasiona, c) odpowiednie nawadnianie lub stali odbiorcy (kolejność dowolna, wystarczy podać trzy z czterech wymienionych możliwości)',
+     frag:'aby osiągnąć sukces, konieczna jest nie tylko dobra gleba i najlepsze nasiona, ale także odpowiednie nawadnianie i stali odbiorcy.',
+     fill:['dobra gleba','najlepsze nasiona','odpowiednie nawadnianie'],
+     pool:[{ ok:['dobra gleba','gleba'], root:/gleb/ },{ ok:['najlepsze nasiona','nasiona'], root:/nasion/ },{ ok:['odpowiednie nawadnianie','nawadnianie'], root:/nawadnia/ },{ ok:['stali odbiorcy','odbiorcy'], root:/odbiorc/ }]}
+   ],
+   src:'',
+   tr:[
+    'W poszukiwaniu nowatorskich rozwiązań w uprawie rzodkiewki Zdzisław Wawrzyńczyk z Nowego Miasteczka w województwie lubuskim odwiedził już Niemcy, Holandię, Stany Zjednoczone i Meksyk. Jego marzeniem jest wyprawa do Chin. Największy producent rzodkiewki w Polsce przyznaje jednak, że początki nie były łatwe.',
+    '- Przejąłem gospodarstwo po rodzicach - nieduże, tradycyjne, wszystkiego po trochu.',
+    'Pan Zdzisław od ponad 30 lat zajmuje się warzywnictwem. Uprawiał już marchew, fasolę szparagową i inne warzywa. Jednak sześć lat temu ukierunkował swoje gospodarstwo na produkcję rzodkiewki.',
+    '- Rzodkiewkę robiłem w sumie od osiemdziesiątego roku, ale niewielkie ilości. Po kupieniu linii do mycia dopiero mogłem sobie pozwolić na zwiększenie produkcji.',
+    'Rzodkiewkowy biznes nie należy do najłatwiejszych, wymaga bowiem dużych nakładów finansowych. Najdroższe są nasiona, które pan Zdzisław sprowadza aż z Holandii, jednak w tej produkcji dobre nasiona są tylko jednym z elementów zapewniających sukces. Rzodkiewka, tak jak każda inna uprawa, ma swoich naturalnych wrogów. Podczas każdego zasiewu rolnik z Nowego Miasteczka musi się zmierzyć z plagą gołębi, przez które traci znaczną część upraw.',
+    '- Można odstraszać… Jedynie postawić człowieka, żeby ganiał i płoszył je.',
+    'Pan Zdzisław ma na swoim koncie wiele nagród. Sukcesy chce powielać jego syn.',
+    '- Od małego dziecka interesowałem się ogrodnictwem, rolnictwem. Patrząc na sukcesy taty, zacząłem się sam stopniowo interesować tym fachem. Zajmuję się uprawą szczypiorku, marchewki, bobu.',
+    'W gospodarstwie w Nowym Miasteczku w szczycie sezonu zatrudnionych jest około 130 osób. Większość pracuje na akord, a najlepsi mogą zarobić nawet 160 złotych dziennie. Rekordowy dzienny zbiór w gospodarstwie Zdzisława Wawrzyńczyka to 230 tysięcy pęczków. Jak przekonuje rzodkiewkowy potentat, aby osiągnąć sukces, konieczna jest nie tylko dobra gleba i najlepsze nasiona, ale także odpowiednie nawadnianie i stali odbiorcy.'] }
+];
+const MAX = 40, PASS = 24;
+const TEST_ID = 'sluchanie-2019';
+const STORE_KEY = 'c1_sluch_2019_v1';
+const TOTAL_SEC = 30 * 60;
+
+function norm(s) { return String(s || '').toLowerCase().replace(/[„”"'’‘.,!?;:()]/g, ' ').replace(/\s+/g, ' ').trim(); }
+function fold(s) { return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l'); }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+let state = {};
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+const NOSAVE = /[?&]selftest\b/.test(location.search);
+function save() { if (NOSAVE) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+state = load();
+function acc() { return state.__accept || (state.__accept = {}); }
+
+function slotsOf(it) { return it.slots || it.key.length; }
+function ids(t, i) { const it = t.items[i]; const n = slotsOf(it); return Array.from({length:n}, (_, k) => `${t.id}-${i+1}` + (n > 1 ? `-${k+1}` : '')); }
+function ptsText(it) { return it.pts.length === 1 ? `${pl(it.pts[0])} p.` : `${it.pts.length} x ${pl(it.pts[0])} p.`; }
+
+function build() {
+  const root = document.getElementById('tasks'); let html = '';
+  TASKS.forEach(t => {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${esc(t.ptsLabel)}</span></h2>`;
+    html += `<p class="src" style="margin:0 0 8px">${esc(t.plays)}</p>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    if (t.hint) html += `<p class="hint-open">${esc(t.hint)}</p>`;
+    html += `<div class="audio"><label><b>Wczytaj nagranie:</b> <input type="file" accept="audio/*" data-audio="${t.id}"></label><span class="fname" id="fn-${t.id}"></span><audio controls id="au-${t.id}"></audio></div>`;
+    if (t.legend) html += `<div class="legend">` + t.legend.map(l => `<div>${esc(l)}</div>`).join('') + `</div>`;
+    const e = t.example;
+    let ex = e.stem ? esc(e.stem) : '';
+    if (e.opts) ex += (ex ? '<br>' : '') + e.opts.map(esc).join('<br>');
+    html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${ex}<br><b>Odpowiedź: ${esc(e.ans)}</b></div>`;
+    t.items.forEach((it, i) => {
+      const sid = ids(t, i);
+      const baseId = `${t.id}-${i+1}`;
+      if (t.kind === 'radio') {
+        html += `<div class="q" id="q-${baseId}"><div class="stem">${i+1}. ${esc(it.stem)}</div>` +
+          Object.keys(it.opts).map(k => `<label class="opt" data-k="${k}"><input type="radio" name="${baseId}" data-id="${baseId}" value="${k}"> <span>${k}) ${esc(it.opts[k])}</span></label>`).join('') +
+          `<span class="fix"></span></div>`;
+      } else if (t.kind === 'tf') {
+        html += `<div class="q row" id="q-${baseId}"><div class="stem">${i+1}. ${esc(it.stem)}</div><div class="tf">` +
+          ['TAK','NIE'].map(k => `<label class="opt" data-k="${k}"><input type="radio" name="${baseId}" data-id="${baseId}" value="${k}"> <span>${k}</span></label>`).join('') +
+          `</div><span class="fix"></span></div>`;
+      } else if (t.kind === 'open') {
+        const multi = sid.length > 1;
+        html += `<div class="q" id="q-${baseId}"><div class="stem">${i+1}. ${esc(it.stem)} <span class="pp">(${ptsText(it)})</span></div><div class="slots-open">` +
+          sid.map((s, k) => `<span class="slot-open" id="s-${s}"><label>${multi ? `<b>${'abc'[k]})</b>` : ''}<input type="text" data-id="${s}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Odpowiedź ${i+1}${multi ? 'abc'[k] : ''}"></label></span>`).join('') +
+          `</div><div class="fix openfix"></div></div>`;
+      } else {
+        const opts = t.selOpts.map(o => `<option value="${o[0]}">${esc(o[1])}</option>`).join('');
+        html += `<div class="q row" id="q-${baseId}"><div class="stem">${it.plain ? it.tag + '. ' : it.tag + '. Która z roślin '}${esc(it.stem)}</div><span class="slots">` +
+          sid.map(s => `<span class="slot" id="s-${s}"><select data-id="${s}" aria-label="${esc(it.tag)}"><option value=""></option>${opts}</select></span>`).join('') +
+          `</span><span class="fix"></span></div>`;
+      }
+    });
+    if (t.src) html += `<div class="src">${esc(t.src)}</div>`;
+    html += `<details class="tr" id="tr-${t.id}"><summary>Transkrypcja</summary><div class="warn">Otwieraj dopiero po sprawdzeniu (po kliknięciu Sprawdź otworzy się sama).</div>` +
+      t.tr.map(p => `<p>${esc(p)}</p>`).join('') + `</details>`;
+    html += `</section>`;
+  });
+  root.innerHTML = html;
+  root.querySelectorAll('[data-id]').forEach(el => {
+    if (el.type === 'radio') { if (state[el.dataset.id] === el.value) el.checked = true; }
+    else if (state[el.dataset.id] != null) el.value = state[el.dataset.id];
+    const onChange = () => { state[el.dataset.id] = el.value; save(); updateProgress(); };
+    el.addEventListener('change', onChange);
+    if (el.type === 'text') el.addEventListener('input', onChange);
+  });
+  root.querySelectorAll('[data-audio]').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const f = inp.files && inp.files[0]; if (!f) return;
+      const a = document.getElementById('au-' + inp.dataset.audio);
+      if (a.dataset.url) URL.revokeObjectURL(a.dataset.url);
+      const u = URL.createObjectURL(f); a.dataset.url = u; a.src = u;
+      document.getElementById('fn-' + inp.dataset.audio).textContent = f.name;
+    });
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  let total = 0, filled = 0;
+  TASKS.forEach(t => t.items.forEach((it, i) => ids(t, i).forEach(s => { total++; if (state[s] && String(state[s]).trim()) filled++; })));
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${total}`;
+}
+
+// ---------- sprawdzanie odpowiedzi otwartych (zadanie V) ----------
+function testOk(x, v) {
+  if (typeof x === 'function') return x(v);
+  if (x instanceof RegExp) return x.test(v);
+  return (' ' + v + ' ').indexOf(' ' + norm(x) + ' ') >= 0;
+}
+function nearDesc(d, raw) {
+  const f = fold(raw);
+  if (d.ok.some(x => typeof x === 'string' && (' ' + f + ' ').indexOf(' ' + fold(x) + ' ') >= 0)) return 'znaki';
+  if (d.root && d.root.test(f)) return 'forma';
+  return '';
+}
+function checkOpen(it, sid, vals, fix) {
+  const multi = sid.length > 1;
+  const used = new Set();
+  const infos = vals.map(raw => {
+    const v = norm(raw);
+    if (!v) return { st: 'empty' };
+    for (let d = 0; d < it.pool.length; d++) {
+      if (it.pool.length > 1 && used.has(d)) continue;
+      if (it.pool[d].ok.some(x => testOk(x, v))) { used.add(d); return { st: 'ok' }; }
+    }
+    let hint = '';
+    for (let d = 0; d < it.pool.length && !hint; d++) { if (it.pool.length > 1 && used.has(d)) continue; hint = nearDesc(it.pool[d], raw); }
+    return { st: hint ? 'almost' : 'bad', hint };
+  });
+  let got = 0;
+  infos.forEach((inf, k) => {
+    const accepted = !!acc()[sid[k]] && inf.st !== 'empty';
+    const good = inf.st === 'ok' || accepted;
+    if (good) got += it.pts[k];
+    const el = document.getElementById('s-' + sid[k]);
+    el.classList.remove('ok', 'bad', 'almost');
+    el.classList.add(good ? 'ok' : (inf.st === 'almost' ? 'almost' : 'bad'));
+  });
+  if (infos.every(inf => inf.st === 'ok')) { fix.innerHTML = ''; return got; }
+  let h = '→ ' + esc(it.keyShow);
+  infos.forEach((inf, k) => {
+    if (inf.st === 'almost') h += ` <span class="hint">(${multi ? 'odpowiedź ' + 'abc'[k] + ': ' : ''}${inf.hint === 'znaki' ? 'sprawdź polskie znaki' : 'sprawdź formę gramatyczną'})</span>`;
+  });
+  h += `<div class="tfrag">Fragment transkrypcji: ${esc(it.frag)}</div>`;
+  infos.forEach((inf, k) => {
+    if (inf.st === 'ok' || inf.st === 'empty') return;
+    const on = !!acc()[sid[k]];
+    h += `<label class="accept"><input type="checkbox" data-accept="${sid[k]}"${on ? ' checked' : ''}> ${multi ? 'Odpowiedź ' + 'abc'[k] + ') - ' : ''}moja wersja jest inna, ale zgodna z transkrypcją - uznaj ${pl(it.pts[k])} p.</label><br>`;
+  });
+  fix.innerHTML = h;
+  return got;
+}
+
+function checkAll(opts) {
+  opts = opts || {};
+  const per = [];
+  TASKS.forEach(t => {
+    let score = 0;
+    t.items.forEach((it, i) => {
+      const sid = ids(t, i), base = `${t.id}-${i+1}`;
+      const vals = sid.map(s => state[s] || '');
+      const q = document.getElementById('q-' + base);
+      const fix = q.querySelector('.fix');
+      if (t.kind === 'open') { score += checkOpen(it, sid, vals, fix); return; }
+      let got = 0;
+      vals.forEach((v, k) => {
+        let ok = false;
+        if (v) {
+          if (it.any) ok = it.key.includes(v) && vals.indexOf(v) === k;
+          else ok = v === it.key[k];
+        }
+        if (ok) got++;
+        if (t.kind === 'select') { const el = document.getElementById('s-' + sid[k]); el.classList.remove('ok', 'bad'); el.classList.add(ok ? 'ok' : 'bad'); }
+      });
+      score += got;
+      if (t.kind !== 'select') {
+        q.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad');
+          if (l.dataset.k === it.key[0]) l.classList.add('ok');
+          else if (l.dataset.k === vals[0]) l.classList.add('bad');
+        });
+      }
+      const allOk = got === sid.length;
+      if (allOk) fix.textContent = '';
+      else if (t.kind === 'select') fix.textContent = '→ ' + it.key.join(', ') + (it.any ? ' (kolejność dowolna)' : '');
+      else fix.textContent = '→ ' + it.key[0].toUpperCase();
+    });
+    const el = document.getElementById('pts-' + t.id);
+    el.textContent = `${pl(score)} / ${t.max} p.`; el.classList.add('scored');
+    document.getElementById('tr-' + t.id).open = true;
+    per.push({ t, score });
+  });
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100), pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `<div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass ? 'Zdane - próg to 60% (24 p.)' : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błędna, obok poprawna z klucza. Na żółto: prawie dobrze (polskie znaki albo forma gramatyczna). W zadaniu V możesz ręcznie uznać swoją odpowiedź. Transkrypcje pod zadaniami są już rozwinięte. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  if (!opts.noScroll) res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+let left = TOTAL_SEC, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60, el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL_SEC ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) { clearInterval(tick); running = false; document.getElementById('timerBtn').textContent = 'Koniec'; document.getElementById('timeUp').classList.add('show'); }
+    }, 1000);
+  } else clearInterval(tick);
+}
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  state = {};
+  clearInterval(tick); running = false; left = TOTAL_SEC; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', () => checkAll());
+document.getElementById('checkBottom').addEventListener('click', () => checkAll());
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+document.getElementById('tasks').addEventListener('change', e => {
+  const a = e.target && e.target.dataset && e.target.dataset.accept;
+  if (a) { acc()[a] = e.target.checked; save(); checkAll({ noScroll: true }); }
+});
+build(); drawTimer();
+
+// ---------- kontrakt Trenera C1 (autotest kluczem) ----------
+function setVal(id, v) {
+  state[id] = v;
+  document.querySelectorAll(`[data-id="${id}"]`).forEach(el => {
+    if (el.type === 'radio') el.checked = (el.value === v); else el.value = v;
+  });
+}
+function fillCorrect() {
+  TASKS.forEach(t => t.items.forEach((it, i) => {
+    ids(t, i).forEach((s, k) => setVal(s, t.kind === 'open' ? it.fill[k] : it.key[k]));
+  }));
+  state.__accept = {};
+  save(); updateProgress();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'sluchanie', session: '2019', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

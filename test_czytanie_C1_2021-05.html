@@ -1,0 +1,876 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Czytanie C1 2021-05</title>
+<script src="assets/c1-common.js"></script>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.opt { display: block; padding: 4px 8px; border-radius: 6px; margin: 2px 0; cursor: pointer; }
+.opt input { margin-right: 8px; }
+.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 600; }
+.opt.bad { background: var(--bad-bg); color: var(--bad); }
+.opt.key { outline: 2px solid var(--ok); }
+.qfix { font: 600 14px/1.3 system-ui, sans-serif; color: var(--ok); margin-top: 4px; }
+.tf { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.tf .opt { margin: 0; border: 1px solid var(--line); padding: 4px 12px; }
+.frag { padding: 6px 10px; margin: 4px 0; background: var(--example); border-radius: 8px; font-size: 15px; }
+.frag b { margin-right: 6px; }
+.frag.used { opacity: .45; }
+.frag.struck { opacity: .6; font-style: italic; }
+.mrow { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.mrow .t { flex: 1 1 240px; font-weight: 600; }
+.mrow select { font: 16px system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; }
+.mrow.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.mrow.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.mrow .fix { flex-basis: 100%; }
+.gap .fix { display: inline; }
+.gap select { width: auto; max-width: 72vw; }
+.gap.cloze select { width: 9em; }
+.gap.letter select { width: 5em; }
+
+.slots { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.mrow .slot.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.mrow .slot.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.text.compact { line-height: 1.75; }
+.text.compact p { text-indent: 0; margin: 0 0 8px; }
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie tekstów pisanych C1 - maj 2021</span>
+    <span class="timer" id="timer">60:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Rozumienie tekstów pisanych</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja maj 2021 (w nagłówku oficjalnego arkusza stoi „marzec 2021”). 5 zadań, 60 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji.</p>
+  <div class="notice" id="timeUp">Czas minął (60 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: arkusz C1 maj 2021, część "Rozumienie tekstów pisanych" + oficjalny klucz ----------
+const TASKS = [
+ {
+  "id": "I",
+  "type": "mc",
+  "per": 1,
+  "max": 8,
+  "title": "Zadanie I",
+  "instr": "Proszę przeczytać tekst, a następnie - zgodnie z przykładem - zaznaczyć właściwą odpowiedź.",
+  "textTitle": "Technologia w służbie zdrowia",
+  "paras": [
+   "Rewolucja technologiczna pomaga ratować życie, powstaje jednak w związku z tym pytanie, co zrobimy z ogromną ilością informacji o naszym stanie zdrowia, które są przy tym pozyskiwane. Być może dane te staną się przedmiotem transakcji handlowych.",
+   "Światowy Kongres Komórkowy w Barcelonie to miejsce prezentowania odważnych i często kontrowersyjnych prognoz. W tym roku coraz więcej firm zachwalało urządzenia, dzięki którym łatwiej będzie leczyć choroby i czuwać nad stanem zdrowia pacjentów. Zaprezentowano między innymi przyrządy niewiele większe od telefonu komórkowego, a pozwalające mierzyć ciśnienie krwi równie dokładnie jak tradycyjne ciśnieniomierze. Hasłem - już nawet nie przyszłości, ale wręcz teraźniejszości - jest telemedycyna wykorzystująca aparaturę połączoną z internetem w celu zbierania informacji o stanie zdrowia i przesyłania ich do lekarza czy szpitala. Jeśli właśnie tak wyglądają dzisiejsze realia, czego mamy spodziewać się jutro?",
+   "O ile wierzyć zapewnieniom specjalistów, czeka nas ekspansja robotów-chirurgów - najpierw wspierających lekarzy podczas operacji, a potem całkowicie ich zastępujących. Życie mają ratować inteligentne implanty zawierające leki, które będą uwalniane na przykład w momencie udaru albo zawału serca.",
+   "Jednak niektóre prognozy mogą budzić raczej obawy niż nadzieje. Skoro gromadzonych będzie coraz więcej informacji o naszym stanie zdrowia, wiele firm spróbuje je wykorzystać do swoich celów, zapewne nie zawsze szczytnych. Już dziś pojawiają się ostrzeżenia, że wkrótce każdy z nas będzie miał swój osobisty indeks stanu zdrowia - na wzór wskaźnika wiarygodności kredytowej. Przyniesie to pożytek wszystkim ubezpieczycielom, którzy w ten sposób mogą różnicować wysokość składek, ale zdecydowanie mniej usatysfakcjonowani będą chorzy, zwłaszcza ci z dolegliwościami wrodzonymi czy przewlekłymi. Indeks stanu zdrowia może łatwo rozsadzić kruchą zasadę solidarności, na której oparta jest publiczna służba zdrowia. Ci z nienagannymi wynikami zażądają niższych składek, a pozostali będą walczyć o równe traktowanie wszystkich.",
+   "Być może rozwój wypadków będzie jednak inny. Niektórzy przewidują, że sami chętnie zaczniemy sprzedawać informacje o naszym zdrowiu zbierane przez różne urządzenia. A różne firmy, na przykład produkujące leki, będą zainteresowane ich pozyskaniem, aby wzbogacać swoje bazy danych i doskonalić medykamenty wypuszczane na rynek. Obecnie oferta finansowej rekompensaty za stały wgląd w wyniki badań z pewnością wzbudziłaby wątpliwości wśród wielu korzystających z opieki medycznej. Ale ten sceptycyzm może szybko zniknąć, bo w końcu cała idea prywatności została przewartościowana za sprawą rewolucji cyfrowej. Jeśli już dziś płacimy swoimi danymi sklepom, mediom społecznościowym i różnym portalom, to dlaczego nie pójść krok dalej i nie ujawnić całej prawdy o sobie? Jest tylko jeden potencjalny kłopot - jeśli oferujących ten specyficzny towar będzie sporo, zapłata za wyzbycie się resztek prywatności nie okaże się zbyt wysoka."
+  ],
+  "src": "Na podstawie: https://www.polityka.pl/tygodnikpolityka/rynek/1740102,1,jak-technologie-pomoga-kontrolowac-zdrowie-i-pacjenta.read",
+  "example": {
+   "stem": "Tekst informuje, że",
+   "opts": [
+    "rewolucja cyfrowa wpływa na branżę medyczną.",
+    "lekarze potrzebują warsztatów z robotyki.",
+    "medycy przejdą szkolenia z zakresu IT."
+   ],
+   "ans": 0
+  },
+  "qs": [
+   {
+    "stem": "W tekście mowa jest o tym, że",
+    "opts": [
+     "będziemy odpłatnie odstępować szczegóły dotyczące naszej sytuacji zdrowotnej.",
+     "rozwój handlu stanowi niezbywalny warunek postępu technologicznego.",
+     "informacje o naszym życiu będą coraz częściej nielegalnie upubliczniane."
+    ],
+    "ans": "a"
+   },
+   {
+    "stem": "Na Kongresie Komórkowym w Barcelonie",
+    "opts": [
+     "obala się mity dotyczące kolejnej rewolucji technologicznej.",
+     "promuje się technologie, które sprawdziły się w krajach rozwiniętych.",
+     "głosi się śmiałe poglądy i propaguje wynalazki."
+    ],
+    "ans": "c"
+   },
+   {
+    "stem": "Z tekstu wynika, że",
+    "opts": [
+     "telefony komórkowe będą pozwalały dokładnie mierzyć ciśnienie krwi.",
+     "ciśnieniomierze nie muszą być pokaźne, aby były precyzyjne.",
+     "precyzja pomiaru ciśnienia przy pomocy tradycyjnych urządzeń nie jest zadowalająca."
+    ],
+    "ans": "b"
+   },
+   {
+    "stem": "W tekście czytamy, że roboty będą",
+    "opts": [
+     "zapewniały opiekę medyczną w krajach o deficytowej liczbie lekarzy.",
+     "zdecydowanie nadużywane podczas ingerencji chirurgicznych.",
+     "samodzielnie przeprowadzały zabiegi chirurgiczne."
+    ],
+    "ans": "c"
+   },
+   {
+    "stem": "Zadaniem wszczepionych implantów będzie",
+    "opts": [
+     "dawkowanie medykamentów w sytuacjach zagrożenia życia.",
+     "przeciwdziałanie groźnym zakażeniom.",
+     "prewencyjna ochrona stanu zdrowia ludzi."
+    ],
+    "ans": "a"
+   },
+   {
+    "stem": "W przyszłości osobisty indeks stanu zdrowia",
+    "opts": [
+     "pozwoli udzielić komuś kredytu na podstawie analizy parametrów zdrowotnych.",
+     "może mieć znaczący wpływ na ocenę pacjenta przez społeczeństwo.",
+     "może decydować o kwocie wpłacanej przez pacjenta na fundusz ochrony zdrowia."
+    ],
+    "ans": "c"
+   },
+   {
+    "stem": "Tekst informuje, że dane odsprzedane firmom farmaceutycznym posłużą do",
+    "opts": [
+     "zmniejszenia deficytu na rynku leków.",
+     "optymalizacji receptury wytwarzanych leków.",
+     "trafnej diagnostyki chorób przewlekłych."
+    ],
+    "ans": "b"
+   },
+   {
+    "stem": "Z tekstu wynika, że",
+    "opts": [
+     "osoby ujawniające swoje dane powinny żądać godziwej zapłaty.",
+     "udostępnianie danych o zdrowiu może przestać się z czasem opłacać.",
+     "bazy danych dotyczących zdrowia mocno straciły na wartości."
+    ],
+    "ans": "b"
+   }
+  ]
+ },
+ {
+  "id": "II",
+  "type": "gapfrag",
+  "per": 1,
+  "max": 10,
+  "title": "Zadanie II",
+  "instr": "Proszę przeczytać tekst i - zgodnie z przykładem - dopasować usunięte z niego fragmenty (A-L). Uwaga! Jeden fragment jest niepotrzebny.",
+  "textTitle": "Kuchenna rewolucja",
+  "frags": {
+   "A": "nie skupiamy się na kiosku z pamiątkami, ale szukamy knajp z lokalną kuchnią",
+   "B": "łącząc i miksując smaki tylko teoretycznie do siebie niepasujące",
+   "C": "wartości odżywcze i wpływ żywności na zdrowie były bez znaczenia",
+   "D": "pełnowartościowe posiłki - zwłaszcza po połączeniu ich z dodatkami",
+   "E": "przyczynia się do powstawania ciekawych i oryginalnych stylów kulinarnych",
+   "F": "produkty kupione od małych dostawców spełniających normy ekologiczne",
+   "G": "systematycznie spada przeciętne, miesięczne spożycie artykułów spożywczych",
+   "H": "kucharza można porównać do artysty, a dokładniej do malarza",
+   "I": "znaleźć je można na półkach księgarń wypełnionych poradnikami na temat żywienia",
+   "J": "naturalne produkty, takie jak jabłka, truskawki, grzyby",
+   "K": "można było zamanifestować swoją radość z możliwości wypełnienia koszyków dowolnymi smakołykami",
+   "L": "ich sezonowa dostępność przestała być problemem"
+  },
+  "used": "A",
+  "paras": [
+   "Nasza świadomość kulinarna rośnie. Słuchamy ludzi, którzy o jedzeniu wiele wiedzą, a do tego potrafią zaszczepić w nas ciekawość i sprawić, że odwiedzając nieznane miejsca, [[A]]. W ciągu ostatnich 25 lat otworzyliśmy się na nowe smaki. W latach 90. byliśmy tylko zjadaczami, a dziś stajemy się koneserami.",
+   "Potwierdzają to dane publikowane przez GUS, z których wynika, że {1}. Nie chodzi jednak o to, że Polacy cierpią głód, bo choć coraz mniej żywności kupujemy, to coraz więcej na nią wydajemy. Ćwierć wieku temu przeciętny Kowalski skupiał się na tym, by zjeść i mieć energię do pracy, podczas gdy {2}. Obecnie jesteśmy bardziej wybredni.",
+   "W porównaniu do lat 90. jemy zdecydowanie mniej ziemniaków, wołowiny i tłuszczów zwierzęcych. Wyraźnie wzrosło z kolei spożycie makaronu. Coraz mniej też słodzimy, ograniczamy mąkę, potrafimy już nawet wyobrazić sobie życie bez pieczywa. Chętnie nabywamy banany czy pomidory, tym bardziej, że {3}. Jedną z ulubionych przekąsek Polaków są jogurty, a ich walory smakowe i odżywcze sprawiają, że często sięgamy po nie jako po {4}. Wciąż jednak dużo solimy, a na koniec dnia lubimy się rozluźnić przy szklaneczce czegoś mocniejszego.",
+   "Nietrudno zauważyć, że po boomie sprzed 20 lat, w czasie którego, kupując ogromne ilości jedzenia, {5}, przyszedł czas na uspokojenie konsumenckich zapędów i skupienie się na jakości. Kuba Korczak, wschodząca gwiazda polskiej gastronomii, uważa, że to dobry trend. Kucharz do skomponowania swoich potraw wykorzystuje {6}. Dziś w menu często podkreśla się, z jakiego źródła pochodzą składniki - mówi.",
+   "Po okresie fascynacji jedzeniową egzotyką, która dominowała w latach 90. i po roku 2000, wracamy do korzeni. O tym, że są powody do dumy, przekonują polscy mistrzowie kuchni. - Mamy w naszym kraju najlepsze na świecie {7}. Dość wspomnieć, że na targu w Jerozolimie za doskonałe polskie borowiki trzeba zapłacić więcej niż za trufle - mówi kucharz Jakub Kuroń.",
+   "Jak twierdzą znawcy, mnogość i dostępność produktów {8}. Gotowanie przestało być prestiżowym hobby. Dziś wystarczy wiedzieć, gdzie można się zaopatrzyć w dobre i niedrogie produkty, by móc z nich wyczarować ciekawe danie. Mieszamy dodatki, których kiedyś byśmy nie zmieszali, {9}. To sprawia, że kuchnie różnych regionów zostają zgromadzone na jednym talerzu.",
+   "Gdy gotujemy w domu, chcemy, aby potrawy przypominały arcydzieła. Dziś bardziej niż kiedykolwiek sprawdza się powiedzenie o jedzeniu oczami. Bo przecież {10}, z kolei posiłki są jak dzieła sztuki."
+  ],
+  "src": "Na podstawie: P. Socha-Jakubowska, Kuchenna rewolucja, „Wprost”, nr 24/2014, s. 31-33.",
+  "answers": {
+   "1": "G",
+   "2": "C",
+   "3": "L",
+   "4": "D",
+   "5": "K",
+   "6": "F",
+   "7": "J",
+   "8": "E",
+   "9": "B",
+   "10": "H"
+  },
+  "note": "Zbędny fragment: I."
+ },
+ {
+  "id": "III",
+  "type": "table",
+  "per": 1,
+  "max": 10,
+  "title": "Zadanie III",
+  "instr": "Proszę - zgodnie z przykładem - wpisać do tabeli, który fragment tekstu (A, B, C, D) zawiera wskazane treści. Uwaga! Jeden fragment (A, B, C, D) może pasować do więcej niż jednej informacji podanej w tabeli.",
+  "textTitle": "Znani polscy psycholodzy radzą, jak rozmawiać z ludźmi o odmiennych poglądach i przekonywać ich do własnego stanowiska",
+  "texts": [
+   {
+    "l": "A",
+    "text": "Moja podpowiedź brzmi: zacznij od siebie, od sprawdzenia, czy nie ustawiasz się wobec swojego rozmówcy w pozycji „fundamentalistycznej”, w pozycji wyższości i pogardy. Zrób to, żeby upewnić się, czy w twoim myśleniu oraz języku używanym wobec osoby, z którą polemizujesz, nie dominują ocenne, dyskredytujące sądy. Wystarczy, że poluzujesz narrację i zmniejszysz radykalizację. Dopiero wtedy można podjąć kolejny krok i przejść do uszczegółowienia tego, jak każda ze stron pojmuje dobro, prawdę, wolność, demokrację, zdrowie itd. Trzeba przy tym pamiętać, by dyskutować o sprawach, a nie o tym, kto ma rację, a kto się myli.",
+    "author": "Jacek Santorski"
+   },
+   {
+    "l": "B",
+    "text": "Rozmowa na temat poglądów w dużej mierze będzie zależeć od tego, co chcemy ostatecznie uzyskać: wyrazić własną opinię, kogoś pokonać czy raczej przekonać do własnego stanowiska. Dominuje tryb pierwszy i drugi, choć pożądany byłby ten trzeci. Warto przekonywać innych, ale jeżeli czynimy to z założeniem, że oponent myśli niemądrze, głupio, idiotycznie, to jesteśmy o jeden krok od agresji, a gdy jej ulegniemy, wówczas na pewno się nie dogadamy - i to jest nasz największy problem. Nie oznacza to jednak, że powinniśmy porzucić dokonywanie ocen moralnych i stać się nihilistami. Wręcz przeciwnie, należy trwać przy swoich poglądach, ale przy tym nie być jak nawiedzony megafon.",
+    "author": "Bogdan de Barbaro"
+   },
+   {
+    "l": "C",
+    "text": "Ważne, jaki zamysł towarzyszy nam przy podejmowaniu rozmowy z osobą o odmiennych poglądach. Punktem dojścia może być przeciągnięcie kogoś na swoją stronę bądź zrozumienie go, przy czym jeśli chcemy przekonać, to mamy słabe szanse na porozumienie. Warto przyłożyć się do poszukania jakiegoś obszaru dzielonego przez obie strony. Nie wyrażajmy się wzgardliwie o ludziach, których oponent szanuje, aby on także zdołał dowartościować nasze stanowisko. Uznajmy, że rozmówca również ma pod pewnymi względami rację, tyle że wybiera nieskuteczne rozwiązania. Ale też nie traćmy energii na rozmowę z kimś zachowującym się dogmatycznie czy zaczepnie - konsekwentnie unikajmy dyskusji, by ostudzić zapał napastliwego oponenta.",
+    "author": "Zofia Milska-Wrzosińska"
+   },
+   {
+    "l": "D",
+    "text": "Odmienne poglądy polityczne osoby z najbliższego otoczenia powinny nas skłonić do refleksji nad samą obecnością przestrzeni do rozmowy, która polega przecież na udzielaniu sobie prawa do wymiany myśli i opinii. I prawo to musi być respektowane przez każdą ze stron - jest bowiem warunkiem zgodnej koegzystencji z ludźmi myślącymi odmiennie, nawet wówczas, gdy nasza odpowiedź niezmiennie brzmi: „Ty tak uważasz, ale ja się z tobą nie zgadzam”. Jeżeli natomiast jesteśmy atakowani opiniami innych osób, to metodą zdartej płyty powtarzajmy nasze poglądy - prawdopodobnie dojdziemy do momentu, w którym ktoś nacierający na nas przy każdej sposobności w końcu da sobie z tym spokój.",
+    "author": "Ewa Woydyłło-Osiatyńska"
+   }
+  ],
+  "src": "Na podstawie: K. Kalińczak, A. Mijakoska-Siemion, A. Wożniak, Jak przekonywać? Nie bądź nawiedzonym megafonem, „Wysokie Obcasy”, 07.07.2020.",
+  "example": {
+   "stem": "Celem rozmowy nie powinno być wykazanie, kto ma słuszność.",
+   "ans": "A"
+  },
+  "letters": [
+   "A",
+   "B",
+   "C",
+   "D"
+  ],
+  "rows": [
+   {
+    "stem": "Porozumienie jest wykluczone, gdy próbujemy górować nad rozmówcą.",
+    "key": [
+     "A",
+     "B"
+    ]
+   },
+   {
+    "stem": "O strategii prowadzenia rozmowy decyduje cel jej podjęcia.",
+    "key": [
+     "B",
+     "C"
+    ]
+   },
+   {
+    "stem": "Przed rozpoczęciem dyskusji warto zjednać sobie rozmówcę i poszukać podobieństw między stronami.",
+    "key": [
+     "C"
+    ]
+   },
+   {
+    "stem": "Ceną za osiągnięcie porozumienia nie powinno być wyrzeczenie się własnych przekonań.",
+    "key": [
+     "B"
+    ]
+   },
+   {
+    "stem": "W pewnych sytuacjach warto wręcz z uporem przypominać własne opinie.",
+    "key": [
+     "D"
+    ]
+   },
+   {
+    "stem": "Ważne jest, by ustalić, jak rozumiemy podstawowe wartości.",
+    "key": [
+     "A"
+    ]
+   },
+   {
+    "stem": "Mamy prawo zniechęcić agresywnego dyskutanta do rozmowy.",
+    "key": [
+     "C",
+     "D"
+    ]
+   }
+  ],
+  "note": "Kolejność podawania rozwiązań w obrębie jednego punktu jest dowolna."
+ },
+ {
+  "id": "IV",
+  "type": "cloze",
+  "per": 0.5,
+  "max": 5,
+  "title": "Zadanie IV",
+  "instr": "Proszę - zgodnie z przykładem - podkreślić najlepszą odpowiedź spośród propozycji podanych w nawiasach (na egzaminie podkreślasz ją, tutaj wybierasz z listy).",
+  "textTitle": "Duch teatru",
+  "paras": [
+   "Byliście kiedyś w teatrze? Przepraszam, głupie pytanie - oczywiście, że byliście. A zatem wiecie, jak to wygląda. Oglądaliście spektakl, (adorowaliście, [[podziwialiście]], szanowaliście, uwielbialiście) znanego aktora albo wybitną tragiczkę, śmialiście się, wzruszaliście i może nawet łzy ciekły wam po policzkach. Potem {1:kurtyna|zasłona|przesłona|scena}. Oklaski. Ukłony. Później być może szliście na kolację czy drinka i w miłym towarzystwie długo {2:roztrząsaliście|dociekaliście|przepowiadaliście|przenikaliście} tematy poruszone w obejrzanym właśnie dziele. A jednak powiem wam, że tego, co w teatrze najciekawsze, niestety nie widzieliście nigdy. Kulisy. Miejsce, w którym toczy się {3:podwójne|jednoczesne|równoległe|diametralne} do spektaklu życie. Im większe przedstawienie, im większy rozmach inscenizacji, tym {4:mizerniejsze|masywniejsze|kwiecistsze|bujniejsze} jest oczywiście to zakulisowe życie. Cóż tam się wyprawia!",
+   "Przede wszystkim mamy aktorów, którzy w pośpiechu dopinają kostiumy. Wszyscy w dziwnym, lekko odrealnionym stanie - na wpół postaci ze sceny, a w połowie jeszcze prywatni. Rozmawiają ze sobą trochę tekstem ze sztuki, a trochę potocznie. Obok aktorów {5:zdążają|wtórują|uwijają się|podwijają się} maszyniści - zgrana ekipa potężnych chłopów odpowiedzialna przede wszystkim za {6:bezdźwiękowe|bezszelestne|bezprzedmiotowe|bezdźwięczne} zmiany dekoracji. Następnie rekwizytor - człowiek, jak sama nazwa wskazuje, odpowiedzialny za rekwizyty, czyli różne rzeczy wnoszone przez aktorów na scenę: książki, pistolety, zapalniczki, szklanki, trucizny, czaszki. Strażak - czuwający, żeby się nic nie sfajczyło. Garderobiane i garderobiani - {7:wysublimowana|staranna|doborowa|wystrojona} jednostka do pomocy przy kostiumach i w ogóle przy najróżniejszych gorsetach, szelkach, haftkach, krawatach i mankietach. Zaś nad tym wszystkim czuwa inspicjent - człowiek odpowiedzialny za to, aby wszystkie te grupy działały zgodnie i grały do jednej bramki. Siedzi przy pulpicie wyposażonym w specjalny mikrofon i {8:zawiaduje|programuje|powoduje|posługuje się} całym tym szaleństwem. To on wydaje komunikaty i rozkazy. Informuje, jaka scena przed nami, kto ma się szykować do wejścia, jaki rekwizyt komu podać i komu należy domalować podbite oko. Na czas spektaklu inspicjent {9:przejednuje|podejmuje|pobiera|przejmuje} dowodzenie - może nawet wpisać do tzw. raportu każdego, kto coś zawali, choćby zasiedzi się w bufecie i spóźni na scenę.",
+   "To zakulisowe życie odbywa się szeptem i w pośpiechu. A do tego w półmroku. I cała ta {10:dezorganizacja|prędkość|interwencja|krzątanina} służy wyłącznie temu, żeby widzowie mogli przeżyć miły wieczór."
+  ],
+  "src": "Na podstawie: G. Małecki, Duch teatru, „Pani”, 12/2020, s. 108.",
+  "answers": {
+   "1": "kurtyna",
+   "2": "roztrząsaliście",
+   "3": "równoległe",
+   "4": "bujniejsze",
+   "5": "uwijają się",
+   "6": "bezszelestne",
+   "7": "doborowa",
+   "8": "zawiaduje",
+   "9": "przejmuje",
+   "10": "krzątanina"
+  }
+ },
+ {
+  "id": "V",
+  "type": "mct",
+  "per": 1,
+  "max": 7,
+  "title": "Zadanie V",
+  "instr": "Proszę przeczytać fragmenty tekstów i - zgodnie z przykładem - zaznaczyć właściwą odpowiedź.",
+  "example": {
+   "text": "Hans Forsberg, specjalista ds. robotyki i sztucznej inteligencji, zbudował karmnik, który pozwala ptakom wymieniać śmieci na pożywienie. Na razie ten szczególny automat przyjmuje tylko kapsle i nakrętki, a korzystają z niego sroki. Od dawna wiadomo, że potrafią one rozwiązywać proste zadania, by zdobyć pokarm, a nawet stosują narzędzia - np. cienkie patyki - i dzięki nim docierają do owadów ukrytych w miejscach, do których nie mogą się dostać za pomocą dzioba lub pazurów.",
+   "src": "Na podstawie: https://www.national-geographic.pl/artykul/swiat-posprzataja-ptaki-sroki-dostaja-jedzenie-za-kazda-zakretke-dzieki-temu-wynalazkowi",
+   "stem": "Ten tekst informuje o",
+   "opts": [
+    "ewolucji i przystosowaniu budowy srok do zdobywania pokarmu.",
+    "niezwykłych umiejętnościach, jakie prezentują sroki poszukujące pożywienia.",
+    "trudnościach w pozyskiwaniu pożywienia przez ptaki, które żyją w zaśmieconym środowisku."
+   ],
+   "ans": 1
+  },
+  "qs": [
+   {
+    "text": "Warto pamiętać, że sama zapłata za wykonanie zdjęć lub filmu podczas uroczystości rodzinnej nie zmienia niczego w sferze praw autorskich. Jeżeli zależy nam, aby uregulować tę kwestię, musimy podpisać stosowną umowę, na mocy której fotograf przeniesie na nas prawa do fotografii lub udzieli licencji na ich używanie. W przeciwnym razie publiczne udostępnienie tych materiałów narazi nas na odpowiedzialność karną.",
+    "src": "Na podstawie: https://gazeta.ug.edu.pl/wp-content/uploads/2020/07/GU_pazdziernik_2019.pdf",
+    "stem": "Ten tekst informuje o tym, że",
+    "opts": [
+     "publikowanie w mediach społecznościowych zdjęć i nagrań, na których są widoczne inne osoby, to naruszenie praw autorskich.",
+     "każdy profesjonalnie działający fotograf powinien zdobyć odpowiednią licencję, by oferować swoje usługi zgodnie z prawem.",
+     "przed skorzystaniem z usług fotografa warto ustalić z nim na piśmie warunki późniejszego wykorzystania jego dzieł."
+    ],
+    "ans": "c"
+   },
+   {
+    "text": "Powstały w Bielsku-Białej mural Ewy Ciepielewskiej przedstawia fragment lasu i został wykonany farbami włoskiej produkcji. Ich działanie jest porównywalne do procesu fotosyntezy u roślin, u których chlorofil katalizuje reakcję produkcji energii. Niezwykłe dzieło umieszczone na szczytowej ścianie jednej z kamienic będzie co najmniej przez dekadę przyczyniało się do polepszenia jakości powietrza tak, jak sprawiałby to las o takiej samej powierzchni co mural.",
+    "src": "Na podstawie: https://katowice.wyborcza.pl/katowice/7,35018,26379253,w-bielsku-bialej-powstaje-mural-ktory-zmniejszy-zanieczyszczenie.html?_ga=2.245931524.1233381449.1609246942-508797196.1606777674",
+    "stem": "Tekst informuje, że w Bielsku-Białej",
+    "opts": [
+     "miejskie inicjatywy artystyczne powstają w kooperacji z firmami włoskimi.",
+     "nawiązano współpracę z włoską firmą, która zajmuje się między innymi ekologicznymi źródłami energii.",
+     "zrealizowano oryginalny projekt artystyczny, który długofalowo wesprze działania proekologiczne."
+    ],
+    "ans": "c"
+   },
+   {
+    "text": "Firmy, które wcześniej wielokrotnie dawały partnerom biznesowym szansę uregulowania zaległości, dziś chętniej korzystają m.in. z oferowanych przez biura informacji gospodarczej wezwań do zapłaty czy z zapowiedzi zgłoszenia do rejestru dłużników. Jak widać, przedsiębiorcom przestał spędzać sen z powiek niepokój, że windykowanie długów będzie przyczyną odpłynięcia od nich kontrahentów i spowoduje trudności w zdobywaniu kolejnych kontraktów.",
+    "src": "Na podstawie: https://wyborcza.biz/biznes/7,177151,26610709,nie-place-bo-mi-nie-placa-narastaja-zatory-platnicze-wsrod.html?_ga=2.216162198.1233381449.1609246942-508797196.1606777674",
+    "stem": "Z tekstu wynika, że",
+    "opts": [
+     "zmieniło się podejście przedsiębiorców do nierzetelnych partnerów biznesowych.",
+     "najnowszym niepokojącym trendem jest przejmowanie kontrahentów od firm, które popadły w długi.",
+     "przedsiębiorcy obawiają się zaciągania kredytów, gdyż mogą zostać wpisani do rejestru dłużników."
+    ],
+    "ans": "a"
+   },
+   {
+    "text": "Naukowcy, którzy zaprojektowali gry rehabilitacyjne wykorzystujące wirtualną rzeczywistość, spodziewają się osiągnięcia efektu odwrócenia uwagi pacjenta od dolegliwości bólowych, które zwykle obniżają skuteczność rehabilitacji. Koncentracja na celu gry pozwoli ćwiczącym efektywniej realizować plan fizjoterapii poprzez wykonywanie ściśle określonych ruchów, dobranych do danego schorzenia i niejako wymuszonych przez scenariusz gry.",
+    "src": "Na podstawie: https://us.edu.pl/no-limits-eksperymentalne-projekty-wspomagajace-rehabilitacje",
+    "stem": "Tekst informuje, że",
+    "opts": [
+     "podczas korzystania z gier rehabilitacyjnych chodzi o kontrolowaną aktywizację ruchową pewnych części ciała.",
+     "długotrwałe korzystanie z gier komputerowych może powodować konieczność rozpoczęcia rehabilitacji ruchowej.",
+     "naukowcy zbadali związek między odczuwaniem bólu przez pacjentów a ich zdolnością koncentrowania uwagi."
+    ],
+    "ans": "a"
+   },
+   {
+    "text": "Badania pismoznawcze należą do najstarszych technik kryminalistycznych. Przedmiotem wykonywanych ekspertyz są najczęściej dokumenty rękopiśmienne, takie jak testamenty czy listy z pogróżkami. Interesującym przykładem odręcznie wykonanych znaków, na podstawie których można zidentyfikować ich autorów, są również sygnatury malarskie. Choć badanie autentyczności dzieł sztuki wymaga przeprowadzenia analiz kompleksowych - stylistycznych i materiałoznawczych, może być także wzbogacone analizą grafizmów.",
+    "src": "Na podstawie: https://us.edu.pl/no-limits-tropem-falszerzy-sygnatur-malarskich/",
+    "stem": "Z tekstu wynika, że",
+    "opts": [
+     "na podstawie zachowanych dokumentów prowadzone są analizy porównawcze charakteru pisma znanych artystów.",
+     "metody stosowane w kryminalistyce mogą posłużyć za narzędzie badawcze w przypadku wątpliwości dotyczących autorstwa obrazów.",
+     "niektóre metody ekspertyzy pisma stosowane bywają także do analizy tekstów i znaków opracowanych przez grafików."
+    ],
+    "ans": "b"
+   },
+   {
+    "text": "Problemów w pomiarze pracy umysłowej przysparza każdy jej aspekt, a ich osią jest napięta relacja między ludźmi i maszynami: jakościowy wymiar aktywności umysłowej człowieka przeciwstawiany jest ilościowej sile obliczeniowej komputera. Mierniki wydajności powstały w czasach społeczeństwa industrialnego i dzisiaj wydają się w coraz mniejszym stopniu spełniać swoją funkcję, gdyż ilościowy sposób pomiaru stawia ludzi na pozycji z góry przegranej. Chociaż wszystko podlega obecnie wycenie rynkowej, nie oznacza to, że jest ona przeprowadzana należycie.",
+    "src": "Na podstawie: https://www.journals.us.edu.pl/index.php/GSS_SN/article/view/9867/7676",
+    "stem": "Z tekstu wynika, że",
+    "opts": [
+     "poprawa jakości pracy wykonywanej przez maszyny wymusza zmianę sposobu jej oceniania.",
+     "kryteria stosowane do pomiaru pracy ludzkiej muszą ewoluować wraz z rozwojem rynku.",
+     "praca umysłowa jest w swej naturze niemierzalna i dlatego nie może podlegać wycenie rynkowej."
+    ],
+    "ans": "b"
+   },
+   {
+    "text": "Barwy wybierane do strategii promocyjnej produktu mają niebagatelny wpływ na odczucia odbiorców. Są bowiem jednym z czynników, które w pierwszej kolejności wywołują skojarzenia i wyobrażenia na temat oferty, a docelowo wpływają na decyzje zakupowe. Planując strategię komunikacji wizualnej, nie można pominąć kontekstu, w jakim będzie funkcjonowała marka, ponieważ w poszczególnych kręgach kulturowych kolory bywają interpretowane bardzo różnie.",
+    "src": "Na podstawie: https://wuwr.pl/dzm/article/view/1930/1881",
+    "stem": "Z tekstu wynika, że",
+    "opts": [
+     "symbolika kolorów wykorzystywanych przy promocji produktów ma fundamentalny wpływ na kontekst kulturowy.",
+     "roztropne stosowanie kolorów w przekazach reklamowych przekłada się na wyniki sprzedaży produktu.",
+     "ograniczenie palety barw do kolorów podstawowych to klucz do stworzenia reklamy skutecznej w każdym kręgu kulturowym."
+    ],
+    "ans": "b"
+   }
+  ]
+ }
+];
+
+const MAX = 40, PASS = 24;
+const TEST_ID = 'czytanie-2021-05';
+const STORE_KEY = 'c1_czyt_2021_05_v1';
+
+// ---------- pomocnicze ----------
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {} }
+function isMc(t) { return t.type === 'mc' || t.type === 'mct'; }
+function countOf(t) {
+  if (t.qs) return t.qs.length;
+  if (t.rows) return t.rows.reduce((s, r) => s + r.key.length, 0);
+  return Object.keys(t.answers).length;
+}
+
+// ---------- budowanie arkusza ----------
+function textBlock(t, gapFn) {
+  let h = `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>`;
+  h += t.paras.map(p => {
+    let x = esc(p);
+    x = x.replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+    if (gapFn) x = x.replace(/\{(\d+)\}/g, (m, n) => gapFn(n));
+    return `<p>${x}</p>`;
+  }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+  return h;
+}
+function letterSelect(id, n, letters) {
+  const opts = letters.map(l => `<option value="${l}">${l}</option>`).join('');
+  return `<span class="gap letter" id="g-${id}"><select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select><sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+}
+function fragList(t) {
+  return `<div id="frags-${t.id}">` + Object.keys(t.frags).map(l =>
+    `<div class="frag${l === t.used ? ' struck' : ''}" data-l="${l}"><b>${l}.</b>${esc(t.frags[l])}${l === t.used ? ' <span class="src">(PRZYKŁAD)</span>' : ''}</div>`).join('') + `</div>`;
+}
+function optLines(opts, ans) {
+  return opts.map((o, i) => `<span style="${i === ans ? 'font-weight:700;text-decoration:underline dotted' : ''}">${'abc'[i]}) ${esc(o)}</span>`).join('<br>');
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    const n = countOf(t);
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${n} x ${pl(t.per)} p. = ${t.max} p.</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    if (t.type === 'mc' || t.type === 'tf') {
+      html += `<div class="text">${t.textTitle ? '<p class="noindent"><b>' + esc(t.textTitle) + '</b></p>' : ''}${t.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div><div class="src">${esc(t.src)}</div>`;
+      if (t.type === 'mc') {
+        const e = t.example;
+        html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div><b>${esc(e.stem)}</b><br>${optLines(e.opts, e.ans)}</div>`;
+        t.qs.forEach((q, i) => {
+          const id = `${t.id}-${i + 1}`;
+          html += `<div class="q" id="q-${id}"><div class="stem">${i + 1}. ${esc(q.stem)}</div>` +
+            q.opts.map((o, j) => `<label class="opt" data-v="${'abc'[j]}"><input type="radio" name="${id}" value="${'abc'[j]}">${'abc'[j]}) ${esc(o)}</label>`).join('') +
+            `<div class="qfix"></div></div>`;
+        });
+      } else {
+        html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div>${esc(t.example.stem)} <b>- ${t.example.ans}</b></div>`;
+        t.qs.forEach((q, i) => {
+          const id = `${t.id}-${i + 1}`;
+          html += `<div class="q" id="q-${id}"><div class="stem">${i + 1}. ${esc(q.stem)}</div><div class="tf">` +
+            ['TAK', 'NIE', 'BI'].map(v => `<label class="opt" data-v="${v}"><input type="radio" name="${id}" value="${v}">${v}</label>`).join('') +
+            `</div><div class="qfix"></div></div>`;
+        });
+      }
+    } else if (t.type === 'mct') {
+      const e = t.example;
+      html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div><div class="text compact"><p class="noindent">${esc(e.text)}</p></div><div class="src" style="margin:0 0 8px">${esc(e.src)}</div><b>${esc(e.stem)}</b><br>${optLines(e.opts, e.ans)}</div>`;
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="q" id="q-${id}"><div class="text compact"><p class="noindent">${esc(q.text)}</p></div><div class="src" style="margin:0 0 8px">${esc(q.src)}</div><div class="stem">${i + 1}. ${esc(q.stem)}</div>` +
+          q.opts.map((o, j) => `<label class="opt" data-v="${'abc'[j]}"><input type="radio" name="${id}" value="${'abc'[j]}">${'abc'[j]}) ${esc(o)}</label>`).join('') +
+          `<div class="qfix"></div></div>`;
+      });
+    } else if (t.type === 'gapfrag') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="example-box"><div class="lbl">FRAGMENTY (${Object.keys(t.frags)[0]}-${Object.keys(t.frags).slice(-1)[0]})</div></div>` + fragList(t);
+      html += textBlock(t, (k) => letterSelect(`${t.id}-${k}`, k, letters));
+    } else if (t.type === 'table') {
+      html += `<div class="text compact"><p class="noindent"><b>${esc(t.textTitle)}</b></p>` +
+        t.texts.map(x => `<p class="noindent"><b>${x.l}.</b> ${esc(x.text)}<br><i>${esc(x.author)}</i></p>`).join('') +
+        `</div><div class="src">${esc(t.src)}</div>`;
+      html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div>${esc(t.example.stem)} <b>- ${t.example.ans}</b></div>`;
+      html += `<div class="example-box"><div class="lbl">O TYM MÓWI SIĘ WE FRAGMENCIE: wybierz literę (${t.letters[0]}-${t.letters.slice(-1)[0]})</div></div>`;
+      t.rows.forEach((r, i) => {
+        const k = i + 1;
+        html += `<div class="mrow" id="r-${t.id}-${k}"><span class="t">${k}. ${esc(r.stem)}${r.key.length > 1 ? ' <span style="font-weight:400;color:var(--muted)">(dwie odpowiedzi, kolejność dowolna)</span>' : ''}</span><span class="slots">` +
+          r.key.map((_, j) => {
+            const id = `${t.id}-${k}-${j + 1}`;
+            return `<span class="slot" id="g-${id}"><select data-id="${id}" aria-label="Zdanie ${k}, odpowiedź ${j + 1}"><option value=""></option>${t.letters.map(l => `<option value="${l}">${l}</option>`).join('')}</select></span>`;
+          }).join('') + `</span><span class="fix"></span></div>`;
+      });
+    } else if (t.type === 'cloze') {
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>` + t.paras.map(p => {
+        let x = esc(p).replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+        x = x.replace(/\{(\d+):([^}]*)\}/g, (m, k, o) => {
+          const id = `${t.id}-${k}`;
+          const opts = o.split('|').map(w => `<option value="${w}">${w}</option>`).join('');
+          return `<span class="gap cloze" id="g-${id}"><select data-id="${id}" aria-label="Luka ${k}"><option value=""></option>${opts}</select><sup class="gapno">${k}</sup><span class="fix"></span></span>`;
+        });
+        return `<p>${x}</p>`;
+      }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+    }
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('select[data-id]').forEach(el => {
+    if (saved[el.dataset.id] != null) el.value = saved[el.dataset.id];
+    el.addEventListener('change', () => { save(); updateProgress(); updateFrags(); });
+  });
+  root.querySelectorAll('input[type=radio]').forEach(el => {
+    if (saved[el.name] === el.value) el.checked = true;
+    el.addEventListener('change', () => { save(); updateProgress(); });
+  });
+  updateProgress(); updateFrags();
+}
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('select[data-id]').forEach(el => { o[el.dataset.id] = el.value; });
+  document.querySelectorAll('input[type=radio]:checked').forEach(el => { o[el.name] = el.value; });
+  return o;
+}
+function totalQuestions() {
+  return document.querySelectorAll('select[data-id]').length + document.querySelectorAll('.q').length;
+}
+function updateProgress() {
+  const o = collect();
+  const filled = Object.values(o).filter(v => v).length;
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${totalQuestions()}`;
+}
+function updateFrags() {
+  for (const t of TASKS) {
+    if (!t.frags) continue;
+    const chosen = [...document.querySelectorAll(`#task-${t.id} select`)].map(s => s.value).filter(Boolean);
+    document.querySelectorAll(`#frags-${t.id} .frag`).forEach(f => {
+      if (f.dataset.l === t.used) return;
+      f.classList.toggle('used', chosen.includes(f.dataset.l));
+    });
+  }
+}
+
+// ---------- sprawdzanie ----------
+function checkAll() {
+  const vals = collect();
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (isMc(t) || t.type === 'tf') {
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const got = vals[id] || '';
+        const box = document.getElementById(`q-${id}`);
+        box.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad', 'key');
+          if (l.dataset.v === q.ans) l.classList.add('key');
+          if (l.dataset.v === got) l.classList.add(got === q.ans ? 'ok' : 'bad');
+        });
+        const fx = box.querySelector('.qfix');
+        if (got === q.ans) { score += t.per; fx.textContent = ''; }
+        else fx.textContent = '→ poprawna odpowiedź: ' + (isMc(t) ? q.ans + ') ' + q.opts['abc'.indexOf(q.ans)] : q.ans);
+      });
+    } else if (t.type === 'table') {
+      t.rows.forEach((r, i) => {
+        const k = i + 1;
+        const sids = r.key.map((_, j) => `${t.id}-${k}-${j + 1}`);
+        const got = sids.map(s => vals[s] || '');
+        let rowOk = true;
+        got.forEach((v, j) => {
+          let ok = false;
+          if (v) ok = r.key.length > 1 ? (r.key.includes(v) && got.indexOf(v) === j) : v === r.key[0];
+          if (ok) score += t.per; else rowOk = false;
+          const slot = document.getElementById(`g-${sids[j]}`);
+          slot.classList.remove('ok', 'bad'); slot.classList.add(ok ? 'ok' : 'bad');
+        });
+        const fix = document.querySelector(`#r-${t.id}-${k} > .fix`);
+        fix.textContent = rowOk ? '' : '→ ' + r.key.join(', ') + (r.key.length > 1 ? ' (kolejność dowolna)' : '');
+      });
+    } else {
+      for (const n in t.answers) {
+        const id = `${t.id}-${n}`;
+        const a = t.answers[n];
+        const raw = vals[id] || '';
+        const ok = raw !== '' && raw === a;
+        const gap = document.getElementById(`g-${id}`);
+        const fix = gap.querySelector('.fix');
+        gap.classList.remove('ok', 'bad', 'almost');
+        if (ok) { score += t.per; gap.classList.add('ok'); fix.textContent = ''; }
+        else {
+          gap.classList.add('bad');
+          fix.textContent = '→ ' + a + (t.frags ? ' (' + t.frags[a].slice(0, 60) + '...)' : '');
+        }
+      }
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / ${t.max} p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    per.push({ t, score });
+  }
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błąd, obok poprawna odpowiedź z klucza. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+let left = 60 * 60, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < 3600 ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  clearInterval(tick); running = false; left = 3600; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', checkAll);
+document.getElementById('checkBottom').addEventListener('click', checkAll);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+// ---------- kontrakt z modułem c1-common.js ----------
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (isMc(t) || t.type === 'tf') {
+      t.qs.forEach((q, i) => {
+        const el = document.querySelector(`input[type=radio][name="${t.id}-${i + 1}"][value="${q.ans}"]`);
+        if (el) el.checked = true;
+      });
+    } else if (t.type === 'table') {
+      t.rows.forEach((r, i) => r.key.forEach((k, j) => {
+        const el = document.querySelector(`select[data-id="${t.id}-${i + 1}-${j + 1}"]`);
+        if (el) el.value = k;
+      }));
+    } else {
+      for (const n in t.answers) {
+        const el = document.querySelector(`select[data-id="${t.id}-${n}"]`);
+        if (el) el.value = t.answers[n];
+      }
+    }
+  }
+  save(); updateProgress(); updateFrags();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'czytanie', session: '2021-05', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

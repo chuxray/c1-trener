@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Czytanie C1 2023-11</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .qt { margin-bottom: 6px; }
+.q label { display: block; padding: 3px 6px; border-radius: 6px; cursor: pointer; }
+.q label.row { display: inline-block; margin-right: 14px; }
+.q.ok label.sel { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.q.bad label.sel { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.q .fix { display: block; margin: 4px 0 0 6px; }
+.q .fix.bad { color: var(--bad); }
+.frag { padding: 6px 0; border-top: 1px solid var(--line); font-size: 15px; }
+.frag b { display: inline-block; width: 1.8em; }
+.pass-txt { font-family: Georgia, "Times New Roman", serif; font-size: 16.5px; line-height: 1.7; border-left: 3px solid var(--line); padding-left: 12px; margin: 10px 0; }
+.pass-txt b.pl { font-family: system-ui, sans-serif; color: var(--accent); }
+.opts { white-space: normal; }
+.opts label { margin: 0 4px; white-space: nowrap; cursor: pointer; }
+.gap.ok .opts, .gap.bad .opts { border-radius: 6px; padding: 0 4px; }
+.gap.ok .opts { background: var(--ok-bg); }
+.gap.bad .opts { background: var(--bad-bg); }
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie tekstów pisanych C1 - listopad 2023</span>
+    <span class="timer" id="timer">60:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Rozumienie tekstów pisanych</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja listopad 2023. 5 zadań, 60 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji.</p>
+  <div class="notice" id="timeUp">Czas minął (60 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: arkusz C1 listopad 2023, część "Rozumienie tekstów pisanych" + oficjalny klucz ----------
+const TASKS = [
+  {
+    id: 'I', type: 'mc', per: 1, max: 7,
+    title: 'Zadanie I',
+    instr: 'Proszę przeczytać tekst, a następnie - zgodnie z przykładem - zaznaczyć właściwą odpowiedź.',
+    heading: 'Idol śpiewa stare szlagiery',
+    paras: [
+      'Lubimy melodie, które już słyszeliśmy, i dlatego oglądamy programy telewizyjne typu talent show. Jednak osobom biorącym w nich udział śpiewanie cudzych przebojów rzadko pomaga we własnej karierze.',
+      'Cały ten zgiełk zaczął się w 1993 roku od „Szansy na sukces”. Jej uczestnicy losowali w telewizyjnym studiu utwory swoich mistrzów i śpiewali je w ich obecności, a pod koniec programu uznani artyści przyznawali swoim muzykalnym fanom nagrody i wyróżnienia. Wygrana w odcinku finałowym, w którym występowali laureaci comiesięcznych programów, była przepustką do udziału w koncercie debiutów podczas prestiżowego festiwalu w Opolu. Z początkiem XX wieku „Szansie” przybył nowoczesny konkurent - wzorowany na brytyjskim polski „Idol”, od którego premiery minęło już ponad dwadzieścia lat.',
+      'Podobnych talent show, mających wiele odcinków i trzymających w napięciu, stale przybywa. Mimo że taka formuła się sprzedaje, to jednak z upływem lat widać, że widzowie przywiązują się do wykreowanych w telewizji amatorskich gwiazd na coraz krótszy czas. Jak sobie radzą zwycięzcy poszczególnych edycji „Idola”? Wystarczy podać dwa przykłady. Alicja Janosz, która wygrała pierwszy program, z marszu przygotowała płytę, a później zamilkła na prawie 10 lat. Gra, śpiewa, koncertuje, ale mało ją widać. Główny laureat drugiej odsłony, Krzysztof Zalewski, nagrał solowy album, który przeszedł bez echa. Gdy już się wydawało, że jest mu pisana rola muzyka pracującego na cudzą popularność, karta się na szczęście odwróciła.',
+      'Gdy śpiewa się w telewizji cudze piosenki, można zwrócić na siebie uwagę. Kiedy jednak trzeba iść na swoje i pokazać własny repertuar, telewizyjny czar pryska. Wiele talentów poszło na zmarnowanie, i to nie z winy wytwórni. Nie wszyscy byli gotowi na nagranie płyty tuż po zakończeniu programu, jednak zdecydowali się na to z obawy, że później ludzie zapomną o bohaterze z telewizora i uwagę słuchaczy skradnie ktoś inny. Tę presję wywierali zarówno krewni, jak i menedżerowie nowo kreowanych gwiazd. Czerwony dywan się kończy, a za nim są strome schody. Nie bardzo wiadomo, co robić - wstrzymać się, iść? A jeśli te schody prowadzą donikąd? Grunt to umieć skorzystać z darowanej szansy.',
+      'Zdaniem Jacka Cygana, znanego autora tekstów i jurora w kilku edycjach, koncepcja „Idola” zdała egzamin. Młodzi ludzie, którzy chcieli się sprawdzić, mogli to zrobić w profesjonalnych warunkach, czegoś się nauczyć, rozwinąć skrzydła i rozpoznać własne predyspozycje.',
+      '„W jednym miejscu spotykały się osoby z małych miejscowości czy kompletnie nieobeznane z estradą i nagle miały styczność z bardzo profesjonalną sceną, gdzie jest fantastyczne nagłośnienie, znakomita oprawa świetlna, a wykonawcom akompaniują najlepsi polscy muzycy. Uczestnicy mogli się przekonać, co to jest prawdziwy występ” - zapewnia Cygan.',
+      'A może cały ten „Idol” i podobne do niego formaty służą jedynie dostarczaniu łatwej rozrywki, uprzyjemnianiu weekendowych wieczorów spędzanych przed telewizorem? I wcale nie chodzi o kreowanie nowych gwiazd, których przemysł muzyczny - zmagający się z rynkową nadpodażą niesłuchanych wokalistów i niekupowanych płyt - i tak nie potrzebuje? Widzowie oraz ich uwaga są cenniejsi niż idol i jego kariera. Czy właśnie dlatego przyjęta konwencja wymaga, by nowe twarze zajmowały się odgrzewaniem starych hitów?'
+    ],
+    src: 'Na podstawie: K. Wojciechowski, Pasowani na idoli, DGP 10-13.11.2022, nr 218, s. A26-27.',
+    example: { q: 'Programy lansujące gwiazdy muzyczne', opts: ['nie gwarantują długotrwałej kariery.', 'są dla uczestnika okazją do łatwego zarobku.', 'utwierdzają amatora w przekonaniu o jego wyjątkowości.'], ans: 'a' },
+    items: [
+      { q: 'Program „Szansa na sukces” był', opts: ['pierwszym programem rozrywkowym w polskiej telewizji.', 'prekursorską produkcją polegającą na wyłanianiu talentów.', 'rodzajem mecenatu doświadczonego muzyka nad adeptem sztuki wokalnej.'], ans: 'b' },
+      { q: 'Dzięki wygraniu rocznego cyklu „Szansy na sukces” można', opts: ['nagrać piosenkę wraz ze swoim idolem.', 'poprowadzić koncert w Opolu.', 'otrzymać możliwość występu na prawdziwej estradzie.'], ans: 'c' },
+      { q: 'Kolejne muzyczne konkursy', opts: ['nie sprzyjają trwałemu zapamiętywaniu ich zwycięzców.', 'ugruntowują pozycję ich twórców i zapewniają sławę następnym wykonawcom.', 'sprawiają, że widzowie doświadczają poczucia przesytu i znudzenia.'], ans: 'a' },
+      { q: 'Laureaci pierwszych edycji „Idola”', opts: ['w krótkim czasie sięgali po kolejne trofea.', 'wkrótce rozstali się z branżą muzyczną.', 'nie zdołali szybko wybić się w branży.'], ans: 'c' },
+      { q: 'Repertuar obejmujący cudze utwory', opts: ['stanowi wielkie wyzwanie dla początkujących artystów.', 'sprzyja medialnemu promowaniu niedoświadczonych wokalistów.', 'oznacza, że wykonawcy brak kreatywności.'], ans: 'b' },
+      { q: 'Laureaci programów telewizyjnych nie osiągają sukcesu, ponieważ', opts: ['nie mogą się porozumieć z przedstawicielami branży.', 'stają się ofiarami pazerności najbliższych.', 'nie potrafią sprostać narzuconej im roli idola.'], ans: 'c' },
+      { q: 'Zdaniem Jacka Cygana program „Idol”', opts: ['dawał uczestnikom przedsmak pracy estradowej.', 'był udaną formą szlifowania muzycznych talentów.', 'stwarzał pozory koncertu na żywo i zarabiał na oglądalności.'], ans: 'a' }
+    ]
+  },
+  {
+    id: 'II', type: 'tf', per: 1, max: 8,
+    title: 'Zadanie II',
+    instr: 'Proszę przeczytać tekst, a następnie - jak w przykładzie - zaznaczyć: TAK - gdy zdanie jest zgodne z tekstem; NIE - gdy nie jest zgodne z tekstem; BI - gdy w tekście brakuje informacji na dany temat.',
+    heading: 'Jak kultura fizyczna stawała się masowa',
+    paras: [
+      'Kiedy rozpoczynają się dzieje polskiego sportu? Na to pytanie trudno odpowiedzieć, gdyż elementy walki sportowej już od dawien dawna istniały w różnych formach aktywności fizycznej praktykowanej na ziemiach polskich. Czym bowiem była nauka szermierki w Szkole Rycerskiej i organizowane tam turnieje szpady? Czym były turnieje rycerskie albo rywalizacje Bractwa Kurkowego w strzelaniu do celu? Sportowcem jednak nie nazywano ani Zawiszy Czarnego, ani nawet Hieronima Pawłowskiego, który w 1828 roku dawał pokaz biegu tyłem w Parku Saskim w Warszawie. Ścigał się też, tym razem biegnąc przed siebie, z pewnym lordem angielskim na dystansie kilku kółek w tymże parku, co było popisem odpłatnym dla widzów. Mniej więcej w tym okresie Jan Nepomucen Krupski opracowywał pierwszy podręcznik do szachów, traktując tę grę w iście sportowy sposób. Przyjmuje się, że założenie w 1867 roku Towarzystwa Gimnastycznego „Sokół” to początki zorganizowanego upowszechniania sportu w Polsce.',
+      'Gdy członkowie „Sokoła” rozgrywali pierwsze historyczne spotkanie piłkarskie, w Paryżu zamykano właśnie obrady kilkudziesięciu entuzjastów sportu zakończone powstaniem Międzynarodowego Komitetu Olimpijskiego - instytucji, która dziś zrzesza 206 krajów i organizuje Igrzyska Olimpijskie. Jednak nie ma co porównywać pierwszych nowożytnych igrzysk do tych rozgrywanych obecnie. W tamtym czasie nie wymyślono jeszcze flagi olimpijskiej z pięcioma kołami ani nie wskrzeszono ceremonii z rozpalaniem znicza olimpijskiego, a medale zdobywało tylko dwóch najlepszych zawodników. W pierwszych igrzyskach startowało niespełna 250 sportowców z 13 krajów. Zawody lekkoatletyczne odbywały się na stadionie o szerokości trzydziestu kilku metrów, przypominającym bardziej kiszkę niż szlachetny owal dzisiejszych boisk. Wyścig kolarski na 100 km zorganizowano na torze mającym ok. 350 metrów. Łatwo obliczyć, że zawodnicy musieli pokonać trzysta okrążeń i widzowie szybko się pogubili w tym, kto wygrywa, a kto jest ostatni. W pierwszych Igrzyskach Olimpijskich startowali też Polacy, choć pod flagą innych państw, najczęściej zaborczych, co bardzo bolało. Zwycięskie walki zapaśnicze toczone w Stanach Zjednoczonych czy Paryżu przez Zbyszka Cyganiewicza były fetowane przez tamtejszą Polonię. Tyle że dla większości Polaków sport ciągle pozostawał czymś obcym, nieznanym.',
+      'Sport najlepiej rozwijał się w Galicji, choć i tam bywały miejsca, gdzie z oburzeniem spoglądano na zbyt mocno roznegliżowanych ćwiczących mężczyzn. Z popularnością aktywności fizycznej na terenie zaboru rosyjskiego było dużo gorzej. Jeszcze na początku lat dwudziestych, gdy wioślarze z Warszawy zapuścili się w rejony Puław, miejscowi chłopi mieli zamiar przegonić dziwacznie ubranych „dzikusów”. Gdy w 1920 roku w Warszawie rozgrywano bieg uliczny na trasie Belweder - Stare Miasto, komisarz Policji Państwowej wydał specjalny rozkaz posterunkowym, którzy mieli tego dnia dyżury na trasie biegu. Informował w nim, że ci panowie biegnący w krótkich spodenkach przez miasto to sportowcy i nie wolno ich aresztować.',
+      'W czasach zaborów Polacy zadawali sobie pytanie, czy w Igrzyskach Olimpijskich mogą startować pod swoimi barwami, pomimo formalnego braku państwa. Takiemu pomysłowi był przeciwny między innymi de Coubertin, choć prywatnie współczuł polskiej niedoli. Gdy nastało dwudziestolecie międzywojenne, sport w błyskawicznym tempie zyskiwał na popularności (dość wspomnieć, że różne ugrupowania polityczne i ruchy społeczne chciały pozyskać zawodników w swoje szeregi). W niespełna rok po odzyskaniu przez Polskę niepodległości powołano w Krakowie Polski Komitet Olimpijski, który do 1925 roku działał pod nieco inną nazwą niż obecnie.'
+    ],
+    src: 'Na podstawie: https://niepodlegla.gov.pl/o-niepodleglej/jak-sport-zmienial-swiat-pionierskie-czasy-sportu/',
+    example: { q: 'Pionierskie czasy sportu w Polsce szacuje się na średniowiecze.', ans: 'NIE' , exAns: 'TAK' },
+    items: [
+      { q: 'Wszystkie biegi w Parku Saskim można było oglądać za darmo.', ans: 'NIE' },
+      { q: 'Pierwszy mecz rozegrany przez zawodników „Sokoła” zakończył się remisem.', ans: 'BI' },
+      { q: 'Obserwowanie kolarzy podczas pierwszych igrzysk olimpijskich wymagało od widzów ogromnej koncentracji.', ans: 'TAK' },
+      { q: 'W czasach rozbiorów Polacy nie mogli uczestniczyć w rozgrywkach olimpijskich', ans: 'NIE' },
+      { q: 'Pierwsze igrzyska nowożytne wzbudzały powszechną ekscytację.', ans: 'NIE' },
+      { q: 'Widok mężczyzn w strojach sportowych wywoływał dezaprobatę zarówno w mieście, jak i na wsi.', ans: 'TAK' },
+      { q: 'Politycy starali się wykorzystywać sportowców, by zwiększyć poparcie dla swoich partii.', ans: 'TAK' },
+      { q: 'Polski Komitet Olimpijski początkowo nie zyskał akceptacji władz niepodległej Polski.', ans: 'BI' }
+    ]
+  },
+  {
+    id: 'III', type: 'match', per: 1, max: 10,
+    title: 'Zadanie III',
+    instr: 'Proszę przeczytać tekst i - zgodnie z przykładem - dopasować usunięte z niego fragmenty (A-M). Uwaga! Dwa fragmenty są zbędne.',
+    heading: 'Wszystko to nie miało prawa się zdarzyć',
+    paras: [
+      'Obecność Mikołaja Kopernika w obszarze polskiej wyobraźni symbolicznej wydaje się oczywista - banknoty, pomniki, podręczniki, świadomość, że „wstrzymał Słońce, ruszył Ziemię”. [[A]] W świeżo wydanej biografii zatytułowanej „Kopernik. Rewolucje” Wojciech Orliński udowadnia, jak skromna jest potoczna wiedza na temat wybitnego astronoma. {1} Co więcej, poznajemy także atmosferę czasów, w których przyszło tworzyć geniuszowi.',
+      'Powszechnie wyrażana dziś opinia, że żyjemy w unikatowej epoce gwałtownych i wielkich przemian, wydaje się śmieszyć. {2} Brał on czynny udział w przynajmniej jednej wojnie. Był - jako człowiek Kościoła - świadkiem reformacyjnej schizmy, która wstrząsnęła nie tylko europejskim życiem religijnym, lecz także, a może przede wszystkim, europejską polityką. {3} Przyszedł na świat w późnośredniowiecznej monarchii stanowej, umierał zaś w renesansowej demokracji szlacheckiej. A jego ojciec zarabiał na życie najpewniej jako tajny agent.',
+      'Kopernik jako bohater biografii nastręcza nie lada kłopotów. {4} Inni ludzie jego epoki spisywali wspomnienia, prowadzili dzienniki podróży i bogatą korespondencję prywatną. On sam pisał niewiele listów, a i z tego większość zaginęła. {5} Posiadanie pism heretyka mogło być bowiem świadectwem skłaniania się ku herezji, a procesy o herezję naprawdę źle się wtedy kończyły. {6} Innymi słowy, każda książka o Koperniku jest - a przynajmniej powinna być - swego rodzaju śledztwem.',
+      'Przy pisaniu biografii Kopernika w grę wchodzi wszelkiego rodzaju niestrudzona spekulatywność, przez co zapewne zawodowym historykom włosy stają dęba na głowie. {7} Orliński wciąż robi rozmaite założenia, rozważa możliwe scenariusze, rozumuje przez analogie, wdaje się w dygresje, uprzedza wypadki, zgaduje intencje. Taka pisarska nadpobudliwość ma oczywiście tę zaletę, że pozwala wypełnić w opowieści miejsca, które przy innym podejściu pozostałyby puste. {8} Cała książka opowiada w gruncie rzeczy o tzw. warunkach brzegowych, w jakich mogło zaistnieć pewne skrajnie mało prawdopodobne zdarzenie: takie, że w katedrze w miasteczku leżącym na skraju cywilizowanego świata pewien zdolny amator opracował model astronomiczno-matematyczny wyprzedzający ówczesne badania naukowe o dobrych parę dekad. {9} Biografia Kopernika nie jest jedną z tych publikacji, które opisują tylko samą postać. {10} Można wręcz powiedzieć, że świat, w którym żył i działał Kopernik, był absolutnym jej przeciwieństwem, tak silnie wypełniało go pulsujące ludzkie życie.'
+    ],
+    src: 'Na podstawie: P. Kofta, Wszystko to nie miało prawa się wydarzyć, DGP 10-13.11.2022, nr 218, s. A28-29.',
+    letters: 'ABCDEFGHIJKLM'.split(''),
+    frags: {
+      A: 'Niemniej sprawy oczywiste, kiedy je trochę poskrobać ciekawskim pazurem, oczywiste być przestają.',
+      B: 'To, co nie przystoi naukowcom, uchodzi jednak pisarzom, którzy mogą używać swojej wyobraźni i zachęcać odbiorcę do snucia kolejnych domysłów.',
+      C: 'Autor książki nie może uwolnić się od myśli, że astronom celowo starał się zostawiać jak najmniej papierowych śladów po swoim życiu.',
+      D: 'Wypada więc docenić skłonność do rozważania biegu dziejów w kategoriach historii alternatywnych.',
+      E: 'Przy czym nie czyni tego z poczuciem wyższości, ale zaprasza do wspólnego odkrywania jego zawiłych losów.',
+      F: 'Przecież nie analizowano w nich uczciwie dowodów, nie można było też liczyć na mowy obrońców!',
+      G: 'Sam jeden wywołał rewolucję w nauce i żył na przełomie dwóch epok.',
+      H: 'I może to dobrze, bo wszak po śmierci Kopernika jego idee były zwalczane zarówno w katolickiej, jak i protestanckiej Europie.',
+      I: 'Każde bowiem stulecie obfitowało w spektakularne wydarzenia, również te czasy, w których żył Kopernik.',
+      J: 'W istocie chodzi o zrozumienie całej złożoności unikatowego odkrycia naukowego, które nigdy nie wydarza się w próżni.',
+      K: 'Metaforycznie rzecz ujmując, jest to opowieść o tym, jak wielbłąd przecisnął się przez ucho igielne.',
+      L: 'Alternatywą wobec takich poglądów jest hipoteza o istnieniu nieskończenie wielu wszechświatów.',
+      M: 'Pomimo to czytelnik musi przedzierać się przez zawiłe przemyślenia autora na temat idei uniwersytetu i kondycji średniowiecznej nauki.'
+    },
+    answers: { 1: 'E', 2: 'I', 3: 'G', 4: 'C', 5: 'H', 6: 'F', 7: 'B', 8: 'D', 9: 'K', 10: 'J' },
+    note: 'Zbędne fragmenty: L, M.'
+  },
+  {
+    id: 'IV', type: 'topic', per: 1, max: 10,
+    title: 'Zadanie IV',
+    instr: 'Proszę - zgodnie z przykładem - wpisać, w którym fragmencie poruszony jest wskazany temat. Uwaga! Jeden temat może być opisywany w kilku fragmentach.',
+    heading: 'Urządzanie życia',
+    passages: [
+      ['A', 'Jeżeli wyzwaniem jest ni mniej, ni więcej, tylko przeprojektowanie tego, jak przeżywamy swoje życie, to warto zapytać, na jakich zasadach powinien opierać się ten projekt. W jego centrum pojawią się najprawdopodobniej sprawy ekonomiczne - fundamentalną zasadą musi być zapewnienie „dobrego życia”. To przecież obawy dotyczące kwestii ekonomicznych stoją za lękiem, że utracimy swój status, bo roboty wyprą nas ze wszystkich miejsc pracy i że społeczeństwo nie będzie sobie mogło pozwolić na wczesne emerytury przy rosnącym odsetku osób starszych. Dlatego razem z długowiecznością i rozwojem mechanizacji (w ostatecznym rozrachunku przynoszącymi przecież spore benefity) musi iść zapewnienie nam satysfakcjonującego standardu życia.'],
+      ['B', 'Na pozór ogólna koncepcja wieku człowieka wydaje się stosunkowo prosta - nawet małe dziecko ją rozumie. A jednak odpowiedź udzielana przez nie na pytanie „Ile masz lat?” jest ograniczająca, bo odnosi się wyłącznie do czasu mierzonego latami. Tymczasem postrzeganie wieku może mieć również wymiar biologiczny (wiek ciała), socjologiczny (to, jak inni nas postrzegają) i subiektywny (to, na ile się czujemy). Te różne podejścia znajdują odzwierciedlenie w popularnych powiedzeniach: „Mam już swoje lata”, „On dobrze wygląda jak na swój wiek”, „W twoim wieku nie należy tego robić”. W miarę jak pojęcie wieku staje się plastyczne, powiązania pomiędzy jego różnymi zakresami zaczynają się zmieniać, ich granice stają się płynne, a to podważa nasz stereotypowy podział życia na następujące po sobie fazy.'],
+      ['C', 'Jeżeli chcemy od nowa zdefiniować wiek w perspektywie długowieczności, musimy najpierw odrzucić proste połączenie między czasem a wiekiem. To wymaga wyobrażenia sobie życia jako czegoś podatnego na przekształcanie - w miarę jak żyjemy dłużej, z większą szansą na zachowanie zdrowia, zasadniczo zmienia się to, co dla każdego z nas oznacza czterdziestka, sześćdziesiątka czy osiemdziesiątka. Właśnie ta plastyczność leży u podstaw zmiany wykładni opisu faz życia.'],
+      ['D', 'Od momentu wprowadzenia emerytur ludzie mają zapewniony dodatkowy odpoczynek w późniejszej fazie życia. Kiedy spojrzymy w przyszłość, zobaczymy, że inteligentne nowe technologie mają potencjał, by doprowadzić do dalszego ograniczenia czasu aktywności zawodowej i zaoferowania nam perspektywy czterodniowego tygodnia pracy. Aby społeczeństwa mogły się rozwijać w poczuciu satysfakcji, wszyscy muszą zyskać na postępie i dłuższym życiu, co dostrzegają już rządzący oraz twórcy rozmaitych rozwiązań systemowych. Tak samo jak jednostkowo musimy zmienić strukturę naszego życia, tak samo muszą zmienić się nasze instytucje i przepisy zapewniające ubezpieczenia i wsparcie dla tych, którzy mają za mało zasobów lub doświadczają trudności - zwłaszcza wynikających z technologizacji życia.'],
+      ['E', 'Nie zawsze polegaliśmy na chronologii jako dominującym narzędziu pomiaru wieku - nawet przyjęcia urodzinowe upowszechniły się stosunkowo niedawno. Przez większość historii ludzie nie znali ani dokładnej daty, ani nawet roku swojego urodzenia. Obliczanie wieku chronologicznego stało się powszechne dopiero w dziewiętnastym stuleciu, gdy władze państwowe zaczęły gromadzić dokładne dane o urodzeniach. To wtedy czas rozumiany linearnie zaczął porządkować strukturę naszego życia. W rezultacie powstało trzymające nas w ryzach zjawisko, które można określić mianem determinizmu numerycznego. Oznacza ono tyle, że zarówno normy społeczne, jak również założenia dotyczące naszego własnego przyszłego życia są „przyczepione” do liczby określającej, ile lat minęło od urodzenia.']
+    ],
+    src: 'Na podstawie: L. Gratton, A.J. Scott, Jak urządzić życie na nowo, „Przegląd”, 15-21.05.2023, s. 56-59.',
+    letters: 'ABCDE'.split(''),
+    example: { q: 'Ludzie żyją dłużej i zmienia się to, jak się starzeją. Dlatego dochodzi do reinterpretacji terminu „starość”.', ans: ['C'] },
+    items: [
+      { q: 'Nierówności w poziomie dochodów i długości życia zaczynają coraz bardziej wpływać na kształt programów społeczno-politycznych.', ans: ['D'] },
+      { q: 'Wiek mierzony liczbą lat wyznacza określone sposoby postępowania i wpływa na to, jak odbieramy siebie i innych.', ans: ['B', 'E'] },
+      { q: 'Ludzkiemu dążeniu do zabezpieczenia potrzeb bytowych towarzyszy pragnienie utrzymania swojej podmiotowości w zmieniającym się świecie.', ans: ['A'] },
+      { q: 'Transformacja technologiczna stwarza też obawy o naszą przyszłość.', ans: ['A'] },
+      { q: 'Przywiązanie do dat, tak powszechne w naszej kulturze, nie ma zbyt długiej tradycji.', ans: ['E'] },
+      { q: 'Odrzucenie sztywnych podziałów między różnymi sposobami pojmowania wieku człowieka pozwala zrezygnować z utrwalonego zwyczajem odmierzania upływu życia.', ans: ['B', 'C'] },
+      { q: 'Coraz bardziej realne perspektywy osiągnięcia sędziwego wieku modelują osobistą narrację dotyczącą starzenia się.', ans: ['C'] },
+      { q: 'Potrzebny będzie szereg dalszych regulacji prawnych, abyśmy skorzystali z przeobrażeń związanych z długością życia oraz rozwojem technologii.', ans: ['D'] }
+    ],
+    note: 'Pozycje 2 i 6 mają po dwie odpowiedzi - za każdą poprawnie wskazaną literę 1 p. (kolejność dowolna).'
+  },
+  {
+    id: 'V', type: 'cloze', per: 0.5, max: 5,
+    title: 'Zadanie V',
+    instr: 'Proszę - zgodnie z przykładem - podkreślić najlepszą spośród możliwości podanych w nawiasach (tu: zaznaczyć jedną z możliwości).',
+    heading: 'Skąd w Poznaniu wzięły się koszyki i piwo',
+    paras: [
+      'Muzeum Wikliniarstwa powstało w maju 1985 roku, jako [[oddział]] Muzeum Narodowego Rolnictwa i Przemysłu Rolno-Spożywczego w Szreniawie pod Poznaniem. Lokalizacja tej jedynej tego typu {1} muzealnej w Polsce ma związek ze specyfiką regionu, wynikającą z bogatych tradycji w zakresie {2} wikliny i chmielu oraz produkcji wyrobów wiklinowych. Decydujący wpływ na powstanie i rozwój tychże tradycji miały naturalne warunki terenu oraz procesy historyczne związane z {3} ludności w ramach osadnictwa olęderskiego. Podmokły, miejscami bagnisty teren sprawia, że wierzba w {4} dzikim rosła tutaj zawsze. Olędrzy osiedlający się w tym rejonie w pierwszej połowie XVIII wieku zaczęli sadzić wierzbę, wykorzystując w tym swoją wiedzę i doświadczenie. Tak bogate {5} stanowiło też znakomitą bazę dla rozwoju rzemiosła plecionkarskiego, które funkcjonuje na tych terenach do dziś. Podobnie początki chmielarstwa w okolicach Nowego Tomyśla {6} z przybywającymi na te tereny kolonistami pochodzenia niemieckiego i czeskiego. W powstających polsko-czeskich i niemiecko-czeskich gminach olęderskich, położonych na południowy zachód od Nowego Tomyśla, wydawano {7} umożliwiające osadnikom domowy wyrób piwa. Powstawały w związku z tym małe przydomowe {8} chmielu uprawianego na własny użytek.',
+      'Bazę lokalową muzeum stanowią dwa obiekty, które prezentują dawny charakter zachowanego w tym regionie budownictwa. Główna {9} mieści się w dawnym budynku mieszkalnym osadnika olęderskiego, pochodzącym z końca XVIII wieku. Na terenie kompleksu obejrzeć można wystawy odnoszące się do obróbki wikliny i chmielu, przetwórstwa tych {10} oraz rzemiosła plecionkarskiego, zarówno o charakterze użytkowym, jak i artystycznym.'
+    ],
+    src: 'Na podstawie: https://muzeum-szreniawa.pl/muzeum-w-nowym-tomyslu/',
+    exampleOpts: ['dział', 'oddział', 'wydział', 'przydział'],
+    items: {
+      1: { opts: ['placówki', 'agencji', 'pozycji', 'komórki'], ans: 'placówki' },
+      2: { opts: ['hodowli', 'gospodarki', 'agronomii', 'uprawy'], ans: 'uprawy' },
+      3: { opts: ['napływem', 'tłokiem', 'wpływem', 'najściem'], ans: 'napływem' },
+      4: { opts: ['ułożeniu', 'rodzaju', 'stanie', 'natężeniu'], ans: 'stanie' },
+      5: { opts: ['podnóże', 'poparcie', 'zaplecze', 'dojście'], ans: 'zaplecze' },
+      6: { opts: ['wiążą się', 'stapiają się', 'integrują się', 'skupiają się'], ans: 'wiążą się' },
+      7: { opts: ['preferencje', 'priorytety', 'awanse', 'przywileje'], ans: 'przywileje' },
+      8: { opts: ['stada', 'fermy', 'zagrody', 'poletka'], ans: 'poletka' },
+      9: { opts: ['filia', 'miejscówka', 'siedziba', 'instancja'], ans: 'siedziba' },
+      10: { opts: ['kruszców', 'substancji', 'surowców', 'budulców'], ans: 'surowców' }
+    }
+  }
+];
+
+const MAX = 40, PASS = 24;
+const STORE_KEY = 'c1_czyt_2023_11_v1';
+
+// ---------- pomocnicze ----------
+function norm(s) {
+  return String(s || '').toLowerCase()
+    .replace(/[„”"'’‘.,!?;:()]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function fold(s) {
+  return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+}
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function pl(n) {
+  return (Math.round(n * 100) / 100).toString().replace('.', ',');
+}
+const SELFTEST = /[?&]selftest\b/.test(location.search);
+function load() { if (SELFTEST) return {}; try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() {
+  if (SELFTEST) return;
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {}
+}
+
+// ---------- budowanie arkusza ----------
+function radios(id, list, cls) { // list: [value, label]
+  return list.map(([v, lab]) =>
+    `<label class="${cls || ''}"><input type="radio" name="${id}" data-id="${id}" value="${esc(v)}"> ${lab}</label>`).join('');
+}
+function selectHtml(id, letters, n) {
+  return `<select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${letters.map(l => `<option value="${l}">${l}</option>`).join('')}</select>`;
+}
+function textHtml(t) {
+  return t.paras.map(p => {
+    let h = esc(p);
+    h = h.replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+    h = h.replace(/\{(\d+)\}/g, (m, n) => {
+      const id = `${t.id}-${n}`;
+      let field;
+      if (t.type === 'match') field = selectHtml(id, t.letters, n);
+      else { // cloze
+        const it = t.items[n];
+        field = `<span class="opts">(` + it.opts.map(o => `<label><input type="radio" name="${id}" data-id="${id}" value="${esc(o)}"> ${esc(o)}</label>`).join(' ') + `)</span>`;
+      }
+      return `<span class="gap" id="g-${id}">${field}<sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+    });
+    return `<p>${h}</p>`;
+  }).join('');
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    const n = t.type === 'cloze' ? 10 : (t.type === 'topic' ? 10 : t.items ? t.items.length : 10);
+    const ptsLab = t.type === 'cloze' ? '10 x 0,5 p.' : `${t.max} x 1 p.`;
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${ptsLab} = ${t.max} p.</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    html += `<p class="instr" style="font-size:18px">${esc(t.heading)}</p>`;
+    if (t.type === 'mc' || t.type === 'tf') {
+      html += `<div class="text">` + t.paras.map(p => `<p>${esc(p)}</p>`).join('') + `</div>`;
+      html += `<div class="src">${esc(t.src)}</div>`;
+      const e = t.example;
+      if (t.type === 'mc') {
+        html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div>${esc(e.q)}<br>` +
+          e.opts.map((o, i) => `<span style="${'abc'[i] === e.ans ? 'font-weight:700;text-decoration:underline dotted' : ''}">${'abc'[i]}) ${esc(o)}</span>`).join('<br>') + `</div>`;
+        t.items.forEach((it, i) => {
+          const id = `${t.id}-${i + 1}`;
+          html += `<div class="q" id="q-${id}"><div class="qt"><b>${i + 1}.</b> ${esc(it.q)}</div>` +
+            radios(id, it.opts.map((o, k) => ['abc'[k], `${'abc'[k]}) ${esc(o)}`]), 'opt') +
+            `<span class="fix"></span></div>`;
+        });
+      } else {
+        html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div>${esc(e.q)} <b>${e.exAns}</b></div>`;
+        t.items.forEach((it, i) => {
+          const id = `${t.id}-${i + 1}`;
+          html += `<div class="q" id="q-${id}"><div class="qt"><b>${i + 1}.</b> ${esc(it.q)}</div>` +
+            radios(id, [['TAK', 'TAK'], ['NIE', 'NIE'], ['BI', 'BI']], 'row') + `<span class="fix"></span></div>`;
+        });
+      }
+    } else if (t.type === 'match') {
+      html += `<div class="text">${textHtml(t)}</div><div class="src">${esc(t.src)}</div>`;
+      html += `<div style="margin-top:14px"><div class="lbl" style="font-weight:700;font-size:12px;color:var(--muted)">FRAGMENTY</div>` +
+        t.letters.map(l => `<div class="frag"><b>${l}</b>${esc(t.frags[l])}${l === 'A' ? ' <i>(przykład)</i>' : ''}</div>`).join('') + `</div>`;
+    } else if (t.type === 'topic') {
+      html += t.passages.map(([l, p]) => `<div class="pass-txt"><b class="pl">${l}.</b> ${esc(p)}</div>`).join('');
+      html += `<div class="src">${esc(t.src)}</div>`;
+      html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD - O tym mówi się w:</div>${esc(t.example.q)} <b>[ C ]</b></div>`;
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const sels = it.ans.map((_, k) => `<span class="gap" id="g-${id}-${k}">${selectHtml(`${id}-${k}`, t.letters, i + 1)}</span>`).join(' ');
+        html += `<div class="q" id="q-${id}"><div class="qt"><b>${i + 1}.</b> ${esc(it.q)}</div>${sels}<span class="fix"></span></div>`;
+      });
+    } else { // cloze
+      const exOpts = t.exampleOpts;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>(${exOpts.map(o => o === 'oddział' ? `<b><u>${o}</u></b>` : o).join(', ')})</div>`;
+      html += `<div class="text">${textHtml(t)}</div><div class="src">${esc(t.src)}</div>`;
+    }
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('[data-id]').forEach(el => {
+    const sv = saved[el.dataset.id];
+    if (sv != null) {
+      if (el.type === 'radio') el.checked = (el.value === sv);
+      else el.value = sv;
+    }
+    el.addEventListener('change', () => { save(); updateProgress(); });
+  });
+  updateProgress();
+}
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('[data-id]').forEach(el => {
+    if (el.type === 'radio') { if (el.checked) o[el.dataset.id] = el.value; }
+    else o[el.dataset.id] = el.value;
+  });
+  return o;
+}
+
+function updateProgress() {
+  const ids = new Set();
+  document.querySelectorAll('[data-id]').forEach(el => ids.add(el.dataset.id));
+  const vals = collect();
+  let filled = 0;
+  ids.forEach(id => { if (vals[id]) filled++; });
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${ids.size}`;
+}
+
+// ---------- sprawdzanie ----------
+function mark(el, ok, fixHtml) {
+  el.classList.remove('ok', 'bad');
+  el.classList.add(ok ? 'ok' : 'bad');
+  const fix = el.querySelector('.fix');
+  if (fix) { fix.className = 'fix' + (ok ? '' : ' bad'); fix.innerHTML = ok ? '' : fixHtml; }
+}
+function markSel(id) {
+  document.querySelectorAll(`#q-${id} label`).forEach(l => {
+    l.classList.toggle('sel', l.querySelector('input').checked);
+  });
+}
+
+function checkAll() {
+  const vals = collect();
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const v = vals[id] || '';
+        const ok = v === it.ans;
+        if (ok) score += t.per;
+        markSel(id);
+        const lab = t.type === 'mc' ? `${it.ans}) ${esc(it.opts['abc'.indexOf(it.ans)])}` : it.ans;
+        mark(document.getElementById(`q-${id}`), ok, '→ ' + (v ? '' : 'brak odpowiedzi. ') + 'Poprawnie: ' + lab);
+      });
+    } else if (t.type === 'match') {
+      for (const n in t.answers) {
+        const id = `${t.id}-${n}`;
+        const ok = (vals[id] || '') === t.answers[n];
+        if (ok) score += t.per;
+        mark(document.getElementById(`g-${id}`), ok, '→ ' + t.answers[n]);
+      }
+    } else if (t.type === 'topic') {
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const chosen = [];
+        let pts = 0;
+        it.ans.forEach((_, k) => {
+          const v = vals[`${id}-${k}`] || '';
+          const slotOk = v !== '' && it.ans.includes(v) && !chosen.includes(v);
+          chosen.push(v);
+          if (slotOk) pts += t.per;
+          const g = document.getElementById(`g-${id}-${k}`);
+          g.classList.remove('ok', 'bad'); g.classList.add(slotOk ? 'ok' : 'bad');
+        });
+        score += pts;
+        const q = document.getElementById(`q-${id}`);
+        q.classList.remove('ok', 'bad'); q.classList.add(pts === it.ans.length * t.per ? 'ok' : 'bad');
+        const fix = q.querySelector('.fix');
+        const full = pts === it.ans.length * t.per;
+        fix.className = 'fix' + (full ? '' : ' bad');
+        fix.innerHTML = full ? '' : '→ Poprawnie: ' + it.ans.join(', ');
+      });
+    } else { // cloze
+      for (const n in t.items) {
+        const id = `${t.id}-${n}`;
+        const it = t.items[n];
+        const ok = (vals[id] || '') === it.ans;
+        if (ok) score += t.per;
+        mark(document.getElementById(`g-${id}`), ok, '→ ' + esc(it.ans));
+      }
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / ${t.max} p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    per.push({ t, score });
+  }
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na czerwono: błędna odpowiedź, obok poprawna z klucza. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+let left = 60 * 60, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < 3600 ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  clearInterval(tick); running = false; left = 3600; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', checkAll);
+document.getElementById('checkBottom').addEventListener('click', checkAll);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+const TEST_ID = 'czytanie-2023-11';
+function setRadio(id, value) {
+  document.querySelectorAll(`[data-id="${id}"]`).forEach(el => { el.checked = (el.value === value); });
+}
+function setSel(id, value) {
+  const el = document.querySelector(`[data-id="${id}"]`);
+  if (el) el.value = value;
+}
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.items.forEach((it, i) => setRadio(`${t.id}-${i + 1}`, it.ans));
+    } else if (t.type === 'match') {
+      for (const n in t.answers) setSel(`${t.id}-${n}`, t.answers[n]);
+    } else if (t.type === 'topic') {
+      t.items.forEach((it, i) => it.ans.forEach((a, k) => setSel(`${t.id}-${i + 1}-${k}`, a)));
+    } else { // cloze
+      for (const n in t.items) setRadio(`${t.id}-${n}`, t.items[n].ans);
+    }
+  }
+  save(); updateProgress();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'czytanie', session: '2023-11', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trener C1</title>
+<style>
+/* Układ: okładka arkusza egzaminacyjnego, pod nią karta wyników, plan na wieczór, siatka arkuszy i narzędzia. */
+:root {
+  --bg: #e8ebef;
+  --card: #ffffff;
+  --ink: #1c2230;
+  --muted: #5a6374;
+  --line: #d5dae2;
+  --band: #e3e6ea;
+  --accent: #1f47c6;
+  --accent-soft: #e7edfd;
+  --ok: #17784a;
+  --ok-bg: #e1f2e9;
+  --bad: #c8261f;
+  --bad-bg: #fbe6e4;
+  --font-head: "Caladea", Cambria, Georgia, serif;
+  --font-body: "Carlito", Calibri, "Segoe UI", system-ui, sans-serif;
+  --font-hand: "Caveat", "Segoe Print", "Bradley Hand", cursive;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1217; --card: #181c23; --ink: #e5e8ee; --muted: #9ba4b4; --line: #2a303a; --band: #232831;
+    --accent: #8fa7ff; --accent-soft: #1c2440; --ok: #5fd39a; --ok-bg: #14301f; --bad: #ff7b72; --bad-bg: #3a1c1b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1217; --card: #181c23; --ink: #e5e8ee; --muted: #9ba4b4; --line: #2a303a; --band: #232831;
+  --accent: #8fa7ff; --accent-soft: #1c2440; --ok: #5fd39a; --ok-bg: #14301f; --bad: #ff7b72; --bad-bg: #3a1c1b;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 17px/1.5 var(--font-body);
+}
+.wrap {
+  max-width: 980px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 24px 64px;
+  display: grid; gap: 22px;
+}
+a { color: var(--accent); }
+.sheet {
+  background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+  box-shadow: 0 1px 0 var(--line), 0 10px 30px -22px rgba(20, 30, 60, .35);
+  overflow: hidden; min-width: 0;
+}
+.band {
+  background: var(--band); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+  padding: 10px 22px; font-family: var(--font-head); font-weight: 700; letter-spacing: .02em;
+}
+.band span:last-child { font-weight: 400; color: var(--muted); }
+.inner { padding: 20px 22px 22px; display: grid; gap: 16px; min-width: 0; }
+.hand { font-family: var(--font-hand); font-weight: 700; }
+
+/* okładka */
+.cover .inner { gap: 18px; }
+.eyebrow { font-family: var(--font-head); text-transform: uppercase; letter-spacing: .08em; font-size: 13px; color: var(--muted); }
+h1 { font-family: var(--font-head); font-size: clamp(38px, 7vw, 56px); line-height: 1; margin: 0; text-wrap: balance; }
+.lede { margin: 0; color: var(--muted); max-width: 62ch; }
+.fields { display: grid; gap: 8px; }
+.field { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 10px; row-gap: 2px; font-family: var(--font-head); font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+.field .dots { flex: 1 1 220px; border-bottom: 2px dotted var(--line); min-width: 0; padding-bottom: 2px; }
+.field .hand { color: var(--accent); font-size: 26px; letter-spacing: 0; text-transform: none; line-height: 1; }
+.cta {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap;
+  background: var(--accent); color: #fff; text-decoration: none; border-radius: 6px; padding: 14px 18px;
+}
+:root[data-theme="dark"] .cta, .cta { color: var(--card); }
+.cta b { font-size: 19px; font-family: var(--font-head); }
+.cta span { opacity: .9; }
+.cta:hover { filter: brightness(1.08); }
+
+/* karta wyników */
+.score-rows { display: grid; }
+.srow {
+  display: grid; grid-template-columns: minmax(130px, 1.1fr) minmax(120px, 2fr) 64px minmax(118px, auto);
+  gap: 14px; align-items: center; padding: 12px 0; border-top: 1px solid var(--line);
+}
+.srow:first-child { border-top: 0; }
+.srow .part b { display: block; font-family: var(--font-head); font-size: 18px; }
+.srow .part span { font-size: 14px; color: var(--muted); }
+.meter { position: relative; height: 12px; background: var(--band); border-radius: 99px; }
+.meter i { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: var(--accent); }
+.meter i.low { background: var(--bad); }
+.meter i.pass { background: var(--ok); }
+.meter em { position: absolute; top: -5px; bottom: -5px; left: 60%; width: 2px; background: var(--ink); opacity: .55; }
+.meter em::after { content: "60%"; position: absolute; top: -18px; left: -10px; font: 11px var(--font-body); font-style: normal; color: var(--muted); }
+.srow .val { font-family: var(--font-hand); font-weight: 700; font-size: 30px; color: var(--bad); text-align: right; line-height: 1; font-variant-numeric: tabular-nums; }
+.srow .val.none { color: var(--muted); font-size: 24px; }
+.chip { justify-self: start; font-size: 13px; font-weight: 700; padding: 3px 10px; border-radius: 99px; white-space: nowrap; }
+.chip.pass { background: var(--ok-bg); color: var(--ok); }
+.chip.low { background: var(--bad-bg); color: var(--bad); }
+.chip.none { background: var(--band); color: var(--muted); }
+.note { margin: 0; font-size: 15px; color: var(--muted); }
+
+/* plan */
+.plan { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; }
+.plan li { display: grid; grid-template-columns: 28px 1fr auto; gap: 10px; align-items: start; padding: 8px 0; border-top: 1px dashed var(--line); }
+.plan li:first-child { border-top: 0; }
+.plan input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--accent); }
+.plan label { cursor: pointer; }
+.plan .min { font-size: 14px; color: var(--muted); white-space: nowrap; }
+.plan li.done label { text-decoration: line-through; color: var(--muted); }
+
+/* siatka arkuszy */
+.scroll { overflow-x: auto; }
+table.grid { width: 100%; border-collapse: collapse; min-width: 520px; }
+.grid th { font-family: var(--font-head); text-align: left; font-size: 14px; color: var(--muted); font-weight: 700; padding: 6px 8px; }
+.grid td { padding: 6px 8px; border-top: 1px solid var(--line); vertical-align: middle; }
+.grid td.sess b { display: block; font-family: var(--font-head); }
+.grid td.sess span { font-size: 13px; color: var(--muted); }
+.cell {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; text-decoration: none; color: var(--accent);
+  min-height: 46px; font-weight: 700;
+}
+.cell:hover { border-color: var(--accent); background: var(--accent-soft); }
+.cell .hand { color: var(--bad); font-size: 26px; line-height: 1; }
+.cell .hand.ok { color: var(--ok); }
+.cell small { color: var(--muted); font-weight: 400; }
+.cell.off { color: var(--muted); border-style: dashed; font-weight: 400; pointer-events: none; }
+.cell .pl { display: none; font-size: 12px; color: var(--muted); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+
+/* narzędzia */
+.tools { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.tool { display: grid; grid-template-rows: auto 1fr; text-decoration: none; color: var(--ink); }
+.tool .inner { gap: 8px; }
+.tool b { font-family: var(--font-head); font-size: 20px; color: var(--accent); }
+.tool p { margin: 0; color: var(--muted); font-size: 15px; }
+.tool:hover { border-color: var(--accent); }
+.tool.off { opacity: .55; pointer-events: none; }
+
+footer { font-size: 14px; color: var(--muted); display: grid; gap: 6px; }
+footer button { font: inherit; color: var(--muted); background: none; border: 1px solid var(--line); border-radius: 6px; padding: 4px 10px; cursor: pointer; justify-self: start; }
+
+@media (max-width: 640px) {
+  .srow { grid-template-columns: 1fr auto; row-gap: 8px; }
+  .srow .meter { grid-column: 1 / -1; order: 3; }
+  .srow .val { order: 2; }
+  .srow .chip { order: 4; }
+  .inner, .band { padding-left: 16px; padding-right: 16px; }
+  /* siatka arkuszy jako karty: sesja nad trzema przyciskami */
+  table.grid, .grid tbody, .grid tr, .grid td { display: block; }
+  table.grid { min-width: 0; }
+  .grid thead { display: none; }
+  .grid tr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 10px 0; border-top: 1px solid var(--line); }
+  .grid tbody tr:first-child { border-top: 0; }
+  .grid td { border: 0; padding: 0; min-width: 0; }
+  .grid td.sess { grid-column: 1 / -1; display: flex; gap: 8px; align-items: baseline; }
+  .grid td.sess b { display: inline; }
+  .cell { flex-direction: column; align-items: flex-start; justify-content: center; gap: 2px; min-height: 60px; padding: 6px 8px; }
+  .cell .pl { display: block; }
+  .cell .hand { font-size: 24px; }
+}
+</style>
+<script src="assets/c1-common.js"></script>
+<script src="assets/c1-manifest.js"></script>
+</head>
+<body data-c1-home>
+<main class="wrap">
+
+  <section class="sheet cover" aria-labelledby="t">
+    <div class="band"><span>JĘZYK POLSKI JAKO OBCY</span><span>Poziom C1</span></div>
+    <div class="inner">
+      <div class="eyebrow">Państwowy egzamin certyfikatowy</div>
+      <h1 id="t">Trener C1</h1>
+      <p class="lede">Prawdziwe arkusze Państwowej Komisji, sprawdzane oficjalnym kluczem. Każdy test pokazuje wynik i błędy od razu, a ta strona zbiera wszystko w jednym miejscu.</p>
+      <div class="fields">
+        <div class="field"><span>Zdający:</span><span class="dots"><span class="hand">Tigran</span></span></div>
+        <div class="field"><span>Egzamin pisemny:</span><span class="dots"><span class="hand" id="dWritten">sobota 17.10</span></span></div>
+        <div class="field"><span>Egzamin ustny:</span><span class="dots"><span class="hand" id="dOral">niedziela 18.10</span></span></div>
+      </div>
+      <a class="cta" id="next" href="#arkusze"><b>Zacznij od arkusza</b><span>→</span></a>
+    </div>
+  </section>
+
+  <section class="sheet" aria-labelledby="kw">
+    <div class="band"><span id="kw">KARTA WYNIKÓW</span><span>próg: 60% z każdej części</span></div>
+    <div class="inner">
+      <div class="score-rows" id="scorecard"></div>
+      <p class="note">Każda część liczy się osobno. Świetna gramatyka nie uratuje słabego czytania, dlatego pilnuj kreski 60% w każdym wierszu. Pokazany jest najlepszy wynik z rozwiązanych arkuszy.</p>
+    </div>
+  </section>
+
+  <section class="sheet" aria-labelledby="pl">
+    <div class="band"><span id="pl">NA DZIŚ WIECZÓR</span><span>propozycja, ok. 2,5 godziny</span></div>
+    <div class="inner">
+      <ul class="plan" id="plan"></ul>
+    </div>
+  </section>
+
+  <section class="sheet" id="arkusze" aria-labelledby="ark">
+    <div class="band"><span id="ark">ARKUSZE</span><span id="arkCount"></span></div>
+    <div class="inner">
+      <div class="scroll"><table class="grid" id="grid"></table></div>
+      <p class="note" id="audioNote">Słuchanie: oficjalne nagranie Komisji jest na górze każdego testu i gra prosto z certyfikatpolski.pl (start czasem trwa kilkanaście sekund). Transkrypcja odsłania się po sprawdzeniu.</p>
+    </div>
+  </section>
+
+  <section class="tools" id="tools"></section>
+
+  <footer>
+    <span>Arkusze, nagrania i klucze: Państwowa Komisja do spraw Poświadczania Znajomości Języka Polskiego jako Obcego, certyfikatpolski.pl: <a href="https://certyfikatpolski.pl/o-egzaminie/testy-egzaminacyjne-z-poprzednich-lat/" target="_blank" rel="noopener">Testy egzaminacyjne z poprzednich lat</a> i <a href="https://certyfikatpolski.pl/o-egzaminie/przykladowe-testy-zbiory-zadan/" target="_blank" rel="noopener">Przykładowe testy</a>. Wyniki zapisują się tylko w tej przeglądarce.</span>
+    <span id="built"></span>
+    <button type="button" id="clear">Wyczyść moje wyniki</button>
+  </footer>
+</main>
+
+<script>
+const M = window.C1_MANIFEST || { tests: [], pages: {} };
+const S = window.C1 ? C1.scores() : {};
+
+const SESS = [
+  ['2024-04', 'kwiecień 2024', 'egzamin'],
+  ['2023-11', 'listopad 2023', 'egzamin'],
+  ['2023-04', 'kwiecień 2023', 'egzamin'],
+  ['2022-11', 'listopad 2022', 'egzamin'],
+  ['2022-03', 'marzec 2022', 'egzamin'],
+  ['2021-06', 'czerwiec 2021', 'egzamin'],
+  ['2021-05', 'maj 2021', 'egzamin'],
+  ['2020', '2020', 'test przykładowy'],
+  ['2019', '2019', 'test przykładowy'],
+  ['2017', '2017', 'test przykładowy']
+];
+const PARTS = [
+  { id: 'sluchanie', name: 'Słuchanie', meta: '5 zadań, do 40 minut' },
+  { id: 'czytanie', name: 'Czytanie', meta: '5 zadań, 60 minut' },
+  { id: 'gramatyka', name: 'Gramatyka', meta: '8 zadań, 60 minut' },
+  { id: 'pisanie', name: 'Pisanie', meta: '90 minut, samoocena' },
+  { id: 'mowienie', name: 'Mówienie', meta: 'niedziela, do 20 minut, samoocena' }
+];
+const PAGES = {
+  jutro: ['jutro_egzamin.html', 'Jutro egzamin', 'Przebieg dnia, co zabrać, plan czasu na każdą część i lista na rano.'],
+  sciaga: ['gramatyka_sciaga.html', 'Ściąga i trening', 'Reguły do każdego typu zadania gramatycznego i szybkie pytania z prawdziwych kluczy.'],
+  pisanie: ['pisanie_C1.html', 'Pisanie', 'Tematy z arkuszy, licznik słów, zegar 90 minut i karta oceny jak u egzaminatora.'],
+  mowienie: ['mowienie_C1.html', 'Mówienie', 'Losowanie zestawu, zegar przygotowania i wypowiedzi, nagrywanie i odsłuch.']
+};
+
+const sessName = id => (SESS.find(s => s[0] === id) || [id, id])[1];
+const testFor = (part, sess) => M.tests.find(t => t.part === part && t.session === sess);
+const idOf = t => t.part + '-' + t.session;
+function stats(prefix) {
+  let best = null, n = 0;
+  for (const k in S) if (k.startsWith(prefix + '-')) {
+    n++;
+    const v = S[k].best != null ? S[k].best : S[k].pct;
+    best = best == null ? v : Math.max(best, v);
+  }
+  return { best, n };
+}
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+
+// daty egzaminu
+(function () {
+  const now = new Date();
+  const t0 = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const days = d => Math.round((d - t0) / 864e5);
+  const rel = n => n === 0 ? 'dziś' : n === 1 ? 'jutro' : n === 2 ? 'pojutrze' : n > 2 ? 'za ' + n + ' dni' : 'za tobą';
+  const w = days(new Date(2026, 9, 17)), o = days(new Date(2026, 9, 18));
+  document.getElementById('dWritten').textContent = 'sobota 17.10, ' + rel(w);
+  document.getElementById('dOral').textContent = 'niedziela 18.10, ' + rel(o);
+})();
+
+// karta wyników
+document.getElementById('scorecard').innerHTML = PARTS.map(p => {
+  const { best, n } = stats(p.id);
+  const has = best != null;
+  const cls = !has ? '' : best >= 60 ? 'pass' : 'low';
+  const chip = !has ? '<span class="chip none">jeszcze bez próby</span>'
+    : best >= 60 ? '<span class="chip pass">powyżej progu</span>' : '<span class="chip low">poniżej progu</span>';
+  return `<div class="srow">
+    <div class="part"><b>${p.name}</b><span>${p.meta}${n ? ', prób: ' + n : ''}</span></div>
+    <div class="meter" role="img" aria-label="${p.name}: ${has ? best + '%' : 'brak wyniku'}"><i class="${cls}" style="width:${has ? best : 0}%"></i><em></em></div>
+    <div class="val ${has ? '' : 'none'}">${has ? best + '%' : '-'}</div>
+    ${chip}
+  </div>`;
+}).join('');
+
+// następny krok: najsłabsza część (gramatyka albo czytanie), najnowszy nierozwiązany arkusz
+(function () {
+  const cands = ['gramatyka', 'czytanie'].map(p => ({ p, best: stats(p).best }))
+    .sort((a, b) => (a.best == null ? -1 : a.best) - (b.best == null ? -1 : b.best));
+  for (const c of cands) {
+    const tests = SESS.map(s => testFor(c.p, s[0])).filter(Boolean);
+    const fresh = tests.find(t => !S[idOf(t)]);
+    const pick = fresh || tests.slice().sort((a, b) => (S[idOf(a)].best || 0) - (S[idOf(b)].best || 0))[0];
+    if (pick) {
+      const name = PARTS.find(x => x.id === c.p).name;
+      const a = document.getElementById('next');
+      a.href = pick.file;
+      a.innerHTML = `<b>Następny arkusz: ${name}, ${esc(sessName(pick.session))}</b><span>${fresh ? 'jeszcze nierozwiązany' : 'powtórka najsłabszego'} →</span>`;
+      return;
+    }
+  }
+})();
+
+// plan na wieczór
+(function () {
+  const KEY = 'c1_plan_v1';
+  let done = {};
+  try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) {}
+  const g = M.tests.filter(t => t.part === 'gramatyka');
+  const firstG = g.find(t => !S[idOf(t)]) || g[0];
+  const items = [
+    ['jutro', 'Przeczytaj „Jutro egzamin”: przebieg dnia, co zabrać, plan czasu. Spakuj rzeczy od razu.', '10 min', M.pages.jutro ? 'jutro_egzamin.html' : null],
+    ['gram', 'Jeden arkusz z gramatyki na czas, potem spokojnie przejrzyj każdy błąd.', '75 min', firstG ? firstG.file : null],
+    ['trening', 'Trening błyskawiczny z typu zadania, w którym było najwięcej błędów.', '15 min', M.pages.sciaga ? 'gramatyka_sciaga.html' : null],
+    ['pisanie', 'Pisanie: wybierz temat i zrób sam plan tekstu, akapit po akapicie. Bez pisania całości.', '10 min', M.pages.pisanie ? 'pisanie_C1.html' : null],
+    ['ustny', 'Mówienie (to w niedzielę): dwa zestawy na głos, z nagraniem i odsłuchem.', '20 min', M.pages.mowienie ? 'mowienie_C1.html' : null],
+    ['sen', 'Koniec nauki co najmniej godzinę przed snem. Wyspany zdający czyta szybciej i robi mniej błędów.', '', null]
+  ];
+  const ul = document.getElementById('plan');
+  ul.innerHTML = items.map(([id, txt, min, href]) => `<li class="${done[id] ? 'done' : ''}">
+      <input type="checkbox" id="plan-${id}" ${done[id] ? 'checked' : ''}>
+      <label for="plan-${id}">${esc(txt)}${href ? ` <a href="${href}">Otwórz</a>` : ''}</label>
+      <span class="min">${min}</span></li>`).join('');
+  ul.addEventListener('change', e => {
+    const id = e.target.id.replace('plan-', '');
+    done[id] = e.target.checked;
+    e.target.closest('li').classList.toggle('done', e.target.checked);
+    try { localStorage.setItem(KEY, JSON.stringify(done)); } catch (err) {}
+  });
+})();
+
+// siatka arkuszy
+(function () {
+  const parts = PARTS.slice(0, 3);
+  let rows = '';
+  for (const [sid, label, kind] of SESS) {
+    const ts = parts.map(p => testFor(p.id, sid));
+    if (!ts.some(Boolean)) continue;
+    rows += `<tr><td class="sess"><b>${esc(label)}</b><span>${kind}</span></td>` + ts.map((t, i) => {
+      const pl = `<span class="pl">${parts[i].name}</span>`;
+      if (!t) return `<td><span class="cell off">${pl}brak arkusza</span></td>`;
+      const r = S[idOf(t)];
+      if (!r) return `<td><a class="cell" href="${t.file}">${pl}<span>Rozwiąż →</span></a></td>`;
+      const best = r.best != null ? r.best : r.pct;
+      return `<td><a class="cell" href="${t.file}">${pl}<span class="hand ${best >= 60 ? 'ok' : ''}">${best}%</span><small>prób: ${r.tries || 1}</small></a></td>`;
+    }).join('') + '</tr>';
+  }
+  document.getElementById('grid').innerHTML =
+    `<thead><tr><th>Sesja</th>${parts.map(p => `<th>${p.name}</th>`).join('')}</tr></thead><tbody>${rows}</tbody>`;
+  document.getElementById('arkCount').textContent = M.tests.length + ' testów';
+})();
+
+// narzędzia
+document.getElementById('tools').innerHTML = Object.entries(PAGES).map(([k, [file, name, desc]]) => {
+  const on = !!M.pages[k];
+  return `<a class="sheet tool ${on ? '' : 'off'}" href="${on ? file : '#'}">
+    <div class="band"><span>${esc(name.toUpperCase())}</span><span>${on ? 'otwórz →' : 'w przygotowaniu'}</span></div>
+    <div class="inner"><b>${esc(name)}</b><p>${esc(desc)}</p></div></a>`;
+}).join('');
+
+if (M.built) document.getElementById('built').textContent = 'Wersja z ' + M.built + '.';
+
+// czyszczenie wyników: dwa kliknięcia zamiast okna potwierdzenia
+(function () {
+  const b = document.getElementById('clear');
+  let armed = false;
+  b.addEventListener('click', () => {
+    if (!armed) { armed = true; b.textContent = 'Na pewno? Kliknij jeszcze raz'; return; }
+    try { localStorage.removeItem('c1_wyniki_v1'); localStorage.removeItem('c1_plan_v1'); } catch (e) {}
+    location.reload();
+  });
+})();
+</script>
+</body>
+</html>

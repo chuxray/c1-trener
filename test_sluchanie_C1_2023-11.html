@@ -1,0 +1,757 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rozumienie ze słuchu C1 2023-11</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+</style>
+<style>
+.audiobox { background: var(--example); border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.audiobox audio { width: 100%; }
+.audiobox .fname { font-size: 13px; color: var(--muted); }
+.audiobox label.btnlike { cursor: pointer; border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 7px 14px; font-weight: 600; }
+.audiobox input[type=file] { display: none; }
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .qt { font-weight: 600; margin-bottom: 6px; }
+.opt { display: flex; gap: 8px; align-items: flex-start; padding: 5px 8px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
+.opt input { margin-top: 5px; }
+.opt.ok { background: var(--ok-bg); border-color: var(--ok); }
+.opt.bad { background: var(--bad-bg); border-color: var(--bad); }
+.opt.key { border-color: var(--ok); }
+.res { font-size: 14px; font-weight: 600; margin-top: 4px; min-height: 1em; }
+.res.ok { color: var(--ok); } .res.bad { color: var(--bad); }
+details.tr { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--input-bg); }
+details.tr summary { cursor: pointer; font-weight: 700; }
+details.tr .warn { color: var(--warn); font-size: 13px; font-weight: 600; }
+details.tr p { margin: 8px 0; font-family: Georgia, serif; font-size: 16px; line-height: 1.7; }
+.mrow { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.mrow:first-of-type { border-top: 0; }
+.mrow .lt { font-weight: 800; width: 1.6em; }
+.mrow .mt { flex: 1 1 260px; }
+.mrow select { font: 16px system-ui; padding: 4px 6px; border: 1px solid var(--line); border-radius: 4px; background: var(--input-bg); color: var(--ink); border-bottom: 2px solid var(--muted); }
+.mrow.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.mrow.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.skarby { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.chk { display: flex; gap: 8px; align-items: flex-start; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; margin: 4px 0; cursor: pointer; }
+.chk.ok { background: var(--ok-bg); border-color: var(--ok); }
+.chk.bad { background: var(--bad-bg); border-color: var(--bad); }
+.chk.miss { border-color: var(--ok); border-style: dashed; }
+.chk input { margin-top: 5px; }
+.chk .n { font-weight: 800; width: 1.8em; flex: none; }
+.sub { display: flex; gap: 8px; align-items: center; margin: 4px 0; flex-wrap: wrap; }
+.sub .lab { font-weight: 700; width: 1.4em; }
+.sub input[type=text] { flex: 1 1 260px; font: 16px system-ui; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 5px 8px; }
+.sub.ok input[type=text] { border-color: var(--ok); background: var(--ok-bg); }
+.sub.bad input[type=text] { border-color: var(--bad); background: var(--bad-bg); }
+.sub.almost input[type=text] { border-color: var(--warn); background: var(--warn-bg); }
+.keyline { font-size: 14px; color: var(--ok); font-weight: 600; margin-top: 4px; }
+.cnt { font-size: 14px; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+</style>
+
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie ze słuchu C1 - listopad 2023</span>
+    <span class="timer" id="timer">40:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Rozumienie ze słuchu</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja listopad 2023. 5 zadań, do 40 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji. Nagrań nie ma w pliku: w każdym zadaniu kliknij „Wczytaj nagranie” i wskaż plik audio z komputera. Na egzaminie zadanie I słucha się jeden raz, pozostałe dwa razy.</p>
+  <div class="notice" id="timeUp">Czas minął (40 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: arkusz C1 listopad 2023, część "Rozumienie ze słuchu" + oficjalny klucz ----------
+const TASKS = [
+  {
+    id: 'I', type: 'mc', max: 8, rec: 'jeden raz',
+    title: 'Zadanie I',
+    instr: 'Proszę uważnie słuchać tego nagrania i wykonywać zadanie zgodnie z podanym przykładem. Uwaga! Nagranie zostanie odtworzone tylko jeden raz. Proszę wysłuchać wiadomości z radiowego serwisu informacyjnego i zaznaczyć właściwe odpowiedzi.',
+    example: { q: 'Z tego nagrania wynika, że', opts: ['sąd nakazał mężczyźnie zapłacenie wysokiego odszkodowania.', 'mężczyzna został niesprawiedliwie pozbawiony wolności.', 'dzięki odszkodowaniu mężczyzna zapomni o wyrządzonej mu krzywdzie.'], ans: 'b' },
+    items: [
+      { q: 'Z tego nagrania wynika, że', opts: ['lekarze rodzinni będą mogli prowadzić terapię onkologiczną.', 'osoby z nowotworami uzyskają prawo do szybszej diagnostyki.', 'proponowane zmiany wejdą w życie za 9 tygodni.'], ans: 'b' },
+      { q: 'Z tego nagrania wynika, że', opts: ['tylko 2 miliony Polaków regularnie odwiedzają kina.', 'coraz więcej polskich filmów jest dostępnych w sieci.', 'Polacy wolą produkcje zagraniczne od krajowych.'], ans: 'c' },
+      { q: 'Z tego nagrania wynika, że', opts: ['do emisji banknotu 500 zł przyczyniła się w głównej mierze inflacja.', 'Polacy nawykli do transakcji gotówkowych.', 'w Polsce nastąpił czteroprocentowy wzrost gospodarczy.'], ans: 'b' },
+      { q: 'Z tego nagrania wynika, że', opts: ['prywatne maile pisane w godzinach pracy mogą zostać skontrolowane przez pracodawcę.', 'wysyłanie prywatnych wiadomości w pracy nie może być podstawą wypowiedzenia umowy pracownikowi.', 'skarga pracownika została rozpatrzona pozytywnie przez Europejski Trybunał Praw Człowieka.'], ans: 'a' },
+      { q: 'Z tego nagrania wynika, że', opts: ['program „Mieszkanie dla młodych” polega na dofinansowaniu wynajmu.', 'w styczniu połowa złożonych wniosków została odrzucona.', 'budżet programu może wyczerpać się wcześniej, niż zakładano.'], ans: 'c' },
+      { q: 'Z tego nagrania wynika, że', opts: ['w Krakowie od dawna obowiązuje zakaz ogrzewania drewnem i węglem.', 'uchwały nie poparło piętnastu radnych.', 'decyzja sejmiku jest krytykowana jako zbyt radykalna.'], ans: 'b' },
+      { q: 'Z tego nagrania wynika, że', opts: ['ekologiczne choinki będzie można zobaczyć tylko w Warszawie.', 'celem akcji jest zwrócenie uwagi na osoby spędzające święta samotnie.', 'każde z drzewek zostało przygotowane w innym mieście.'], ans: 'b' },
+      { q: 'Z tego nagrania wynika, że', opts: ['gospodarzami turnieju noworocznego w piłce ręcznej są Czechy.', 'Polacy nie wystartują w Mistrzostwach Europy.', 'Polacy ustąpili Białorusinom jednym punktem.'], ans: 'c' }
+    ],
+    src: 'Na podstawie audycji emitowanych przez Polskie Radio: Polska i Świat, Świat w powiększeniu, Kronika sportowa.',
+    trans: [
+      'Przykład: Tomasz Komenda ma dostać prawie 13 milionów złotych od państwa, które niesłusznie wsadziło go do więzienia na 18 lat. W reakcji na wyrok mówi: „Żadne pieniądze tego nie wynagrodzą”. Pyta, kto jest gotów zamknąć się na 18 lat za 13 milionów.',
+      'Na podstawie: https://audycje.tokfm.pl/podcast/101760',
+      '1. Nie będzie limitów na leczenie chorób nowotworowych. Do leczenia w krótkich terminach ma uprawniać karta pacjenta onkologicznego, którą założy lekarz rodzinny. Minister zdrowia przedstawił zapowiadane propozycje zmian w leczeniu chorych na raka. Jak mówił, każdy pacjent walczący z nowotworem będzie miał indywidualną ścieżkę leczenia. Od podejrzenia choroby do zaplanowania leczenia nie może minąć więcej niż 9 tygodni.',
+      '2. Do kin chodzimy coraz rzadziej. W roku ubiegłym Polacy kupili 36 milionów biletów do kin, rok wcześniej było to 2 miliony więcej. Oglądaniu filmów na wielkim ekranie nie sprzyjają rosnące ceny biletów, a także internet, który w coraz większym stopniu pozwala bezpłatnie konsumować kulturę. Dodatkowo polski przemysł filmowy zwykle przegrywa z produkcjami zachodnimi, ponieważ Polacy mają nie najlepsze zdanie o rodzimych filmach.',
+      '3. Eksperci banku centralnego wyjaśniają, że głównym powodem wprowadzenia banknotu o nominale 500 zł nie jest inflacja, ale niższe koszty utrzymywania rezerw strategicznych i zmiany wynikające ze wzrostu gospodarczego. Poza tym gotówka w Polsce jest po prostu popularna, a to wynika między innymi ze zwyczajów płatniczych Polaków. Na nowy banknot trzeba będzie przygotować nieco większe portfele, bo jest o 4% większy od dwustuzłotówki.',
+      '4. To już teraz o tym, czy pracodawca może kontrolować maile pracownika z szerszego, właśnie europejskiego punktu widzenia i szybka odpowiedź: pracodawcy mają prawo czytać maile i inne wiadomości internetowe zatrudnionych przez siebie osób, jeżeli te zostały wysłane z pracy, tak stwierdził Europejski Trybunał Praw Człowieka w odpowiedzi na skargę rumuńskiego inżyniera. Ten za wysłanie w czasie pracy prywatnych wiadomości został zwolniony.',
+      '5. Rekordowo duże zainteresowanie programem „Mieszkanie dla młodych”. Wnioski o dofinansowanie do kredytów hipotecznych na własne M pod koniec zeszłego roku złożyło tak dużo osób, że już niebawem może zabraknąć pieniędzy na jego dalszą realizację w tym roku. Już na początku stycznia zakontraktowano ponad 50% środków przeznaczonych na program „Mieszkanie dla młodych” w tym roku.',
+      '6. Kraków jako pierwsze polskie miasto zakaże palenia węglem i drewnem. Radni sejmiku województwa małopolskiego przegłosowali uchwałę antysmogową. To nie przypadek: Kraków jest najbardziej zanieczyszczonym polskim miastem, radykalny zakaz ma więc poprawić jakość powietrza. Za przyjęciem uchwały było dziewiętnastu radnych, piętnastu wstrzymało się od głosu, nikt nie był przeciw.',
+      '7. Na warszawskim Placu Zamkowym stanęło 10 ekologicznych choinek. Akcja „Choinki nadziei” organizowana przez fundację Arka ma na celu promowanie ekologicznego trybu życia i wspólnego spędzania Bożego Narodzenia. Ma też przypomnieć o ludziach samotnych i starszych, którzy święta niekoniecznie spędzają w swoim domu. W ramach ogólnopolskiej trasy choinki nadziei odwiedzą między innymi Bydgoszcz, Kielce, Katowice i Bielsko-Białą.',
+      '8. Polscy piłkarze ręczni przegrali z Białorusią 28:29 w pierwszym meczu turnieju noworocznego na Węgrzech. Jutro spotkanie z Czechami, w niedzielę z gospodarzami. Ten turniej to ostatni sprawdzian biało-czerwonych przed Mistrzostwami Europy, które rozpoczną się 12 stycznia w Danii.',
+      'Źródło: Fragmenty audycji emitowanych przez Polskie Radio: Polska i Świat, Świat w powiększeniu, Kronika sportowa'
+    ]
+  },
+  {
+    id: 'II', type: 'tf', max: 8, rec: 'dwukrotnie',
+    title: 'Zadanie II',
+    instr: 'Proszę uważnie słuchać tego nagrania i wykonywać zadanie zgodnie z podanym przykładem. Uwaga! Nagranie zostanie odtworzone dwukrotnie. Proszę wysłuchać tekstu na temat nowej inwestycji w Słupsku i zaznaczyć: TAK - gdy zdanie jest zgodne z nagraniem; NIE - gdy nie jest zgodne z nagraniem.',
+    example: { q: 'Całkowity koszt inwestycji pokryto ze środków urzędu miejskiego.', ans: 'N' },
+    items: [
+      { q: 'W ramach działań rewitalizacyjnych powstała m.in. Baszta Czarownic.', ans: 'N' },
+      { q: 'Nazwa parku ma proweniencję muzyczną.', ans: 'T' },
+      { q: 'Przed inwestycją nie było połączenia pomiędzy brzegami rzeki.', ans: 'N' },
+      { q: 'Na nowo powstałych placach są dobre warunki do uprawiania sportu.', ans: 'T' },
+      { q: 'W miejscu inwestycji zadbano o architekturę krajobrazu.', ans: 'T' },
+      { q: 'Mieszkanka miasta uważa, że kładki nie są dobrym rozwiązaniem.', ans: 'N' },
+      { q: 'Na bulwarach znajdują się najważniejsze pomniki związane z historią miasta.', ans: 'N' },
+      { q: 'Jeden z inwestorów planuje otworzenie restauracji w pobliżu wałów.', ans: 'N' }
+    ],
+    src: 'Na podstawie: https://www.youtube.com/watch?v=BWiaI83rCcs',
+    trans: [
+      'Cała inwestycja kosztowała około 32 milionów złotych. Znakomita większość tej kwoty to dotacja unijna. Za te pieniądze przebudowano bulwary na kilkusetmetrowym odcinku między ulicami Garncarską a Kilińskiego. Powstały deptaki spacerowe, miniamfiteatry przy Baszcie Czarownic i w parku z pomnikiem Fryderyka Chopina. Park w międzyczasie zyskał imię Pianistyki Polskiej. Oba brzegi Słupi połączyły 3 nowe kładki, 3 istniejące już mosty zostały wyremontowane, powstały też 2 miejskie place. Teraz to również miejsca wypoczynku, ale także aktywności kulturalnej, rekreacyjnej i sportowej. Skwer przy bibliotece otrzymał też imię znakomitego kompozytora jazzowego Krzysztofa Komedy. Dodatkowo skwer z parkiem Pianistyki Polskiej połączyła furta w murze obronnym. Całe bulwary i najbardziej atrakcyjne obiekty podświetla iluminacja. W ciągu spacerowym pojawiło się też kilka tysięcy nasadzeń drzew, krzewów i kwiatów. W ramach tej inwestycji przebudowano też ulicę Szarych Szeregów. Rewitalizacja bulwarów to nie tylko stworzenie ciągu spacerowego, ale także połączenie dwóch części miasta.',
+      '- Brak, jak się okazuje, przejścia tymi kładkami, które niedawno były wyśmiewane, brak przejścia sprawiał, że rzeka nas dzieliła, a nie łączyła. Rzeka zawsze była bliska, bo woda jest bliska ludziom i cały pomysł polegał na tym, żeby właśnie połączyć oba brzegi Słupi, wzdłuż których w tej starej części miasta są przepiękne, właściwie jedyne takie cenne zabytki, to jest dziedzictwo nasze, dziedzictwo Słupska z przeszło 700-letnią tradycją, trochę niewykorzystywane przez ten podział.',
+      'Miasto chce, by na bulwarach powstała jeszcze jedna inwestycja - lokal gastronomiczny w okolicy ulicy Kowalskiej. Urzędnicy szukają przedsiębiorcy, który będzie chciał zainwestować właśnie w tym miejscu.',
+      'Źródło: https://www.youtube.com/watch?v=BWiaI83rCcs'
+    ]
+  },
+  {
+    id: 'III', type: 'match', max: 10, rec: 'dwukrotnie',
+    title: 'Zadanie III',
+    instr: 'Proszę uważnie słuchać tego nagrania i wykonywać zadanie zgodnie z podanym przykładem. Uwaga! Nagranie zostanie odtworzone dwukrotnie. Proszę wysłuchać audycji na temat najciekawszych skarbów ukrytych przed wiekami na ziemiach polskich i dopasować nazwy (1-5) do ich opisów (A-J). Uwaga! Do każdego stwierdzenia pasuje tylko jeden opis.',
+    names: ['SKARB ŚREDZKI', 'SKARB ZE SŁUŻKOWA', 'SKARB Z ZAGÓRZYNA', 'SKARB ZE WSI LUBAJNY', 'SKARB Z MIEJSCOWOŚCI LUBNOWY WIELKIE'],
+    example: { q: 'Jego fragmenty odkrywano w odstępie kilku lat.', ans: '1' },
+    items: [
+      { l: 'A', q: 'Skarb składa się z monet pochodzących z różnych krajów.', ans: '4' },
+      { l: 'B', q: 'Nie udało się sporządzić kompletnego katalogu znalezionych kosztowności.', ans: '3' },
+      { l: 'C', q: 'Odkrycie nie cieszyło się zainteresowaniem władz.', ans: '1' },
+      { l: 'D', q: 'Nie wiadomo, do kogo należał ten skarb.', ans: '4' },
+      { l: 'E', q: 'Odkrycie jest cennym materiałem także dla językoznawców.', ans: '2' },
+      { l: 'F', q: 'Kosztowności trafiły w ręce niewłaściwych osób.', ans: '3' },
+      { l: 'G', q: 'W skład skarbu wchodzą elementy dekoracyjne ubioru regionalnego.', ans: '5' },
+      { l: 'H', q: 'Kosztowności przeleżały schowane kilka wieków w budynku.', ans: '1' },
+      { l: 'I', q: 'Żaden inny skarb odkryty w Polsce nie dorównuje mu wielkością.', ans: '2' },
+      { l: 'J', q: 'To najbardziej wiekowy z odkrytych skarbów.', ans: '5' }
+    ],
+    src: 'Na podstawie: https://www.youtube.com/watch?v=Bm8jEydtBaw&ab_channel=DarekRybacki',
+    note: 'Klucz: do skarbów 2, 3, 4 i 5 pasują po dwa opisy, a do skarbu 1 (średzkiego) dwa opisy plus opis z przykładu.',
+    trans: [
+      '1. Skarb średzki. Jednym z największych depozytów, które odnaleziono na naszych ziemiach, jest tzw. skarb średzki. 8 czerwca 1985 r. podczas budowy centrali telefonicznej w Środzie Śląskiej odnaleziono dzban po brzegi wypełniony srebrnymi monetami z pierwszej połowy XIV w. Kilka lat później, 24 maja 1988 r., podczas rozbiórki jednej ze średzkich kamienic natrafiono na jeszcze większe znalezisko. I tym razem były to naczynia po brzegi wypełnione srebrnymi monetami. Później okazało się, że podczas prac budowalnych w osiemdziesiątym piątym i osiemdziesiątym ósmym natrafiono na fragmenty jednego z największych depozytów w historii europejskiej archeologii. Niestety, początkowo lokalna władza całkowicie zignorowała i zaniedbała te wydarzenia.',
+      '2. Skarb ze Służkowa. Innym imponującym i nieco starszym skarbem jest ten znaleziony w Służkowie. Jeszcze w 1935 roku w tej niepozornej miejscowości odkryto depozyt, na który składało się aż 13 tys. monet, w większości datowanych na przełom XI i XII wieku. Jest to jak dotąd największe tego typu znalezisko na ziemiach współczesnej Polski. Wśród służkowskich skarbów dominowały denary krzyżowe. Znalazły się wśród nich także denary palatyna Sieciecha. Napis zetech na tych ostatnich zaliczono do grona najstarszych zabytków języka polskiego.',
+      '3. Skarb z Zagórzyna. Jeszcze starszym skarbem niż dwa wspomniane był ten znaleziony w Zagórzynie w II połowie lat 20. Nigdy nie został on dokładnie zinwentaryzowany, ponieważ znalazca postanowił rozsprzedać znalezisko handlarzom i kolekcjonerom. Ostatecznie udało się odzyskać nieliczne artefakty. Część z nich do dzisiaj znajduje się w zbiorach zagranicznych muzeów. Okoliczności znalezienia zagórzyńskiego skarbu nie są jasne. W końcu lat 20. na polu w okolicy Zagórzyna jeden z mieszkańców wykopał z ziemi garniec pełen złotych i srebrnych starożytnych przedmiotów.',
+      '4. Skarb ze wsi Lubajny. Jeszcze większym ostródzkim skarbem jest zbiór kilkuset wczesnośredniowiecznych monet odnalezionych w pobliskiej miejscowości Lubajny. W większości są to tak zwane siekańce, czyli monety rozdrobnione w celach transakcyjnych. Skarb z Lubajn to prawdziwy monetarny miszmasz. W jego skład wchodzą monety wybite w XI-wiecznej Anglii, a także na terenie Rzeszy Niemieckiej, Węgier czy Czech. Nie jest jasne, kto go pozostawił, chociaż tego typu monety napływały na te ziemie z reguły za pośrednictwem monarchii wczesnopiastowskiej.',
+      '5. Skarb z miejscowości Lubnowy Wielkie. Zdecydowanie najstarszym skarbem przechowywanym na zamku w Ostródzie jest pradziejowy skarb ozdób z miejscowości Lubnowy Wielkie. Składa się z pięciu zabytków datowanych dość szeroko na 950-750 r. p.n.e.: napierśnika, trzech bransolet i zawieszki - bezcenne przedmioty związane są z kulturą łużycką.',
+      'Źródło: https://www.youtube.com/watch?v=Bm8jEydtBaw&ab_channel=DarekRybacki'
+    ]
+  },
+  {
+    id: 'IV', type: 'pick', max: 6, rec: 'dwukrotnie',
+    title: 'Zadanie IV',
+    instr: 'Proszę uważnie słuchać tego nagrania i wykonywać zadanie zgodnie z podanym przykładem. Uwaga! Nagranie zostanie odtworzone dwukrotnie. Proszę wysłuchać rozmowy na temat życia ptaków w mieście i wybrać z podanych zdań 6 wypowiedzi zgodnych z treścią nagrania.',
+    example: { n: 0, q: 'Linie elektryczne stanowią niebezpieczeństwo dla ptaków przylatujących do miasta.' },
+    items: [
+      'Ptaki szybko przystosowują się do życia w mieście.',
+      'Dla niektórych gatunków ptaków miasto może być dobrą przestrzenią do życia.',
+      'Miasto pozwala ptakom ukryć się przed drapieżnikami.',
+      'Nawet sokół nie jest w stanie uciec przed pędzącym samochodem.',
+      'Niektóre gatunki potrafią odpowiednio ocenić prędkość jadącego pojazdu.',
+      'Pliszka wykształciła pewne umiejętności na skutek życia przy szlakach komunikacyjnych.',
+      'W ostatnich latach do miast przylatuje coraz więcej ptaków.',
+      'Jemiołuszki od jakiegoś czasu nie były obserwowane w mieście.',
+      'Pas przydrożny często obsadzany jest roślinami służącymi ptakom za pożywienie.',
+      'Ptaki lecące w stadzie mogą uniknąć potrącenia przez samochody.',
+      'Część ptaków zatruwa się roślinami rosnącymi przy drogach.',
+      'Ptaki nie potrafią ocenić szkodliwości substancji chemicznych zawartych w wodzie.'
+    ],
+    ans: [2, 5, 6, 8, 9, 12],
+    src: 'Na podstawie: https://trojka.polskieradio.pl/artykul/2450929',
+    note: 'Klucz: zdania prawdziwe 2, 5, 6, 8, 9, 12 (kolejność dowolna). Można wybrać tylko 6 zdań. Za każde poprawnie wybrane zdanie 1 p.',
+    trans: [
+      'Czy miasto jest niebezpieczne dla ptaków?',
+      'Oj tak, miasto zdecydowanie jest niebezpieczne dla ptaków i w mieście potrafią żyć tylko niektóre ptaki, te bardzo inteligentne, oportunistyczne, które potrafią wykorzystywać różne rzeczy, które miasto oferuje. Niestety przeciętny ptak, który w czasie wędrówki wpada przez pomyłkę do miasta, zwykle sobie słabo radzi, albo wręcz nie przeżywa takiej przygody. Bo mamy: napowietrzne linie elektryczne, które są, no, niewidoczne, zwłaszcza wieczorem, i ptaki mogą się o nie rozbijać, zwłaszcza w jakiejś panice. Mamy ekrany dźwiękochłonne, szklane, przejrzyste, o które ptaki się masowo zabijają. Oczywiście są sposoby, żeby temu zapobiec, ale one są dopiero wdrażane. Następnie mamy różne drapieżniki, które na ptaki czyhają, a ptaki ich nie rozumieją. Pędzące samochody - przeciętny ptak nie rozumie prędkości powyżej sześćdziesięciu kilometrów na godzinę, bo taka prędkość nie istnieje w środowisku naturalnym poza atakującym sokołem, więc ptaki zrywają się za późno przed samochodem. Jedynym ptakiem, który zawsze zdąży przed samochodem, i to odbiec na piechotę, jest pliszka siwa. Co by się nie dało (działo), z jaką prędkością byśmy nie jechali, ona będzie na drodze, ona perfekcyjnie oceni swoje szanse i ona zejdzie z tej drogi. Ona nie będzie latać, ona po prostu zejdzie w odpowiednim momencie.',
+      'A skąd ten talent?',
+      'Od natury, spłynęło na nią, po prostu doskonale potrafi ocenić prędkość i swoje szanse. One też oczywiście mieszkają przy drogach, przy liniach kolejowych, przy różnych innych miejscach, gdzie jeżdżą pojazdy, więc prawdopodobnie w efekcie selekcji zostały tylko te, co lepiej oceniają prędkość. Natomiast bolą mnie jemiołuszki, bo one przylatują do miasta, co prawda nie było ich ostatnimi czasy, kwiczoły. Wpadają do miasta, nie rozumieją tego miasta, nie rozumieją tych pędzących pojazdów, a niestety przy wielu drogach są posadzone jarzębiny, czarne bzy, berberysy, cisy i, powiedzmy, te ptaki lecą na te owoce, żeby tych owoców pojeść i nie rozumieją, że te pędzące pojazdy są dla nich zagrożeniem. I wtedy niestety zdarzają się masowe potrącenia całych stad, więc to jest niestety bolesne.',
+      'Oczywiście w mieście są też trucizny, są różne chemikalia. Taki gołąb pijący wodę z roztopów, z kałuży, nie zdaje sobie z tego sprawy, że tam było coś użyte. Zwłaszcza na jezdniach używane są różne chemikalia, żeby zapobiec zamarzaniu, no i te chemikalia prawdopodobnie nie są obojętne dla zdrowia.',
+      'Źródło: https://trojka.polskieradio.pl/artykul/2450929'
+    ]
+  },
+  {
+    id: 'V', type: 'open', max: 8, rec: 'dwukrotnie',
+    title: 'Zadanie V',
+    instr: 'Proszę uważnie słuchać tego nagrania i wykonywać zadanie zgodnie z podanym przykładem. Uwaga! Nagranie zostanie odtworzone dwukrotnie. Proszę wysłuchać fragmentu wywiadu z muzykiem Marcinem Staniszewskim, wokalistą zespołu „Beneficjenci Splendoru”, na temat festiwalu muzyki niezależnej OFF i odpowiedzieć na pytania. Uwaga! Forma gramatyczna odpowiedzi powinna być dopasowana do pytania.',
+    example: { q: 'Kim był wcześniej z zawodu Marcin Staniszewski?', a: 'Dziennikarzem.' },
+    items: [
+      { q: 'Dlaczego muzyk nie przepada za festiwalami? Proszę podać dwa powody.', parts: 2,
+        key: 'Jest na nie za stary. / Irytuje/denerwuje go hałas. / Irytują go tłumy/wrzeszczący ludzie. / Irytuje go alkohol na festiwalu.',
+        g: [/star(y|ym|ego|ość|osc)|(^|\s)wiek/, /ha[łl]as/, /t[łl]um|wrzesz|ludzi|ludzie/, /alkohol|piw/] },
+      { q: 'Z jakimi uczuciami, nieobecnymi przy okazji innych festiwali, muzyk kojarzy OFF Festival? Proszę podać dwie odpowiedzi.', parts: 2,
+        key: 'Spokoju/relaksu/braku napinki/wzruszenia.',
+        g: [/spok[óo]j/, /relaks/, /napink/, /wzrusz/] },
+      { q: 'Co Staniszewski sądzi o koncercie Iggy’ego Popa?', parts: 1,
+        key: 'Uważa, że był fantastyczny/jednym z najlepszych koncertów w życiu/bardzo mu się podobał.',
+        g: [/fantast|najlepsz|podoba|wzrusz|wspania|super|rewelac/] },
+      { q: 'W jakim miejscu występował Staniszewski z zespołem Beneficjenci Splendoru na OFF Festivalu?', parts: 1,
+        key: 'Na małej scenie/w namiocie.',
+        g: [/scen|namiot/] },
+      { q: 'Dlaczego koncert na festiwalu był dla niego wyjątkowy?', parts: 1,
+        key: 'Był to ich pierwszy duży/znaczący występ/koncert.',
+        g: [/pierwsz|du[żz]|znacz/] },
+      { q: 'Co spowodowało złe samopoczucie muzyka przed koncertem?', parts: 1,
+        key: 'Było mu gorąco/słabo/duszno/miał za ciepłe ubranie.',
+        g: [/gor[ąa]c|s[łl]ab|duszn|ciep[łl]|zemdl|ubran|garnit|outfit|mg[łl]/] },
+      { q: 'Co zaskoczyło muzyka w zachowaniu publiczności w trakcie koncertu i po nim? Proszę podać dwa przykłady.', parts: 2,
+        key: 'a) Znali jego piosenki. b) Śpiewali razem z nim. Również: prosili o autografy.',
+        g: [/zna(li|ła|ją)|tekst|piosen|numer/, /[śs]piewa/, /autograf|gratul/] },
+      { q: 'Dlaczego w tym roku muzyk nie weźmie udziału w festiwalu? Proszę podać dwa powody.', parts: 2,
+        key: 'a) Będzie za granicą. b) Nagrywa/kończy nową płytę.',
+        g: [/granic|wyje[żz]d/, /p[łl]yt|nagryw|prac/] }
+    ],
+    src: 'Na podstawie: Polskie Radio, Pop-południe.',
+    note: 'Klucz Komisji: „Należy uznać też inne odpowiedzi - zgodne z transkrypcją i stanowiące odpowiedzi na pytania.” Sprawdzanie automatyczne szuka słów kluczowych, więc jeśli twoja odpowiedź jest poprawna, ale inna niż w kluczu, zaznacz „uznaj”.',
+    trans: [
+      'Ja w ogóle nie jestem za bardzo fanem festiwali muzycznych, co może wydawać się dziwne, no bo ja jeszcze do niedawna byłem dziennikarzem i powinienem je lubić, ale jakoś nie mogłem się przemóc, być może dlatego, że jestem już zwyczajnie starym człowiekiem, jakoś irytuje mnie hałas, piwo, ludzie właśnie wrzeszczący, natomiast na OFFie tego nie było. To znaczy byli oczywiście ludzie, było piwo, ale był jakiś taki spokój, taki właśnie relaks, coś takiego zupełnie, zupełny brak napinki i faktycznie no kilka razy się wzruszyłem zwyczajnie w świecie, chociażby na tym koncercie Iggy’ego Popa, który był naprawdę fantastyczny, to był jeden z najlepszych koncertów, jaki ja miałem okazję widzieć w życiu i rzadko się zdarza, żebym się wzruszył na jakimś koncercie, natomiast tam naprawdę to nastąpiło właśnie.',
+      'A jaka jest publiczność? Występowaliście na małej scenie, w namiocie...',
+      'No ja byłem zszokowany, zszokowany byłem przede wszystkim całą sytuacją rzecz jasna, bo tak naprawdę to był nasz pierwszy duży koncert Beneficjentów Splendoru, który zagraliśmy przed taką publicznością. Wcześniej to były jakieś dwa gigi nie wiem, w domu kultury tak naprawdę na próbę, więc ja tam o mało co nie zemdlałem, dosłownie, naprawdę, ponieważ byłem ubrany w swój wyjściowy outfit, garniturek i tak dalej... Było gorąco. Było gorąco, duszno i autentycznie miałem mgłę przed oczyma i brakowało paru sekund, żebym zemdlał. Natomiast wracając do publiczności, tuż przed samym koncertem spodziewałem się absolutnej porażki, bo tak jak wspominałaś, tam się publiczność przemieszcza z namiotu do namiotu i jakieś 5 minut przed koncertem w namiocie nie było nikogo, były 3-4 osoby i absolutnie byłem załamany i dosłownie w ciągu paru minut namiot się zapełnił. Publiczność była fantastyczna, ponieważ oni znali teksty. Część ludzi pod sceną śpiewała te piosenki i naprawdę ja widziałem, że oni znają te numery, więc po koncercie ludzie podchodzili do nas i gratulowali nam, prosili o autografy, co samo w sobie było dosyć dziwnym doświadczeniem. Ci ludzie naprawdę się ekscytowali każdym dźwiękiem, każdą piosenką, przeżywali to.',
+      'Czy to jest tak, że masz od czasu do czasu ochotę pojechać na taki festiwal do Katowic mimo twojej niechęci do festiwali?',
+      'Tak, tak, nie, no zdecydowanie, w tym roku pojechałbym na pewno, natomiast no niestety wyjeżdżam za granicę i nie będę mógł wyjechać, poza tym też kończę pracę nad swoją kolejną płytą nową, więc czasowo to wszystko się nie zgrało w tym roku, ale jeżeli będę mógł, to zdecydowanie będę odwiedzał OFF, na pewno.',
+      'Źródło: Polskie Radio'
+    ]
+  }
+];
+
+const MAX = 40, PASS = 24;
+const STORE_KEY = 'c1_sluch_2023_11_v1';
+
+// ---------- pomocnicze ----------
+function norm(s) {
+  return String(s || '').toLowerCase()
+    .replace(/[„”"'’‘.,!?;:()]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function fold(s) {
+  return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+}
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+const SELFTEST = /[?&]selftest\b/.test(location.search);
+function load() { if (SELFTEST) return {}; try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { if (SELFTEST) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {} }
+
+let acceptState = (load().__accept) || {};
+const urls = {};
+
+// ---------- budowanie arkusza ----------
+function audioBox(t) {
+  return `<div class="audiobox"><label class="btnlike" for="file-${t.id}">Wczytaj nagranie</label>
+    <input type="file" id="file-${t.id}" accept="audio/*" data-file="${t.id}">
+    <span class="fname" id="fname-${t.id}">Nie wybrano pliku (nagranie do tego zadania odtwarzane ${t.rec}).</span>
+    <audio controls id="audio-${t.id}" preload="none"></audio></div>`;
+}
+function transBox(t) {
+  return `<details class="tr" id="tr-${t.id}"><summary>Transkrypcja <span class="warn">(otwórz dopiero po sprawdzeniu odpowiedzi)</span></summary>${t.trans.map(p => `<p>${esc(p)}</p>`).join('')}</details>`;
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${t.max} p.</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    html += audioBox(t);
+    if (t.type === 'mc') {
+      const e = t.example;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(e.q)}<br>` +
+        e.opts.map((o, i) => { const k = 'abc'[i]; return `<div>${k === e.ans ? '<b>' : ''}${k}) ${esc(o)}${k === e.ans ? '</b> (poprawna)' : ''}</div>`; }).join('') + '</div>';
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="q" id="q-${id}"><div class="qt">${i + 1}. ${esc(it.q)}</div>` +
+          it.opts.map((o, j) => { const k = 'abc'[j];
+            return `<label class="opt" data-k="${k}"><input type="radio" name="r-${id}" data-id="${id}" value="${k}"><span>${k}) ${esc(o)}</span></label>`; }).join('') +
+          `<div class="res" id="res-${id}"></div></div>`;
+      });
+    } else if (t.type === 'tf') {
+      const e = t.example;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(e.q)} - <b>${e.ans === 'T' ? 'TAK' : 'NIE'}</b></div>`;
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="q" id="q-${id}"><div class="qt">${i + 1}. ${esc(it.q)}</div>` +
+          [['T', 'TAK'], ['N', 'NIE']].map(([k, l]) =>
+            `<label class="opt" data-k="${k}" style="display:inline-flex;margin-right:10px"><input type="radio" name="r-${id}" data-id="${id}" value="${k}"><span>${l}</span></label>`).join('') +
+          `<div class="res" id="res-${id}"></div></div>`;
+      });
+    } else if (t.type === 'match') {
+      html += `<div class="skarby">` + t.names.map((n, i) => `<span class="chip"><b>${i + 1}.</b> ${esc(n)}</span>`).join('') + `</div>`;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(t.example.q)} - <b>${t.example.ans}</b></div>`;
+      t.items.forEach((it) => {
+        const id = `${t.id}-${it.l}`;
+        html += `<div class="mrow" id="q-${id}"><span class="lt">${it.l}.</span><span class="mt">${esc(it.q)}</span>
+          <select data-id="${id}" aria-label="Opis ${it.l}"><option value=""></option>${t.names.map((n, i) => `<option value="${i + 1}">${i + 1}. ${esc(n)}</option>`).join('')}</select>
+          <span class="fix" id="res-${id}"></span></div>`;
+      });
+    } else if (t.type === 'pick') {
+      html += `<div class="chk" style="cursor:default"><span class="n">${t.example.n}.</span><span><b>${esc(t.example.q)}</b> <i>(PRZYKŁAD - zdanie prawdziwe)</i></span></div>`;
+      html += `<div class="cnt" id="cnt-${t.id}">Zaznaczone: 0 / 6</div><div class="cnt" id="lim-${t.id}" style="color:var(--bad);min-height:1.5em" aria-live="polite"></div>`;
+      t.items.forEach((s, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<label class="chk" id="q-${id}"><input type="checkbox" data-id="${id}"><span class="n">${i + 1}.</span><span>${esc(s)}</span></label>`;
+      });
+    } else if (t.type === 'open') {
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(t.example.q)}<br><i>${esc(t.example.a)}</i></div>`;
+      t.items.forEach((it, i) => {
+        const n = i + 1;
+        html += `<div class="q" id="q-${t.id}-${n}"><div class="qt">${n}. ${esc(it.q)}</div>`;
+        for (let p = 0; p < it.parts; p++) {
+          const id = it.parts === 2 ? `${t.id}-${n}${'ab'[p]}` : `${t.id}-${n}`;
+          html += `<div class="sub" id="sub-${id}">${it.parts === 2 ? `<span class="lab">${'ab'[p]})</span>` : ''}<input type="text" data-id="${id}" autocomplete="off" spellcheck="false" aria-label="Odpowiedź ${n}${it.parts === 2 ? 'ab'[p] : ''}">
+            <label class="accept"><input type="checkbox" data-accept="${id}"> uznaj</label></div>`;
+        }
+        html += `<div class="keyline" id="res-${t.id}-${n}"></div></div>`;
+      });
+    }
+    html += `<div class="src">${esc(t.src)}</div>`;
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += transBox(t);
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('[data-id]').forEach(el => {
+    const v = saved[el.dataset.id];
+    if (v != null) {
+      if (el.type === 'radio') el.checked = (el.value === v);
+      else if (el.type === 'checkbox') el.checked = (v === '1');
+      else el.value = v;
+    }
+    el.addEventListener('input', onChange);
+    el.addEventListener('change', onChange);
+  });
+  let kept = 0;
+  root.querySelectorAll('#task-IV input[type=checkbox]').forEach(cb => { if (cb.checked && ++kept > 6) cb.checked = false; });
+  root.querySelectorAll('[data-accept]').forEach(cb => {
+    cb.checked = !!acceptState[cb.dataset.accept];
+    cb.addEventListener('change', () => { acceptState[cb.dataset.accept] = cb.checked; save(); });
+  });
+  root.querySelectorAll('input[data-file]').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const id = inp.dataset.file, f = inp.files && inp.files[0];
+      if (!f) return;
+      if (urls[id]) URL.revokeObjectURL(urls[id]);
+      urls[id] = URL.createObjectURL(f);
+      const a = document.getElementById('audio-' + id);
+      a.src = urls[id]; a.load();
+      document.getElementById('fname-' + id).textContent = f.name;
+    });
+  });
+  onChange(true);
+}
+let limTimer = null;
+function flashLimit() {
+  const el = document.getElementById('lim-IV');
+  if (!el) return;
+  el.textContent = 'Można wybrać 6 zdań';
+  clearTimeout(limTimer);
+  limTimer = setTimeout(() => { el.textContent = ''; }, 2500);
+}
+function onChange(e) {
+  const el = e && e.target;
+  if (el && el.type === 'checkbox' && el.checked && el.closest('#task-IV')) {
+    if (document.querySelectorAll('#task-IV input[type=checkbox]:checked').length > 6) { el.checked = false; flashLimit(); }
+  }
+  if (e !== true) save();
+  updateProgress(); updateCounts();
+}
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('[data-id]').forEach(el => {
+    if (el.type === 'radio') { if (el.checked) o[el.dataset.id] = el.value; }
+    else if (el.type === 'checkbox') o[el.dataset.id] = el.checked ? '1' : '';
+    else o[el.dataset.id] = el.value;
+  });
+  o.__accept = acceptState;
+  return o;
+}
+function answered() {
+  const ids = {};
+  document.querySelectorAll('[data-id]').forEach(el => {
+    const id = el.dataset.id;
+    if (!(id in ids)) ids[id] = false;
+    if (el.type === 'radio' || el.type === 'checkbox') { if (el.checked) ids[id] = true; }
+    else if (el.value.trim()) ids[id] = true;
+  });
+  return ids;
+}
+function updateProgress() {
+  const t4 = 'IV-';
+  const ids = answered();
+  let total = 0, filled = 0, pickN = 0;
+  for (const id in ids) {
+    if (id.startsWith(t4)) { if (ids[id]) pickN++; continue; }
+    total++; if (ids[id]) filled++;
+  }
+  total += 6; filled += Math.min(pickN, 6);
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${total}`;
+}
+function updateCounts() {
+  const n = document.querySelectorAll('#task-IV input[type=checkbox]:checked').length;
+  const el = document.getElementById('cnt-IV');
+  if (el) el.textContent = `Zaznaczone: ${n} / 6`;
+}
+
+// ---------- sprawdzanie ----------
+function checkAll() {
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const sel = document.querySelector(`input[name="r-${id}"]:checked`);
+        const v = sel ? sel.value : '';
+        const ok = v === it.ans;
+        if (ok) score += 1;
+        document.querySelectorAll(`#q-${id} .opt`).forEach(l => {
+          l.classList.remove('ok', 'bad', 'key');
+          if (l.dataset.k === it.ans) l.classList.add(ok ? 'ok' : 'key');
+          else if (l.dataset.k === v) l.classList.add('bad');
+        });
+        const r = document.getElementById(`res-${id}`);
+        const lab = t.type === 'mc' ? it.ans + ')' : (it.ans === 'T' ? 'TAK' : 'NIE');
+        r.className = 'res ' + (ok ? 'ok' : 'bad');
+        r.textContent = ok ? 'Dobrze' : (v ? 'Źle. Poprawna odpowiedź: ' + lab : 'Brak odpowiedzi. Poprawna odpowiedź: ' + lab);
+      });
+    } else if (t.type === 'match') {
+      t.items.forEach(it => {
+        const id = `${t.id}-${it.l}`;
+        const v = document.querySelector(`[data-id="${id}"]`).value;
+        const ok = v === it.ans;
+        if (ok) score += 1;
+        const row = document.getElementById(`q-${id}`);
+        row.classList.remove('ok', 'bad'); row.classList.add(ok ? 'ok' : 'bad');
+        const f = document.getElementById(`res-${id}`);
+        f.className = 'fix'; f.style.color = ok ? '' : 'var(--ok)';
+        f.textContent = ok ? '' : '→ ' + it.ans + '. ' + t.names[+it.ans - 1];
+      });
+    } else if (t.type === 'pick') {
+      const sel = [];
+      t.items.forEach((s, i) => { if (document.querySelector(`[data-id="${t.id}-${i + 1}"]`).checked) sel.push(i + 1); });
+      score = sel.filter(n => t.ans.includes(n)).length;
+      t.items.forEach((s, i) => {
+        const n = i + 1, row = document.getElementById(`q-${t.id}-${n}`);
+        row.classList.remove('ok', 'bad', 'miss');
+        const isTrue = t.ans.includes(n), picked = sel.includes(n);
+        if (picked && isTrue) row.classList.add('ok');
+        else if (picked && !isTrue) row.classList.add('bad');
+        else if (!picked && isTrue) row.classList.add('miss');
+      });
+    } else if (t.type === 'open') {
+      t.items.forEach((it, i) => {
+        const n = i + 1;
+        const per1 = it.parts === 2 ? 0.5 : 1;
+        const ids = it.parts === 2 ? [`${t.id}-${n}a`, `${t.id}-${n}b`] : [`${t.id}-${n}`];
+        const raws = ids.map(id => document.querySelector(`[data-id="${id}"]`).value);
+        const sets = raws.map(r => { const s = norm(r); const m = new Set(); if (s) it.g.forEach((rx, gi) => { if (rx.test(s)) m.add(gi); }); return m; });
+        ids.forEach((id, p) => {
+          let ok = sets[p].size > 0;
+          if (ok && p === 1) {
+            const a = sets[0];
+            ok = [...sets[1]].some(j => !(a.size === 1 && a.has(j)));
+          }
+          const acc = !!acceptState[id];
+          if (acc) ok = true;
+          if (ok) score += per1;
+          const sub = document.getElementById(`sub-${id}`);
+          sub.classList.remove('ok', 'bad', 'almost'); sub.classList.add(ok ? 'ok' : 'bad');
+        });
+        document.getElementById(`res-${t.id}-${n}`).textContent = 'Klucz: ' + it.key;
+      });
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / ${t.max} p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    document.getElementById(`tr-${t.id}`).open = true;
+    per.push({ t, score });
+  }
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: poprawna odpowiedź. Na czerwono: błędna, obok klucz. Transkrypcje pod zadaniami zostały rozwinięte. W zadaniu V możesz zaznaczyć „uznaj”, jeśli twoja odpowiedź jest poprawna, ale inna niż w kluczu, i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+const TOTAL = 40 * 60;
+let left = TOTAL, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  acceptState = {};
+  for (const k in urls) { URL.revokeObjectURL(urls[k]); delete urls[k]; }
+  clearInterval(tick); running = false; left = TOTAL; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', checkAll);
+document.getElementById('checkBottom').addEventListener('click', checkAll);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+const TEST_ID = 'sluchanie-2023-11';
+// odpowiedzi do zadania V wzięte z klucza (wersje uznawane przez Komisję)
+const FILL_V = [
+  ['Jest na nie za stary.', 'Irytuje go hałas.'],
+  ['Spokoju.', 'Relaksu.'],
+  ['Uważa, że był fantastyczny.'],
+  ['Na małej scenie.'],
+  ['Był to ich pierwszy duży koncert.'],
+  ['Było mu gorąco.'],
+  ['Znali jego piosenki.', 'Śpiewali razem z nim.'],
+  ['Będzie za granicą.', 'Nagrywa nową płytę.']
+];
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.items.forEach((it, i) => {
+        const r = document.querySelector(`input[name="r-${t.id}-${i + 1}"][value="${it.ans}"]`);
+        if (r) r.checked = true;
+      });
+    } else if (t.type === 'match') {
+      t.items.forEach(it => {
+        const el = document.querySelector(`[data-id="${t.id}-${it.l}"]`);
+        if (el) el.value = it.ans;
+      });
+    } else if (t.type === 'pick') {
+      t.items.forEach((s, i) => {
+        const el = document.querySelector(`[data-id="${t.id}-${i + 1}"]`);
+        if (el) el.checked = t.ans.includes(i + 1);
+      });
+    } else if (t.type === 'open') {
+      t.items.forEach((it, i) => {
+        const n = i + 1;
+        const ids = it.parts === 2 ? [`${t.id}-${n}a`, `${t.id}-${n}b`] : [`${t.id}-${n}`];
+        ids.forEach((id, p) => {
+          const el = document.querySelector(`[data-id="${id}"]`);
+          if (el) el.value = FILL_V[i][p];
+        });
+      });
+    }
+  }
+  acceptState = {};
+  document.querySelectorAll('[data-accept]').forEach(cb => { cb.checked = false; });
+  save(); updateProgress(); updateCounts();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'sluchanie', session: '2023-11', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

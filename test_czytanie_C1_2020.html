@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Czytanie C1 2020</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.opt { display: block; padding: 4px 8px; border-radius: 6px; margin: 2px 0; cursor: pointer; }
+.opt input { margin-right: 8px; }
+.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 600; }
+.opt.bad { background: var(--bad-bg); color: var(--bad); }
+.opt.key { outline: 2px solid var(--ok); }
+.qfix { font: 600 14px/1.3 system-ui, sans-serif; color: var(--ok); margin-top: 4px; }
+.tf { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.tf .opt { margin: 0; border: 1px solid var(--line); padding: 4px 12px; }
+.frag { padding: 6px 10px; margin: 4px 0; background: var(--example); border-radius: 8px; font-size: 15px; }
+.frag b { margin-right: 6px; }
+.frag.used { opacity: .45; }
+.frag.struck { opacity: .6; font-style: italic; }
+.mrow { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.mrow .t { flex: 1 1 240px; font-weight: 600; }
+.mrow select { font: 16px system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; }
+.mrow.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.mrow.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.mrow .fix { flex-basis: 100%; }
+.gap .fix { display: inline; }
+.gap select { width: auto; max-width: 72vw; }
+.gap.cloze select { width: 9em; }
+.gap.letter select { width: 5em; }
+</style>
+<style>
+.stext { font-family: Georgia, "Times New Roman", serif; font-size: 16px; line-height: 1.7; margin: 0 0 6px; }
+.src, .stext, .text p, .stem, details.tr p { overflow-wrap: anywhere; }
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie tekstów pisanych C1 - test przykładowy 2020</span>
+    <span class="timer" id="timer">60:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Rozumienie tekstów pisanych</h1>
+  <p class="lead">Oficjalny test przykładowy egzaminu certyfikatowego C1 z 2020 roku. 5 zadań, 60 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji.</p>
+  <div class="notice" id="timeUp">Czas minął (60 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: oficjalny test przykładowy C1 (2020), część "Rozumienie tekstów pisanych" + oficjalny klucz ----------
+const TASKS = [
+  { id: 'I', type: 'mc', per: 1, max: 7,
+    title: 'Zadanie I',
+    instr: 'Proszę przeczytać tekst, a następnie - zgodnie z przykładem - zaznaczyć właściwą odpowiedź.',
+    textTitle: '20-latki odrzucają konsumpcyjny styl życia rodziców',
+    paras: [
+'Polacy, którzy wchodzą dziś w dorosłe życie, to tzw. pokolenie Z. „Zetki” to dzieci osób z pokolenia X. Jest ono postrzegane jako ceniące pracę, traktujące ją jako priorytet i przekonane, że wysiłek w nią włożony materialnie się opłaca. Młodzi się przeciwko temu buntują, gdyż widzieli, o której rodzice wracali do domu, zauważali, że sukces zawodowy okupiony był nie tylko ciężką pracą, ale też zdrowiem, kondycją psychiczną, a przede wszystkim zepchnięciem relacji rodzinnych na drugi plan.',
+'Ten antykonsumpcyjny bunt młodych ma bardzo świadomy wymiar, choć oczywiście nie jest totalnym porzuceniem konsumpcji, lecz sprowadzeniem jej do racjonalnych rozmiarów - wyborów odpowiedzialnych i etycznych, przyjaznych dla środowiska. Ważnym hasłem jest „mniej znaczy więcej”, co po części wynika z niepewności sytuacji ekonomicznej, ale też z postaw ekologicznych, które kształtują się dzięki dostępowi do sieci i nieograniczonym możliwościom sięgania do źródeł online. Media społecznościowe łączą młodych ludzi we wspólnoty, a wiedza w nich przekazywana zachęca do podjęcia działań. Oni nie muszą mieć. To coraz bardziej powszechna praktyka, która opiera się między innymi na ekologicznym trybie życia i nie wiąże się z wysokimi kosztami. Pokolenie X założyło sobie na szyję pętle kredytowe na wiele dziesiątków lat. Dzieci to widzą i skłonne są raczej decydować się na wynajem mieszkań mimo powszechnego przekonania, że trzeba mieć coś własnego. Popularne stają się wspólne przejazdy, a także zakup pewnych rzeczy, na przykład gier komputerowych: młodzi wykupują dostęp i dzielą się nim, logując się na zmianę.',
+'Na stosunek do posiadania może mieć też wpływ specyficzna socjalizacja pokolenia Z. Bardzo wielu młodych ludzi dorastało w rozbitych rodzinach. Nie miało jedynego miejsca wypełnionego wyjątkowymi rzeczami, tylko jeden pokój u mamy, drugi u taty, jeden ulubiony kubek tu, drugi tam. Ten typ dorastania gwarantował pewne bezpieczeństwo. Dziecko miało poczucie, że w razie jakichkolwiek niepowodzeń życiowych zawsze gdzieś się odnajdzie. Młode pokolenie, jak każde inne, nie jest homogeniczne, więc za wcześnie na huraoptymizm, jednak ekologiczny bunt przeciwko światu konsumpcji jest coraz bardziej widoczny. W dużych miastach może wręcz być już większościowy. Jeszcze niedawno opisywano fenomen galerii handlowych, które dla młodych ludzi były nie tylko miejscem zakupów, ale spotkań towarzyskich, randkowania czy spacerowania. W pokoleniu Z staje się to niemodne, niestosowne. Młodzi już nie pędzą tłumnie do galerii, bo przestawili się na funkcjonowanie w sieci. Okazuje się ona czynnikiem niwelowania różnic społecznych, ponieważ mieszkańcy mniejszych miejscowości nie mają problemu z dostępem do internetu, a do wielkich centrów handlowych jest on dla nich utrudniony.'
+    ],
+    src: 'Na podstawie: https://www.polityka.pl/tygodnikpolityka/spoleczenstwo/1931474,1,20-latki-odrzucajaca-konsumpcyjny-styl-zycia-rodzicow.read',
+    example: { stem: 'Młodzież sprzeciwia się', opts: ['stylowi życia rodziców.', 'wchodzeniu w dorosłość.', 'sposobom wychowawczym rodziców.'], ans: 0 },
+    qs: [
+      { stem: 'Pokolenie X', opts: ['osiągnęło sukces w pracy bez większego wysiłku.', 'stawiało karierę zawodową na pierwszym miejscu.', 'często odwlekało zakładanie rodziny.'], ans: 'b' },
+      { stem: 'Z tekstu wynika, że generacja Z', opts: ['całkowicie odrzuca model życia rodziców.', 'zachowuje się nieracjonalnie.', 'pragnie zachować równowagę w życiu.'], ans: 'c' },
+      { stem: 'Media społecznościowe', opts: ['pogarszają sytuację materialną młodych ludzi.', 'ograniczają aktywność społeczną nastolatków.', 'pomagają w propagowaniu postaw ekologicznych.'], ans: 'c' },
+      { stem: 'Z tekstu wynika, że młodzi ludzie', opts: ['dostrzegają sens w dzieleniu się różnymi dobrami.', 'chętnie biorą pożyczki mieszkaniowe.', 'dążą do tego, by mieć coś tylko dla siebie.'], ans: 'a' },
+      { stem: 'Brak przywiązania do rzeczy u wielu młodych osób wynika', opts: ['ze specyficznej sytuacji rodzinnej w dzieciństwie.', 'ze strachu przed niepowodzeniami.', 'z obawy o wysokie koszty utrzymania.'], ans: 'a' },
+      { stem: 'Z tekstu wynika, że', opts: ['większość młodych ludzi prezentuje postawy proekologiczne.', 'niechęć do konsumpcjonizmu dominuje w metropoliach.', 'konsumpcjonizm jest charakterystyczny dla dużych miast.'], ans: 'b' },
+      { stem: 'Młodzież zarówno z małych, jak i dużych miast łączy', opts: ['zamiłowanie do zakupów w galeriach handlowych.', 'wybór spaceru jako bezpłatnej formy rekreacji.', 'taka sama forma aktywności społecznej.'], ans: 'c' }
+    ]
+  },
+  { id: 'II', type: 'tf', per: 1, max: 10,
+    title: 'Zadanie II',
+    instr: 'Proszę przeczytać tekst, a następnie - jak w przykładzie - zaznaczyć: TAK - gdy zdanie jest zgodne z tekstem; NIE - gdy nie jest zgodne z tekstem; BI - gdy w tekście brakuje informacji na dany temat.',
+    textTitle: 'Rozwiązywanie problemów podczas snu? Teraz to możliwe',
+    paras: [
+'Sen nie tylko pozwala zregenerować siły, umożliwia również usystematyzowanie zdobytej wiedzy, a nawet rozwiązywanie problemów. Potwierdzili to naukowcy w niedawno przeprowadzonych badaniach.',
+'W snach fragmenty rzeczywistości, wyobraźni i pamięci łączą się w różne scenariusze, które nie mają sensu po przebudzeniu. Wydaje się, że ma to coś wspólnego z porządkowaniem pamięci i np. nauka przed snem jest dobrym sposobem na zapamiętanie informacji. Kiedy ludzie decydują się „przespać” trudną decyzję, dzieje się tak, ponieważ wiedzą, że istnieje szansa, iż obudzą się z wyraźniejszym spojrzeniem na męczącą ich kwestię. Obecnie naukowcy są w stanie wykorzystać badania nad snem, by znaleźć wyjście z problematycznych sytuacji.',
+'Zajmujący się badaniem snu twierdzą, że spanie dłużej niż 9 godzin w nocy może zwiększyć ryzyko demencji. Specjaliści przebadali ponad 5000 dorosłych i doszli do wniosku, że zbyt długi sen był związany z osłabieniem pamięci.',
+'Hipoteza badaczy była następująca: „Wiadomo, że ludzie powtarzają lub utrwalają wspomnienia podczas snu, wzmacniając je i reorganizując” - mówi jedna z inicjatorek badania, psycholog Kristen Sanders z Northwestern University w Evanston. Hipoteza zbadana przez Sanders zakładała, że rozpracowanie złożonego problemu może pomóc w tworzeniu nowych kombinacji znanych elementów, aby znaleźć kolejny układ, który da rozwiązanie.',
+'Naukowcy rozważali, czy może istnieć strategia wyjścia z kłopotliwej sytuacji podobna do reorganizacji pamięci podczas snu. Aby zweryfikować swoje przypuszczenia, musieli znaleźć sposób, jak nakierować umysły śpiących na określone problemy, ale bez budzenia ich. Wcześniejsze badania wykazały, że można to osiągnąć, odtwarzając dźwięki powiązane uprzednio z określonymi sytuacjami. „Trudne sytuacje są częste w codziennym życiu każdego człowieka. W naszych badaniach stosujemy skomplikowane łamigłówki, a leżące u ich podstaw procesy poznawcze mogą być wykorzystywane, gdy poszukuje się rozwiązania danego problemu” - mówi Sanders.',
+'W kolejnej fazie eksperymentu naukowcy starali się dowiedzieć, czy wybranym 57 osobom biorącym w nim udział uda się znaleźć rozwiązania zagadek podczas snu. Zespół badawczy przedstawił ochotnikom zestaw łamigłówek wieczorem przed snem. Każdej łamigłówce towarzyszył specjalny dźwięk. Badani poszli spać, ale nie rozwiązali wszystkich zagadek. Gdy uczestnicy spali, badacze odtwarzali dźwięki przyporządkowane połowie nierozwiązanych zagadek na tyle głośno, aby można je było usłyszeć bez przerywania snu. Chodziło o to, by przypomnieć te zagadki umysłowi śpiącego w celu dalszej eksploracji. Rano, po „przespaniu” pozostałych łamigłówek, badani byli w stanie rozwiązać ich więcej. Mogli podać odpowiedź na 31,7 proc. zagadek wywoływanych przez dźwięki podczas snu, co dało 55 proc. poprawy w porównaniu z 20,5 proc. zagadek nieprzypominanych za pomocą akompaniamentu, które udało im się rozwikłać.',
+'Technikę przypisywania dźwięków do zagadek można wykorzystać w przypadku każdego problemu, gdy dana osoba ma wszystkie niezbędne informacje, a nie jest w stanie znaleźć rozwiązania. Inny autor badania, prof. Mark Beeman, mówi: „Bez względu na to, ile śpię, nie odkryję nagle czarnych dziur ani nie znajdę lekarstwa na rzadką chorobę, ponieważ nie mam niezbędnej podstawowej wiedzy. To badanie dostarcza jeszcze więcej dowodów na to, że przetwarzanie informacji podczas snu bywa pomocne w ciągu dnia”.'
+    ],
+    src: 'Na podstawie: https://zdrowie.wprost.pl/psychologia/rozwoj-osobisty/10264963/rozwiazywanie-problemow-podczas-snu-teraz-to-mozliwe.html?pr=10264148&pri=5#5-Rumianek',
+    example: { stem: 'Wyobraźnia i zapamiętane informacje pozwalają znaleźć sensowne wyjście z trudnej sytuacji.', ans: 'NIE' },
+    qs: [
+      { stem: 'Po przebudzeniu mamy świeże spojrzenie na sytuacje życiowe i zwykle podejmujemy najtrafniejsze decyzje.', ans: 'BI' },
+      { stem: 'Dziewięciogodzinny sen powoduje zwielokrotnienie procesów pamięciowych i potęguje ryzyko choroby.', ans: 'NIE' },
+      { stem: 'Naukowcy zastanawiali się, w jaki sposób pomóc umysłowi zająć się danym problemem podczas snu.', ans: 'TAK' },
+      { stem: 'Jeśli rozwiążemy trudny problem, w mózgu powstaną nowe ścieżki służące szukaniu wyjścia z kłopotu.', ans: 'TAK' },
+      { stem: 'Przeprowadzający badania dowiedli, że uczestnicy eksperymentu mogą rozwiązać łamigłówki w czasie snu.', ans: 'NIE' },
+      { stem: 'Osoby, które brały udział w badaniu, rozwiązywały ten sam zestaw zagadek przed snem i po przebudzeniu.', ans: 'NIE' },
+      { stem: 'Podczas badania wykorzystano specyficzne dźwięki, które były przypisane konkretnej zagadce.', ans: 'TAK' },
+      { stem: 'Sygnały akustyczne towarzyszące łamigłówkom były słyszane podczas snu.', ans: 'TAK' },
+      { stem: 'Liczba zagadek rozwiązanych dzięki przywołaniu dźwięków, które słyszał badany, była niemal o połowę wyższa niż tych bez sygnałów akustycznych.', ans: 'NIE' },
+      { stem: 'Według autorów badania nie da się znaleźć wyjścia z problematycznych sytuacji, kiedy śpimy niewystarczająco długo.', ans: 'BI' }
+    ]
+  },
+  { id: 'III', type: 'gapfrag', per: 1, max: 10,
+    title: 'Zadanie III',
+    instr: 'Proszę przeczytać tekst i - zgodnie z przykładem - dopasować usunięte z niego fragmenty (A-M). Uwaga! Dwa fragmenty są zbędne.',
+    textTitle: 'Jak odciążyć uczniów?',
+    frags: {
+      A: 'prezent dla uczniów, a także dla nauczycieli',
+      B: 'zmiany systemu oświaty',
+      C: 'obciążenia obowiązkami szkolnymi',
+      D: 'które obowiązki domowe lubią',
+      E: 'krok po kroku rozpisuje',
+      F: 'przygotował poradnik dla szkół',
+      G: 'żeby uniknąć kumulacji prac',
+      H: 'demoluje życie rodzinne i uczniów',
+      I: 'zainspiruje do działania',
+      J: 'zaproponowała program pilotażowy',
+      K: 'pogłębiać nierówności społeczne',
+      L: 'wpływa korzystnie na funkcjonowanie',
+      M: 'które zadania są dla nich użyteczne'
+    },
+    used: 'A',
+    paras: [
+'Rzecznik Praw Obywatelskich wraz z organizacjami pozarządowymi pracuje nad przygotowaniem dla szkół wskazówek, które dotyczą zadawania prac domowych. Ma to być [[A]].',
+'Co zrobić, żeby prace domowe miały sens? Niech będzie ich mniej, ale niech służą rzeczywistemu rozwojowi uczniów i pomagają im w nauce. Z takiego założenia wyszedł Rzecznik Praw Obywatelskich i wraz z ruchem „Obywatele dla edukacji” {1}, jak podejść do tematu. W świetle prawa prace domowe nie muszą być zadawane i niektóre szkoły próbują już wcielać owe wytyczne w życie. Temu fragmentowi oświatowej rzeczywistości zaczęły też przyglądać się samorządy. Warszawa jesienią {2} „Szkoła bez zadań domowych”. Rzecznik Praw Obywatelskich, po wielu spotkaniach w całym kraju, uważa, że uczniowie, nauczyciele i rodzice cierpią z powodu nadmiernego {3} - po szkole. Ten problem wielokrotnie podnoszony był także przez media. Dramatycznie nasilił się w ostatnich latach przy okazji {4} i zamieszania związanego z wprowadzeniem nowych programów w podstawówkach. Specjaliści zwracają uwagę, że przytłaczanie dzieci pracą i nauką w domu {5}, i nauczycieli (ktoś przecież te zadania musi sprawdzać!). Jest też niezgodne z nowoczesnymi trendami edukacyjnymi, bo prace domowe nie zawsze pomagają się uczyć, mogą za to zniechęcić uczniów, a wręcz {6}, jeśli wymagają pomocy i zaangażowania rodziców. Dlatego RPO przy wsparciu ekspertów oświatowych i działaczy społecznych - pod hasłem „#zadaNIEdomowe” - zachęca, by zasady zadawania prac domowych uzgadniać wspólnie, poprzez debaty w szkołach - z udziałem dyrekcji, nauczycieli, uczniów i rodziców. Pytać uczniów, {7} i naprawdę pomagają im się uczyć, zachęcają do rozwiązywania problemów i własnych poszukiwań. Warto ustalić konkrety: ile zadań jest teraz zadawanych, a ile powinno ich być? Kto i jak może je koordynować, {8}, a wykorzystać pokrewieństwa tematów omawianych na lekcjach różnych przedmiotów? Jak nauczyciele mogą reagować, gdy uczeń nie odrobi zadania? Poradnik {9}, jak zabrać się do przeprowadzenia debaty i do realizacji wniosków, które będą z niej płynąć. RPO wystąpił do Ministerstwa Edukacji Narodowej z prośbą o wypromowanie tej akcji. Bez wątpienia jest ona reakcją na rzeczywisty problem społeczny i należy się podziękowanie Rzecznikowi Praw Obywatelskich oraz współpracującym z nim działaczom za to, że się tą kwestią zajmują. Zwłaszcza że - przynajmniej teoretycznie - można by oczekiwać, iż temat {10} ekipę innego biura: Rzecznika Praw Dziecka. Może też zechce się zaangażować? Na pewno powinna!'
+    ],
+    src: 'Na podstawie: https://www.polityka.pl/tygodnikpolityka/spoleczenstwo/1934872,1,rpo-bierze-sie-za-temat-prac-domowych-radzi-jak-odciazyc-uczniow.read',
+    answers: { 1: 'F', 2: 'J', 3: 'C', 4: 'B', 5: 'H', 6: 'K', 7: 'M', 8: 'G', 9: 'E', 10: 'I' },
+    note: 'Fragmenty zbędne: D, L.'
+  },
+  { id: 'IV', type: 'cloze', per: 0.5, max: 5,
+    title: 'Zadanie IV',
+    instr: 'Proszę - zgodnie z przykładem - podkreślić najlepszą spośród możliwości podanych w nawiasach (na egzaminie podkreślasz ją, tutaj wybierasz z listy).',
+    textTitle: 'Abakanowicz wywróciła polski rynek aukcyjny do góry nogami',
+    paras: [
+'29 października sprzedano najdroższe dzieło w historii polskiego rynku (przetargowego, konkursowego, [[aukcyjnego]], licytacyjnego). Za pracę Magdaleny Abakanowicz na aukcji zorganizowanej przez dom aukcyjny Desa Unicum {1:kurator|obserwator|kolekcjoner|zbieracz} zapłacił 8 mln zł. „Caminando” to instalacja, na którą składa się 20 figur. Każda {2:odlana|przelana|wylana|napełniona} z brązu i tej samej wysokości (174 cm). Dotychczas ta praca z przełomu 1998 i 1999 r. była w rękach prywatnych, małżeństwa Marshy i Robina Williamsów. 29 października instalacja zmieniła {3:zwierzchnika|dysponenta|gospodarza|właściciela}, stając się najdrożej sprzedanym dziełem na polskim rynku aukcyjnym. Szacowano, że monumentalna praca może osiągnąć cenę rzędu 10 mln zł. Dom Desa Unicum, spodziewając się rekordu, przeprowadził zakrojoną na {4:pokaźną|szeroką|niezmierzoną|niezmierną} skalę kampanię promocyjną w mediach tradycyjnych i społecznościowych. Atmosfera wokół aukcji „Rzeźba i formy przestrzenne” {5:tężała|sztywniała|rosła|gęstniała}, a historyczny z krajowego punktu widzenia wynik ogłoszono, zanim aukcja się rozpoczęła. Ostatecznie bariery 10 mln złotych nie przekroczono - stanęło na 8 milionach. W {6:blasku|cieniu|błysku|mroku} „Caminando” znalazło się za to inne dzieło - XIX-wieczna rzeźba „Tancerka z palcem na brodzie” Antonia Canovy (z drugim najlepszym wynikiem - 5,78 mln zł). Krajowy rynek sztuki jest na najlepszej drodze, żeby zamknąć 2019 rok jeszcze jednym świetnym rezultatem. Wiele wskazuje na to, że obroty przekroczą wysokość ubiegłorocznych - rekordowych 252 mln zł. Na uwagę {7:zasługuje|wskazuje|koncentruje|zwraca} i to, że jak dotąd w pierwszej dziesiątce najdroższych sprzedaży na polskim rynku aukcyjnym {8:brylowały|dyrygowały|zasiadały|królowały} prace wyłącznie mężczyzn, m.in. Wojciecha Fangora, Stanisława Wyspiańskiego czy Henryka Siemiradzkiego. 29 października nastąpiła zmiana. Wreszcie do tego grona dołączyła kobieta, od razu wychodząc na prowadzenie i wywracając cenową {9:układankę|krzyżówkę|łamigłówkę|piramidę} do góry nogami. Magdalena Abakanowicz zmarła w kwietniu 2017 roku. W historii sztuki krajowej i międzynarodowej XX wieku zajmuje ważne miejsce, a jej twórczość cieszy się {10:intensywnym|niesłabnącym|niemijającym|uporczywym} zainteresowaniem.'
+    ],
+    src: 'Na podstawie: https://www.polityka.pl/tygodnikpolityka/kultura/1930384,1,abakanowicz-wywrocila-polski-rynek-aukcyjny-do-gory-nogami.read',
+    answers: { 1: 'kolekcjoner', 2: 'odlana', 3: 'właściciela', 4: 'szeroką', 5: 'gęstniała', 6: 'cieniu', 7: 'zasługuje', 8: 'królowały', 9: 'układankę', 10: 'niesłabnącym' }
+  },
+  { id: 'V', type: 'mcshort', per: 1, max: 8,
+    title: 'Zadanie V',
+    instr: 'Proszę przeczytać fragmenty tekstów i - zgodnie z przykładem - zaznaczyć właściwą odpowiedź.',
+    example: {
+      text: 'Według badań, mimo sporej podaży pracowników, firmom coraz trudniej jest znaleźć osoby z określonym zestawem kompetencji, które umożliwiają skuteczne zarządzanie zespołem. Coraz większe znaczenie zaczyna mieć przywództwo, jako kluczowa umiejętność dla sprawnego funkcjonowania firmy. Według ekspertów z GoldenLine.pl trend ten jest obecnie mocno zauważalny. Dlaczego liderzy stali się tak ważni i jakie role pełnią?',
+      src: 'Na podstawie: http://www.salesnews.pl/TematDnia,1209,Po-co-firmom-liderzy.aspx',
+      stem: 'Ten tekst informuje o tym, że',
+      opts: ['firmy mają problem ze skompletowaniem efektywnego zespołu.', 'badania pokazują, iż stale rośnie zapotrzebowanie na liderów zespołu.', 'obecność utalentowanego menedżera to najnowszy trend w wielu firmach.'],
+      ans: 1
+    },
+    qs: [
+      { text: 'Coraz trudniej zrobić w czasie wakacji coś, czym nie zajmują się inni, dlatego pomysły na turystykę niszową stają się coraz bardziej ekstrawaganckie. Już nie wystarczy gdzieś pojechać autostopem, trzeba iść na piechotę, z psem, z dwumiesięcznym dzieckiem, tyłem, na czworakach. Człowiek się obawia, że upodobni się do innych, a przecież miał być inny, lepszy, bardziej wyjątkowy.',
+        src: 'Na podstawie: https://www.national-geographic.pl/traveler/7-grzechow-glownych-polakow-na-wakacjach?page=2#article-content',
+        stem: 'Ten tekst informuje o tym, że',
+        opts: ['szukamy pomysłów na piesze wakacje.', 'lubimy spędzać wakacje w drodze.', 'następuje dywersyfikacja produktów niszowych.'], ans: 'c' },
+      { text: 'Latem na Bliskim Wschodzie nie da się wytrzymać na świeżym powietrzu zbyt długo. Katar jest tego najlepszym przykładem, bo temperatury rzadko kiedy spadają tam poniżej 32 stopni Celsjusza. Lokalne władze znalazły rozwiązanie problemu i... ochładzają powietrze na zewnątrz budynków. Urządzenia klimatyzacyjne działają z pełną mocą na otwartych przestrzeniach nie tylko centrów handlowych, targów, ale i na pozbawionych dachów stadionach.',
+        src: 'Na podstawie: https://www.national-geographic.pl/national-geographic/ludzie/w-katarze-jest-tak-goraco-ze-wlaczaja-juz-klimatyzacje-na-zewnatrz',
+        stem: 'Ten tekst informuje o tym, że władze Kataru',
+        opts: ['sądzą, iż znalazły sposób na walkę z wysokimi temperaturami.', 'wprowadziły zakaz przebywania latem na otwartych przestrzeniach.', 'walczą z upałem poprzez nowoczesne klimatyzowanie wnętrz.'], ans: 'a' },
+      { text: 'Badacze alarmują, że jeśli się nie zatrzymamy, to zniszczymy bezpowrotnie ptaki morskie. Zespół z Wielkiej Brytanii i Australii przeanalizował wzrost zaśmiecania oceanów przez ostatnie 40 lat. Według nich skala zanieczyszczeń rośnie w przerażającym tempie. Wraz z rozwojem produkcji wzrasta liczba śmieci. Ostatnie 11 lat to podwojenie tempa!',
+        src: 'Na podstawie: https://www.national-geographic.pl/national-geographic/przyroda/to-przerazajace-do-2050-roku-kazdy-morski-ptak-bedzie-nosil-w-sobie-plastik',
+        stem: 'Ten tekst informuje o tym, że',
+        opts: ['badacze zajęli się tempem produkcji śmieci na wybrzeżach.', 'niektóre gatunki ptaków są poważnie zagrożone wyginięciem.', 'w ostatniej dekadzie dwukrotnie wzrosła liczba ginących gatunków.'], ans: 'b' },
+      { text: 'Po dziesięciu latach walki zmniejszył się VAT na e-booki oraz audiobooki. Stawka jest o 18 punktów procentowych niższa! Czy to oznacza, że książki elektroniczne stanieją i stworzą w końcu atrakcyjną alternatywę dla wydań papierowych? Według badań Biblioteki Narodowej 37 proc. Polaków przeczytało w ubiegłym roku przynajmniej jedną książkę (dla porównania: w rozwiniętych krajach Unii Europejskiej - 70-90 proc. mieszkańców), więcej niż jedną - 9 proc. badanych. A reszta? Reszta książek nie czyta.',
+        src: 'Na podstawie: http://wyborcza.pl/7,155287,25387650,po-dekadzie-walki-spadl-vat-na-e-booki-oraz-audiobooki-stawka.html',
+        stem: 'Ten tekst informuje o tym, że',
+        opts: ['podatek na książki papierowe będzie niższy niż 10 lat temu.', 'w Europie Zachodniej czyta się o kilka procent więcej książek niż w Polsce.', 'ponad połowa Polaków w ogóle nie sięga po książki.'], ans: 'c' },
+      { text: 'Dżakarta, dziesięciomilionowe miasto, w którym na każdy kilometr kwadratowy przypada 15 tysięcy mieszkańców, dosłownie tonie. Jeśli nic się w tej sprawie nie zmieni, do 2050 roku metropolia zniknie pod wodą. Zbudowano ją na terenie podmokłym, przez który przepływa 13 rzek. Wraz ze wzrostem poziomu oceanów co roku stan wód podnosi się tu o około 25 centymetrów.',
+        src: 'Na podstawie: https://www.national-geographic.pl/aktualnosci/indonezja-przenosi-stolice-z-powodu-katastrofy-klimatycznej-dzakarta-tonie',
+        stem: 'Ten tekst mówi o tym, że',
+        opts: ['Dżakarta może zostać zalana w ciągu najbliższych 30 lat.', 'według prognoz pogodowych w 2050 roku Dżakarcie grozi powódź.', 'poziom wody w rzekach na terenie Dżakarty od roku wzrasta.'], ans: 'a' },
+      { text: 'Ma 720 płci i potrafi się uczyć. Blob, nowy lokator paryskiego zoo, jest jedną z zagadek natury. Nie ma mózgu, ale ma zdolność uczenia się. Blob jest istotą bez otworu gębowego, poruszającą się bez nóg, rozmnażającą jak grzyby i świetnie radzącą sobie po przecięciu na pół.',
+        src: 'Na podstawie: https://www.national-geographic.pl/national-geographic/odkrycia/blob-nowy-niezwykly-organizm-w-paryskim-zoo-potrafi-sie-uczyc-i-ma-720-plci',
+        stem: 'Ten tekst informuje o tym, że',
+        opts: ['w paryskim ogrodzie zoologicznym odkryto nowego zdolnego lokatora.', 'nowa atrakcja zoo wygląda jak grzyb i ma zdolność uczenia się.', 'Blob nie posiada kończyn i mózgu, ale przemieszcza się i może się uczyć.'], ans: 'c' },
+      { text: 'Kim jesteś na zakupach? „Fundamentalista” planuje zakupy nabiału, pieczywa czy napojów. 63% osób z tej kategorii nie umieszcza na liście zakupów żadnej konkretnej marki. Jeśli masz plan, ale kupujesz też rzeczy, których nie ma na liście, jesteś „reformatorem”. To kolejne 40% klientów. Idziesz do sklepu bez planu, jesteś „anarchistą”, czyli klientem najcenniejszym. Mimo że takich konsumentów jest tylko kilka procent, dają się złowić prawie na wszystko.',
+        src: 'Na podstawie: http://wyborcza.pl/1,155287,14751777,Tajemnice_supermarketow__czyli_jak_robimy_zakupy.html',
+        stem: 'Ten tekst mówi o tym, że',
+        opts: ['ponad połowa kupujących wybiera konkretne marki produktów.', 'osoby niemające listy zakupów stanowią niewielką grupę kupujących.', 'ważnym klientem jest ten, który kupuje produkty spoza listy.'], ans: 'b' },
+      { text: 'Koleją miejską, tramwajem, piechotą - nieważne jak, byle niskoemisyjnie dotrzeć do biura, a my zrefundujemy koszt - tak firma Dynatrace z Gdańska zachęca pracowników do ekologicznego życia. Nie jest to wyścig na ilość benefitów, nie chodzi też o ich wartość - kwota do zyskania jest raczej skromnym dodatkiem do pensji pracowników.',
+        src: 'Na podstawie: https://businessinsider.com.pl/rozwoj-osobisty/kariera/jak-wspierac-ekologiczne-postawy-pracownikow/d4vvwdh',
+        stem: 'Tekst ten informuje o tym, że',
+        opts: ['firma z Gdańska motywuje pracowników do dbania o kondycję fizyczną.', 'dla Dynatrace ważne jest zapewnienie pracownikom dodatków do wynagrodzenia.', 'gdańska firma propaguje wśród zatrudnionych troskę o środowisko naturalne.'], ans: 'c' }
+    ]
+  }
+];
+
+const MAX = 40, PASS = 24;
+const TEST_ID = 'czytanie-2020';
+const STORE_KEY = 'c1_czyt_2020_v1';
+const TOTAL_SEC = 60 * 60;
+
+// ---------- pomocnicze ----------
+function norm(s) {
+  return String(s || '').toLowerCase()
+    .replace(/[„”"'’‘.,!?;:()]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function fold(s) {
+  return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+}
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+const SELFTEST = /[?&]selftest\b/.test(location.search);
+function load() { if (SELFTEST) return {}; try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { if (SELFTEST) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {} }
+
+// ---------- budowanie arkusza ----------
+function textBlock(t, gapFn) {
+  let h = `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>`;
+  h += t.paras.map(p => {
+    let x = esc(p);
+    x = x.replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+    if (gapFn) x = x.replace(/\{(\d+)(?::([^}]*))?\}/g, (m, n, o) => gapFn(n, o));
+    return `<p>${x}</p>`;
+  }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+  return h;
+}
+function letterSelect(t, id, n, letters) {
+  const opts = letters.map(l => `<option value="${l}">${l}</option>`).join('');
+  return `<span class="gap letter" id="g-${id}"><select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select><sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+}
+function fragList(t) {
+  return `<div id="frags-${t.id}">` + Object.keys(t.frags).map(l =>
+    `<div class="frag${l === t.used ? ' struck' : ''}" data-l="${l}"><b>${l}.</b>${esc(t.frags[l])}${l === t.used ? ' <span class="src">(PRZYKŁAD)</span>' : ''}</div>`).join('') + `</div>`;
+}
+function countOf(t) {
+  return t.qs ? t.qs.length : Object.keys(t.answers).length;
+}
+function optsHtml(id, opts) {
+  return opts.map((o, j) => `<label class="opt" data-v="${'abc'[j]}"><input type="radio" name="${id}" value="${'abc'[j]}">${'abc'[j]}) ${esc(o)}</label>`).join('');
+}
+function exampleOpts(e) {
+  return e.opts.map((o, i) => `<span style="${i === e.ans ? 'font-weight:700;text-decoration:underline dotted' : ''}">${'abc'[i]}) ${esc(o)}</span>`).join('<br>');
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${countOf(t)} x ${pl(t.per)} p. = ${t.max} p.</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    if (t.type === 'mc' || t.type === 'tf') {
+      html += `<div class="text">${t.textTitle ? '<p class="noindent"><b>' + esc(t.textTitle) + '</b></p>' : ''}${t.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div><div class="src">${esc(t.src)}</div>`;
+      if (t.type === 'mc') {
+        const e = t.example;
+        html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div><b>${esc(e.stem)}</b><br>${exampleOpts(e)}</div>`;
+        t.qs.forEach((q, i) => {
+          const id = `${t.id}-${i + 1}`;
+          html += `<div class="q" id="q-${id}"><div class="stem">${i + 1}. ${esc(q.stem)}</div>${optsHtml(id, q.opts)}<div class="qfix"></div></div>`;
+        });
+      } else {
+        html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div>${esc(t.example.stem)} <b>- ${t.example.ans}</b></div>`;
+        t.qs.forEach((q, i) => {
+          const id = `${t.id}-${i + 1}`;
+          html += `<div class="q" id="q-${id}"><div class="stem">${i + 1}. ${esc(q.stem)}</div><div class="tf">` +
+            ['TAK', 'NIE', 'BI'].map(v => `<label class="opt" data-v="${v}"><input type="radio" name="${id}" value="${v}">${v}</label>`).join('') +
+            `</div><div class="qfix"></div></div>`;
+        });
+      }
+    } else if (t.type === 'mcshort') {
+      const e = t.example;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div><div class="stext">${esc(e.text)}</div><div class="src">${esc(e.src)}</div><b>${esc(e.stem)}</b><br>${exampleOpts(e)}</div>`;
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="q" id="q-${id}"><div class="stext">${esc(q.text)}</div><div class="src" style="margin:0 0 8px">${esc(q.src)}</div><div class="stem">${i + 1}. ${esc(q.stem)}</div>${optsHtml(id, q.opts)}<div class="qfix"></div></div>`;
+      });
+    } else if (t.type === 'gapfrag') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="example-box"><div class="lbl">FRAGMENTY (A-M)</div></div>` + fragList(t);
+      html += textBlock(t, (n) => letterSelect(t, `${t.id}-${n}`, n, letters));
+    } else if (t.type === 'cloze') {
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>` + t.paras.map(p => {
+        let x = esc(p).replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+        x = x.replace(/\{(\d+):([^}]*)\}/g, (m, n, o) => {
+          const id = `${t.id}-${n}`;
+          const opts = o.split('|').map(w => `<option value="${w}">${w}</option>`).join('');
+          return `<span class="gap cloze" id="g-${id}"><select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select><sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+        });
+        return `<p>${x}</p>`;
+      }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+    }
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('select[data-id]').forEach(el => {
+    if (saved[el.dataset.id] != null) el.value = saved[el.dataset.id];
+    el.addEventListener('change', () => { save(); updateProgress(); updateFrags(); });
+  });
+  root.querySelectorAll('input[type=radio]').forEach(el => {
+    if (saved[el.name] === el.value) el.checked = true;
+    el.addEventListener('change', () => { save(); updateProgress(); });
+  });
+  updateProgress(); updateFrags();
+}
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('select[data-id]').forEach(el => { o[el.dataset.id] = el.value; });
+  document.querySelectorAll('input[type=radio]:checked').forEach(el => { o[el.name] = el.value; });
+  return o;
+}
+function totalQuestions() {
+  return document.querySelectorAll('select[data-id]').length + document.querySelectorAll('.q').length;
+}
+function updateProgress() {
+  const o = collect();
+  const filled = Object.values(o).filter(v => v).length;
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${totalQuestions()}`;
+}
+function updateFrags() {
+  for (const t of TASKS) {
+    if (!t.frags) continue;
+    const chosen = [...document.querySelectorAll(`#task-${t.id} select`)].map(s => s.value).filter(Boolean);
+    document.querySelectorAll(`#frags-${t.id} .frag`).forEach(f => {
+      if (f.dataset.l === t.used) return;
+      f.classList.toggle('used', chosen.includes(f.dataset.l));
+    });
+  }
+}
+
+// ---------- sprawdzanie ----------
+function checkAll() {
+  const vals = collect();
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'mc' || t.type === 'tf' || t.type === 'mcshort') {
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const got = vals[id] || '';
+        const box = document.getElementById(`q-${id}`);
+        box.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad', 'key');
+          if (l.dataset.v === q.ans) l.classList.add('key');
+          if (l.dataset.v === got) l.classList.add(got === q.ans ? 'ok' : 'bad');
+        });
+        const fx = box.querySelector('.qfix');
+        if (got === q.ans) { score += t.per; fx.textContent = ''; }
+        else fx.textContent = '→ poprawna odpowiedź: ' + (t.type === 'tf' ? q.ans : q.ans + ') ' + q.opts['abc'.indexOf(q.ans)]);
+      });
+    } else {
+      for (const n in t.answers) {
+        const id = `${t.id}-${n}`;
+        const a = t.answers[n];
+        const raw = vals[id] || '';
+        const ok = raw !== '' && raw === a;
+        const gap = document.getElementById(`g-${id}`);
+        const fix = gap.querySelector('.fix');
+        gap.classList.remove('ok', 'bad', 'almost');
+        if (ok) { score += t.per; gap.classList.add('ok'); fix.textContent = ''; }
+        else {
+          gap.classList.add('bad');
+          fix.textContent = '→ ' + a + (t.frags ? ' (' + t.frags[a].slice(0, 60) + (t.frags[a].length > 60 ? '...' : '') + ')' : '');
+        }
+      }
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / ${t.max} p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    per.push({ t, score });
+  }
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błąd, obok poprawna odpowiedź z klucza. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  return total;
+}
+
+// ---------- zegar ----------
+let left = TOTAL_SEC, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL_SEC ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  clearInterval(tick); running = false; left = TOTAL_SEC; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', checkAll);
+document.getElementById('checkBottom').addEventListener('click', checkAll);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (t.qs) {
+      t.qs.forEach((q, i) => {
+        const r = document.querySelector(`input[type=radio][name="${t.id}-${i + 1}"][value="${q.ans}"]`);
+        if (r) r.checked = true;
+      });
+    } else {
+      for (const n in t.answers) {
+        const el = document.querySelector(`[data-id="${t.id}-${n}"]`);
+        if (el) el.value = t.answers[n];
+      }
+    }
+  }
+  save(); updateProgress(); updateFrags();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'czytanie', session: '2020', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

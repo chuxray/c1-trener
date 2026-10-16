@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gramatyka C1 2017</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Poprawność gramatyczna C1 - test przykładowy 2017</span>
+    <span class="timer" id="timer">60:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Poprawność gramatyczna</h1>
+  <p class="lead">Oficjalny test przykładowy egzaminu certyfikatowego C1 (Państwowa Komisja ds. Poświadczania Znajomości Języka Polskiego jako Obcego), rok 2017. 8 zadań, 60 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji.</p>
+  <div class="notice" id="timeUp">Czas minął (60 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: oficjalny test przykładowy C1 z 2017 roku, część "Poprawność gramatyczna" + oficjalny klucz ----------
+const TASKS = [
+  {
+    id: "I", type: "gaps", per: 0.5,
+    title: "Zadanie I",
+    instr: "Proszę uzupełnić tekst poprawnymi słownymi formami liczb oraz wyrazów podanych w nawiasach - zgodnie z podanym przykładem (odmiana liczebników i rzeczowników).",
+    paras: [
+      "Niedawno razem z [[dwiema koleżankami]] (2 + koleżanka) z pracy zostałem zaproszony na [[pierwszą konferencję]] (1. + konferencja) z całego cyklu spotkań naukowych organizowanych w {1a} {1b} (20. + rocznica) powstania Instytutu Biotechnologii na naszym uniwersytecie. W sali konferencyjnej zebrało się ponad {2a} {2b} (50 + gość). Znaleźli się wśród nich między innymi {3a} {3b} (4 + biolog) z Gdańska, których poznałem niedawno. Niestety, aż {4a} {4b} (5 + profesor) z zagranicy nie udało się przyjechać. Podczas konferencji wysłuchaliśmy {5a} {5b} (21 + referat)."
+    ],
+    answers: {
+      "1a": ["dwudziestą"], "1b": ["rocznicę"], "2a": ["pięćdziesięciu", "pięćdziesięcioro"], "2b": ["gości"], "3a": ["czterej"],
+      "3b": ["biolodzy"], "4a": ["pięciu", "pięciorgu"], "4b": ["profesorom"], "5a": ["dwudziestu jeden"], "5b": ["referatów"]
+    },
+    note: "Każda z 10 luk po 0,5 p. (liczebnik i rzeczownik osobno)."
+  },
+  {
+    id: "II", type: "transform", per: 1,
+    title: "Zadanie II",
+    instr: "Proszę przekształcić zdania, używając podanego w nawiasie wyrazu lub wyrażenia tak, by nie zmieniły sensu (zamiana zdań złożonych na zdania pojedyncze).",
+    example: {
+      orig: "Rynek pracy zmienił się ostatnio tak, jak przewidywali ekonomiści.",
+      kw: "zgodnie z",
+      ans: "Rynek pracy zmienił się ostatnio zgodnie z przewidywaniami ekonomistów."
+    },
+    items: [
+      { orig: "Sytuacja na rynku pracy pogorszyła się, ponieważ spadło zainteresowanie inwestycjami w budownictwie.", kw: "wskutek",
+        model: [[0, "Sytuacja na rynku pracy pogorszyła się"], " ", [1, "wskutek"], " ", [2, "spadku"], " ", [3, "zainteresowania inwestycjami w budownictwie"], "."],
+        els: [/sytuacja\s+na\s+rynku\s+pracy\s+pogorszyła\s+się/, /wskutek/, /spadku/, /zainteresowania\s+inwestycjami\s+w\s+budownictwie/] },
+      { orig: "Rząd nie zamierza reformować polityki pracy, chociaż grozi nam strajk generalny.", kw: "mimo",
+        model: [[0, "Rząd nie zamierza reformować polityki pracy"], " ", [1, "mimo"], " ", [2, "groźby"], " ", [3, "strajku generalnego"], "."],
+        alt: ["Rząd nie zamierza reformować polityki pracy mimo grożącego nam strajku generalnego.", "Rząd nie zamierza reformować polityki pracy mimo zagrożenia strajkiem generalnym."],
+        els: [/rząd\s+nie\s+zamierza\s+reformować\s+polityki\s+pracy/, /mimo/, /groźby|grożąc(ego|ym)|zagrożeni(a|em)/, /strajk(u|iem)\s+generaln(ego|ym)/] },
+      { orig: "Ministrowie zajęli takie stanowisko, ponieważ zalecali im to nowi doradcy finansowi.", kw: "pod wpływem",
+        model: [[0, "Ministrowie zajęli takie stanowisko"], " ", [1, "pod wpływem"], " ", [2, "nowych"], " ", [3, "doradców finansowych"], "."],
+        alt: ["Ministrowie zajęli takie stanowisko pod wpływem zaleceń nowych doradców finansowych."],
+        els: [/ministrowie\s+zajęli\s+takie\s+stanowisko/, /pod\s+wpływem/, /nowych\s+doradców/, /doradców\s+finansowych/] },
+      { orig: "Wyjście z tego impasu jest możliwe, ale przyszłoroczne plany budżetowe musiałaby zostać zmodyfikowane.", kw: "pod warunkiem",
+        model: [[0, "Wyjście z tego impasu jest możliwe"], " ", [1, "pod warunkiem"], " ", [2, "modyfikacji"], " ", [3, "przyszłorocznych planów budżetowych"], "."],
+        alt: ["Wyjście z tego impasu jest możliwe pod warunkiem zmodyfikowania przyszłorocznych planów budżetowych."],
+        els: [/wyjście\s+z\s+tego\s+impasu\s+jest\s+możliwe/, /pod\s+warunkiem/, /modyfikacji|zmodyfikowania/, /przyszłorocznych\s+planów\s+budżetowych/] },
+      { orig: "Politycy z pewnością podejmą takie decyzje po to, żeby poprawić wizerunek kraju na arenie międzynarodowej.", kw: "w celu",
+        model: [[0, "Politycy podejmą takie decyzje"], " ", [1, "w celu"], " ", [2, "poprawy"], " ", [3, "wizerunku kraju na arenie międzynarodowej"], "."],
+        alt: ["Politycy podejmą takie decyzje w celu poprawienia wizerunku kraju na arenie międzynarodowej."],
+        els: [/politycy\s+(z\s+pewnością\s+)?podejmą\s+takie\s+decyzje/, /w\s+celu/, /popraw(y|ienia)/, /wizerunku\s+kraju\s+na\s+arenie\s+międzynarodowej/] }
+    ],
+    note: "Każde zdanie: 1 p., po 0,25 p. za każdy przekształcony element. Komisja uznaje też inne poprawne przekształcenia - jeśli twoja wersja jest poprawna, ale inna niż w kluczu, zaznacz „uznaj”."
+  },
+  {
+    id: "III", type: "gaps", per: 0.5,
+    title: "Zadanie III",
+    instr: "Proszę uzupełnić tekst poprawnymi formami wyrazów utworzonych od słów podanych w nawiasach - zgodnie z podanym przykładem (tworzenie i odmiana rzeczowników odczasownikowych).",
+    paras: [
+      "[[Uzyskanie]] (uzyskać) pierwszej nagrody za {1} (zwyciężyć) w maratonie było {2} (przeżyć), które na długo zostanie w mojej {3} (pamiętać). Gratulacjom i {4} (pochwalić) nie było końca. Chociaż {5} (przygotować się) do tego wyczynu trwały niemalże rok, to niewiele by mi pomogły, gdyby nie bezustanna {6} (zachęcać) rodziny i znajomych. Ich {7} (wierzyć) we mnie miała duży {8} (wpływać) na moją ostateczną {9} (decydować) o {10} (uczestniczyć) w tym biegu."
+    ],
+    answers: {
+      "1": ["zwycięstwo", "zwyciężenie"], "2": ["przeżyciem"], "3": ["pamięci"], "4": ["pochwałom"], "5": ["przygotowania"],
+      "6": ["zachęta"], "7": ["wiara"], "8": ["wpływ"], "9": ["decyzję"], "10": ["uczestnictwie", "uczestniczeniu"]
+    },
+  },
+  {
+    id: "IV", type: "gaps", per: 0.5,
+    title: "Zadanie IV",
+    instr: "Proszę uzupełnić tekst poprawnymi formami wyrazów utworzonych od słów podanych w nawiasach - zgodnie z podanym przykładem (tworzenie i odmiana rzeczowników i przymiotników od wyrażeń przyimkowych).",
+    paras: [
+      "W miejscowościach [[nadmorskich]] (nad + morze) coraz częściej buduje się domy letniskowe, do których można dotrzeć przez lasy i [[bezdroża]] (bez + droga). Czasem da się do nich dojechać {1} (pod + miasto) kolejką, częściej jednak położone są na zupełnym {2} (od + ludzie), w otoczeniu {3} (bez + kres) pól i lasów. Właściciele domów letniskowych spędzają w nich wiele czasu, szczególnie przy słonecznej i {4} (bez + wiatr) pogodzie. Wraz z nastaniem {5} (przed + wiosna) zaczynają się prace w {6} (przy + dom) ogródkach i porządki na rzadko używanych {7} (pod + dach).",
+      "Latem przychodzi czas leniuchowania: wszyscy zakładają lekkie {8} (pod + koszula) i okulary {9} (przeciw + słońce), a potem wychodzą na tarasy, gdzie w {10} (bez + troska) nastroju odpoczywają."
+    ],
+    answers: {
+      "1": ["podmiejską"], "2": ["odludziu"], "3": ["bezkresnych", "bezkresu"], "4": ["bezwietrznej"], "5": ["przedwiośnia"],
+      "6": ["przydomowych"], "7": ["poddaszach"], "8": ["podkoszulki"], "9": ["przeciwsłoneczne"], "10": ["beztroskim"]
+    },
+  },
+  {
+    id: "V", type: "select", per: 0.5,
+    title: "Zadanie V",
+    instr: "Proszę uzupełnić tekst wyrazami lub wyrażeniami z ramki - zgodnie z podanym przykładem. Uwaga! Każdego wyrazu / wyrażenia można użyć tylko jeden raz, a dwa wyrazy w ramce są zbędne.",
+    ramka: ["a gdy", "ale", "aniżeli", "i chociaż", "to", "jaki", "gdyż", "że ilekroć", "jako", "niżby", "dlatego też", "wkrótce", "i ledwie"],
+    used: "że ilekroć",
+    paras: [
+      "Trudno nie przyznać racji tym, którzy twierdzą, [[że ilekroć]] nauka odkryje tajemnicę jakiejś choroby {1} uda się znaleźć na nią skuteczne lekarstwo, {2} pojawiają się nowe problemy do rozwiązania. Jedyny niepodważalny sukces, {3} w ostatnim stuleciu zdołali odnieść producenci leków, {4} odkrycie antybiotyków. Sto lat temu wiedziano już, że niektóre mikroorganizmy wywołują choroby, {5} nikt jeszcze nie słyszał o antybiotykach. {6}, gdy ktoś zaraził się jakąś chorobą, lekarz niewiele miał do zaproponowania. Organizm chorego sam musiał sobie poradzić z infekcją, {7} zawodził, następstwa bywały tragiczne.",
+      "{8} w obecnych czasach wiele antybiotyków straciło swoją siłę, {9} z winy ich nadużywania bakterie nauczyły się omijać zastawione pułapki, jest to wciąż grupa leków, której {10} jedynej udało się zmienić obraz współczesnej medycyny."
+    ],
+    answers: {
+      "1": ["i ledwie"], "2": ["wkrótce"], "3": ["jaki"], "4": ["to"], "5": ["ale"],
+      "6": ["dlatego też"], "7": ["a gdy"], "8": ["i chociaż"], "9": ["gdyż"], "10": ["jako"]
+    },
+    note: "Zbędne słowa: aniżeli, niżby."
+  },
+  {
+    id: "VI", type: "gaps", per: 0.5,
+    title: "Zadanie VI",
+    instr: "Proszę uzupełnić tekst poprawnymi formami wyrazów podanych w nawiasach - zgodnie z podanym przykładem (tworzenie i odmiana imiesłowów).",
+    paras: [
+      "[[Marząc]] (marzyć) o mężu perfekcjoniście, Iwona zaczęła baczniej obserwować nauczycieli [[zatrudnionych]] (zatrudnić) w swojej szkole. [[Wziąwszy]] (wziąć) pod uwagę fakt, że była ich szefową, miała wiele okazji do rozmów z [[pracującymi]] (pracować) tam mężczyznami. Na początku sądziła, że perfekcjoniści są idealnymi ludźmi. {1} (Oddawać się) z pasją temu, co robią, starają się jak najlepiej wywiązywać z {2} (podejmować) zadań. Później zobaczyła, że są też trochę neurotyczni. {3} (Żyć) w nieustannym napięciu, są okrutnie {4} (wymagać) w stosunku do innych ludzi. I ogromnie cierpią, {5} (widzieć), że wiele prac - pomimo całego ich zaangażowania - {6} (zatrzymać) zostaje na półmetku. {7} (Zważyć) na takie skutki bycia perfekcjonistą, Iwona stwierdziła, że nie są to najlepsi kandydaci na męża. Niepowodzenia są przecież częścią ludzkiego losu, bo w nasze działania zawsze będzie {8} (wpisać) jakiś współczynnik błędu. Sztuka życia polega na tym, żeby po upadku umieć się podnieść i mimo {9} (ponieść) porażki iść dalej {10} (wytyczyć) drogą."
+    ],
+    answers: {
+      "1": ["oddając się"], "2": ["podejmowanych"], "3": ["żyjąc"], "4": ["wymagający"], "5": ["widząc"],
+      "6": ["zatrzymanych"], "7": ["zważywszy"], "8": ["wpisany"], "9": ["poniesionej"], "10": ["wytyczoną"]
+    },
+  },
+  {
+    id: "VII", type: "gaps", per: 0.5,
+    title: "Zadanie VII",
+    instr: "Proszę uzupełnić tekst poprawnymi formami wyrazów podanych w nawiasach - zgodnie z podanym przykładem (aspekt i różne formy czasowników).",
+    paras: [
+      "Powszechnie [[myśli się]] (myśleć/pomyśleć), że o przeszłości ziem słowiańskich wiadomo wszystko. Efekty licznych badań archeologicznych prowadzonych w Polsce [[ogłaszano]] (ogłaszać/ogłosić) już przecież nie raz. Archeologia potrafi jednak czasem [[sprawić]] (sprawiać/sprawić) prawdziwą niespodziankę. Kiedy kilka lat temu [[pojawiły się]] (pojawiać się/pojawić się) pierwsze informacje o Wandalach w pewnej wsi w południowej Polsce, na okolicę {1} (padać/paść) strach. „Wandale u nas?” - {2} (pytać/zapytać) z niedowierzaniem. Później {3} (okazywać się/okazać się), że chodziło tylko o znalezisko archeologiczne: grób wojownika i ozdobny pas. Niedawno {4} (rodzić się/zrodzić się) pomysł stworzenia tam muzeum.",
+      "Wandalowie przez jakiś czas {5} (zasiedlać/zasiedlić) część polskich ziem. Obecnie najczęściej {6} (rozważać/rozważyć) hipotezę mówiącą o tym, że plemię to ostatecznie {7} (docierać/dotrzeć) na nasze tereny w III wieku przed nasza erą. O Wandalach wiadomo tylko tyle, ile inni {8} (zawierać/zawrzeć) o nich w swych pismach. Ich własne kroniki {9} (przepadać/przepaść) albo je skutecznie {10} (niszczyć/zniszczyć)."
+    ],
+    answers: {
+      "1": ["padł"], "2": ["pytano"], "3": ["okazało się"], "4": ["zrodził się"], "5": ["zasiedlali"],
+      "6": ["rozważa się"], "7": ["dotarło"], "8": ["zawarli"], "9": ["przepadły"], "10": ["zniszczono"]
+    },
+  },
+  {
+    id: "VIII", type: "gaps", per: 0.5,
+    title: "Zadanie VIII",
+    instr: "Proszę uzupełnić tekst poprawnymi formami wyrazów podanych w nawiasach - zgodnie z podanym przykładem (odmiana rzeczowników, przymiotników, zaimków).",
+    paras: [
+      "Weekend w [[klasztorze]] (klasztor) - taka oferta wypoczynku zaintryguje z pewnością [[wszystkich]] (wszyscy), którzy są [[zainteresowani]] (zainteresowany) nietypowymi formami spędzania czasu. W {1} (kilkanaście) klasztorach w Polsce można odciąć się od zgiełku świata, spędzając parę dni w jednej z {2} (cela), w jakich żyją {3} (benedyktyn) czy {4} (franciszkanin). Jednak każdy, {5} (ktokolwiek) zamarzy się stanąć u {6} (wrota) klasztoru i poprosić o gościnę, powinien pamiętać, że jest to miejsce odosobnienia i przebywają w nim ludzie {7} (ubogi) i {8} (głuchy) na pokusy świata. Jednak czas spędzony z {9} (brat) zakonnymi może być niezwykłym doświadczeniem, które {10} (wiele) skłoniło do zastanowienia się nad własnym życiem."
+    ],
+    answers: {
+      "1": ["kilkunastu"], "2": ["cel"], "3": ["benedyktyni"], "4": ["franciszkanie"], "5": ["komukolwiek"],
+      "6": ["wrót"], "7": ["ubodzy"], "8": ["głusi"], "9": ["braćmi"], "10": ["wielu"]
+    },
+  }
+];
+
+const MAX = 40, PASS = 24;
+const STORE_KEY = 'c1_gram_2017_v1';
+
+// ---------- pomocnicze ----------
+function norm(s) {
+  return String(s || '').toLowerCase()
+    .replace(/[„”"'’‘.,!?;:()]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function fold(s) {
+  return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+}
+function esc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function pl(n) { // 27.5 -> "27,5"
+  return (Math.round(n * 100) / 100).toString().replace('.', ',');
+}
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {}
+}
+
+// ---------- budowanie arkusza ----------
+function renderText(task, para) {
+  let indent = true;
+  if (para.startsWith('!')) { para = para.slice(1); indent = false; }
+  let h = esc(para);
+  h = h.replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+  h = h.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  h = h.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  h = h.replace(/\{(\d+[a-z]?)\}/g, (m, n) => {
+    const id = `${task.id}-${n}`;
+    let field;
+    if (task.type === 'select') {
+      const opts = task.ramka.filter(w => w !== task.used)
+        .map(w => `<option value="${esc(w)}">${esc(w)}</option>`).join('');
+      field = `<select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select>`;
+    } else {
+      field = `<input type="text" data-id="${id}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Luka ${n}">`;
+    }
+    return `<span class="gap" id="g-${id}">${field}<sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+  });
+  return `<p class="${indent ? '' : 'noindent'}">${h}</p>`;
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${t.type === 'transform' ? '5 x 1 p.' : '10 x 0,5 p.'} = 5 p.</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    if (t.type === 'transform') {
+      const e = t.example;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(e.orig)} <b>(${esc(e.kw)})</b><br><i>${esc(e.ans)}</i></div>`;
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="tr-item"><div class="tr-orig">${i + 1}. ${esc(it.orig)} <span class="kw">(${esc(it.kw)})</span></div>
+          <textarea data-id="${id}" placeholder="Napisz całe zdanie, używając „${esc(it.kw)}”..." spellcheck="false"></textarea>
+          <div class="tr-res" id="res-${id}"></div></div>`;
+      });
+    } else {
+      if (t.type === 'select') {
+        html += `<div class="ramka" id="ramka-${t.id}">` + t.ramka.map(w =>
+          `<span class="chip${w === t.used ? ' struck' : ''}" data-w="${esc(w)}">${esc(w)}</span>`).join('') + `</div>`;
+      }
+      html += `<div class="text">` + t.paras.map(p => renderText(t, p)).join('') + `</div>`;
+      if (t.src) html += `<div class="src">${esc(t.src)}</div>`;
+    }
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('[data-id]').forEach(el => {
+    if (saved[el.dataset.id] != null) el.value = saved[el.dataset.id];
+    el.addEventListener('input', () => { save(); updateProgress(); updateRamka(); });
+    el.addEventListener('change', () => { save(); updateProgress(); updateRamka(); });
+  });
+  updateProgress(); updateRamka();
+}
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('[data-id]').forEach(el => { o[el.dataset.id] = el.value; });
+  o.__accept = acceptState;
+  return o;
+}
+let acceptState = (load().__accept) || {};
+
+function updateProgress() {
+  const all = document.querySelectorAll('[data-id]');
+  let filled = 0;
+  all.forEach(el => { if (el.value.trim()) filled++; });
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${all.length}`;
+}
+
+function updateRamka() {
+  const t = TASKS.find(x => x.type === 'select');
+  const chosen = [...document.querySelectorAll(`#task-${t.id} select`)].map(s => s.value).filter(Boolean);
+  document.querySelectorAll(`#ramka-${t.id} .chip`).forEach(c => {
+    if (c.dataset.w === t.used) return;
+    c.classList.toggle('used', chosen.includes(c.dataset.w));
+  });
+}
+
+// ---------- sprawdzanie ----------
+function checkAll() {
+  const vals = {};
+  document.querySelectorAll('[data-id]').forEach(el => { vals[el.dataset.id] = el.value; });
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'transform') {
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const s = norm(vals[id]);
+        const hits = it.els.map(e => s.length > 0 && (typeof e === 'function' ? e(s) : e.test(s)));
+        let pts = hits.filter(Boolean).length * 0.25;
+        const accepted = !!acceptState[id];
+        if (accepted) pts = 1;
+        score += pts;
+        const model = it.model.map(seg => typeof seg === 'string' ? esc(seg)
+          : `<span class="el ${hits[seg[0]] ? 'hit' : 'miss'}">${esc(seg[1])}</span>`).join('');
+        const alts = (it.alt || []).map(a => `<div class="src" style="margin:4px 0 0">Także w kluczu: <span class="model">${esc(a)}</span></div>`).join('');
+        document.getElementById(`res-${id}`).innerHTML =
+          `<span class="tr-score">${pl(pts)} / 1 p.</span> Klucz: <span class="model">${model}</span>${alts}
+           <br><label class="accept"><input type="checkbox" data-accept="${id}" ${accepted ? 'checked' : ''}> Moja wersja jest inna, ale poprawna - uznaj 1 p.</label>`;
+      });
+    } else {
+      const local = {};
+      for (const n in t.answers) local[n] = vals[`${t.id}-${n}`] || '';
+      for (const n in t.answers) {
+        const id = `${t.id}-${n}`;
+        const raw = local[n];
+        const v = norm(raw);
+        const a = t.answers[n];
+        // przy odpowiedziach powiązanych (I.8/I.9) pokazuj tylko formę pasującą do sąsiedniej luki
+        const list = Array.isArray(a) ? a : a.show.filter(x => a.check(norm(x), local));
+        const ok = v !== '' && (Array.isArray(a) ? list.map(norm).includes(v) : a.check(v, local));
+        const gap = document.getElementById(`g-${id}`);
+        const fix = gap.querySelector('.fix');
+        gap.classList.remove('ok', 'bad', 'almost');
+        const pp = t.partial && t.partial[n];
+        const ppHint = pp ? ' <span class="hint">(' + esc(pp.forms.join(' / ')) + ': ' + pl(pp.pts) + ' p.)</span>' : '';
+        if (ok) {
+          score += t.per; gap.classList.add('ok'); fix.innerHTML = '';
+        } else if (pp && v !== '' && pp.forms.map(norm).includes(v)) {
+          score += pp.pts; gap.classList.add('almost');
+          fix.innerHTML = '→ ' + list.map(esc).join(' / ') + ppHint;
+        } else {
+          const almost = v !== '' && !list.map(norm).includes(v) && list.some(x => fold(x) === fold(raw));
+          gap.classList.add(almost ? 'almost' : 'bad');
+          fix.innerHTML = '→ ' + list.map(esc).join(' / ') + ppHint + (almost ? ' <span class="hint">(sprawdź polskie znaki)</span>' : '');
+        }
+      }
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / 5 p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    per.push({ t, score });
+  }
+
+  document.querySelectorAll('[data-accept]').forEach(cb => {
+    cb.addEventListener('change', () => { acceptState[cb.dataset.accept] = cb.checked; save(); checkAll(); });
+  });
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / 5 * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / 5</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na czerwono: błędna odpowiedź, obok poprawna z klucza. Na żółto: prawie dobrze, tylko polskie znaki. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+let left = 60 * 60, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < 3600 ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  acceptState = {};
+  clearInterval(tick); running = false; left = 3600; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', checkAll);
+document.getElementById('checkBottom').addEventListener('click', checkAll);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+const TEST_ID = 'gramatyka-2017';
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (t.type === 'transform') {
+      t.items.forEach((it, i) => {
+        const el = document.querySelector(`[data-id="${t.id}-${i + 1}"]`);
+        if (el) el.value = it.fill || it.model.map(s => typeof s === 'string' ? s : s[1]).join('');
+      });
+    } else {
+      for (const n in t.answers) {
+        const a = t.answers[n];
+        const el = document.querySelector(`[data-id="${t.id}-${n}"]`);
+        if (el) el.value = Array.isArray(a) ? a[0] : a.show[0];
+      }
+    }
+  }
+  acceptState = {};
+  save(); updateProgress(); updateRamka();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'gramatyka', session: '2017', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

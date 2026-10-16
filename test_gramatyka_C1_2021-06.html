@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gramatyka C1 czerwiec 2021</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Poprawność gramatyczna C1 - czerwiec 2021</span>
+    <span class="timer" id="timer">60:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Poprawność gramatyczna</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja czerwiec 2021. 8 zadań, 60 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji.</p>
+  <div class="notice" id="timeUp">Czas minął (60 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: arkusz C1 czerwiec 2021, część "Poprawność gramatyczna" + oficjalny klucz ----------
+const TASKS = [
+  {
+    id: 'I', type: 'gaps', per: 0.5,
+    title: 'Zadanie I',
+    instr: 'Proszę - zgodnie z przykładami - uzupełnić tekst poprawnymi słownymi formami liczb oraz wyrazów podanych w nawiasach (odmiana liczebników i rzeczowników).',
+    paras: [
+      'Spróbujemy w [[czterdzieści osiem]] (48) [[godzin]] (godzina) zwiedzić Drezno, które po [[wielu]] (wiele) [[latach]] (rok) znów zachwyca królewskim rozmachem. Nie byłoby go bez Augusta II Mocnego, który ma tu status półboga. A w Polsce, którą rządził XVIII wieku, wolelibyśmy raczej o nim zapomnieć.',
+      'By docenić barokowy przepych stolicy Saksonii, idziemy - moja koleżanka fotografka i ja, reporter - najpierw do pałacu Zwinger. Postawiony przed niemal {1} (300) {2} (rok), miał być rezydencją godną cesarza. Wokół dużego dziedzińca rozlokowały się imponujące budowle. W jednej z nich znajduje się Galeria Starych Mistrzów, którą zwiedzamy wraz z {3} (kilkanaście) {4} (dziecko), nad których zachowaniem - na szczęście skutecznie - czuwają opiekunki.',
+      'Kolejny obowiązkowy punkt programu to *Zielone Sklepienie*, jeden z najcenniejszych skarbców w Europie. To tu jesienią 2019 roku miał miejsce skok stulecia. Mimo zainstalowania dobrego monitoringu {5} (3) {6} (włamywacz) ukradli wówczas kolekcję królewskich precjozów o niedającej się oszacować wartości. Akcja poszukiwawcza nie przyniosła rezultatów, chociaż jej przeprowadzenie powierzono niemal {7} (1000) {8} (funkcjonariusz) miejscowej policji.',
+      'Wieczór rozpoczynamy w Operze Sempera, znanej z wielu głośnych premier. Ze względu na pandemiczne obostrzenia widownia zapełniona jest w {9} (25) procentach. W loży oprócz nas {10} (2), czyli mnie i koleżanki, nie ma nikogo - oglądamy spektakl w luksusowych warunkach. Wrażenia niezapomniane.'
+    ],
+    src: 'Na podstawie: M. Wesołowski, Miasto w 48 godzin - Drezno, „National Geographic Traveler”, nr 2/ 2021.',
+    answers: {
+      1: ['trzystoma', 'trzystu'], 2: ['laty', 'latami'], 3: ['kilkanaściorgiem'], 4: ['dzieci'], 5: ['trzej'],
+      6: ['włamywacze'], 7: ['tysiącowi'], 8: ['funkcjonariuszy'], 9: ['dwudziestu pięciu'], 10: ['dwojga']
+    }
+  },
+  {
+    id: 'II', type: 'transform', per: 1,
+    title: 'Zadanie II',
+    instr: 'Proszę - zgodnie z przykładem - użyć odpowiedniej formy wyrazów lub zwrotów podanych w nawiasach i przekształcić zdania tak, by nie zmieniły sensu (zamiana zdań złożonych na zdania pojedyncze).',
+    example: {
+      orig: 'W czasie pandemii nasza firma zachęca klientów, żeby zawierali umowy przez internet.',
+      kw: 'proponować',
+      ans: 'W czasie pandemii nasza firma proponuje klientom zawieranie umów przez internet.'
+    },
+    items: [
+      { orig: 'Ekonomiści przewidują, że całe zadłużenie zostanie spłacone w przyszłym roku.', kw: 'spodziewać się',
+        model: ['Ekonomiści ', [0, 'spodziewają się'], ' ', [1, 'spłaty'], ' ', [2, 'całego'], ' ', [3, 'zadłużenia'], ' w przyszłym roku.'],
+        els: [/spodziewają się(\s|$)/, /spłaty|spłacenia/, /całego/, /zadłużenia/] },
+      { orig: 'Ograniczenie zużycia węgla sprawi, że znacząco spadnie stężenie gazów cieplarnianych w atmosferze.', kw: 'spowodować',
+        model: ['Ograniczenie zużycia węgla ', [0, 'spowoduje'], ' ', [1, 'znaczący'], ' ', [2, 'spadek'], ' ', [3, 'stężenia gazów cieplarnianych'], ' w atmosferze.'],
+        els: [/spowoduje(\s|$)/, /znaczący|znaczny/, /spadek/, /stężenia gazów cieplarnianych/] },
+      { orig: 'Ekolodzy apelują, żeby ograniczyć sprzedaż produktów jednorazowego użytku.', kw: 'domagać się',
+        model: ['Ekolodzy ', [0, 'domagają się'], ' ', [1, 'ograniczenia'], ' ', [2, 'sprzedaży'], ' ', [3, 'produktów jednorazowego użytku'], '.'],
+        els: [/domagają się(\s|$)/, /ograniczenia/, /sprzedaży/, /produktów jednorazowego użytku/] },
+      { orig: 'Nieprzejednane stanowisko uczestników protestu spowodowało, że rządzący ponownie zajęli się zmianą przepisów.', kw: 'wymusić',
+        model: ['Nieprzejednane stanowisko uczestników protestu ', [0, 'wymusiło'], ' ', [1, 'na rządzących'], ' ', [2, 'ponowne zajęcie się'], ' ', [3, 'zmianą przepisów'], '.'],
+        els: [/wymusiło(\s|$)/, /(na|przez) rządzących/, /ponowne (zajęcie|zajmowanie) się/, /zmianą przepisów/] },
+      { orig: 'Być może to właśnie konsekwentne działania ekologów sprawią, że nasza planeta przetrwa.', kw: 'zapewnić',
+        model: ['Być może to właśnie ', [3, 'konsekwentne działania ekologów'], ' ', [0, 'zapewnią'], ' ', [1, 'naszej planecie'], ' ', [2, 'przetrwanie'], '.'],
+        els: [/zapewnią(\s|$)/, /naszej planecie/, /przetrwanie/, /konsekwentne działania ekologów/] }
+    ],
+    note: 'Każde zdanie: 1 p., po 0,25 p. za każdy przekształcony element. Komisja uznaje też inne poprawne przekształcenia - jeśli twoja wersja jest poprawna, ale inna niż w kluczu, zaznacz „uznaj”. Wersja alternatywna z klucza: 4. Nieprzejednane stanowisko uczestników protestu wymusiło ponowne zajęcie się zmianą przepisów przez rządzących. W zdaniu 1. klucz dopuszcza „spłaty” albo „spłacenia”.'
+  },
+  {
+    id: 'III', type: 'gaps', per: 0.5,
+    title: 'Zadanie III',
+    instr: 'Proszę - zgodnie z przykładami - uzupełnić tekst poprawnymi formami wyrazów utworzonych od słów podanych w nawiasach (tworzenie i odmiana rzeczowników odczasownikowych).',
+    paras: [
+      'Plotki z przyjaciółką to nie [[strata]] (stracić) czasu ani zwykła przyjemność, to podarowany nam przez ewolucję mechanizm [[radzenia]] (radzić) sobie z życiem. Najlepiej kiedy rozmowie towarzyszy pokrzepiające, szczere {1} (przytulić). Jeśli jednak żyjemy w pojedynkę lub z innych powodów brakuje nam bliskości, wiele zyskamy dzięki {2} (przygarnąć) kota lub psa.',
+      'Rzeczywistą podstawą trwałych {3} (związać) z innymi jest kontakt twarzą w twarz, bo to z mimiki i spojrzenia wyczytujemy ogrom informacji. Przez miliony lat nasz mózg przyzwyczajał się do praktycznie natychmiastowych interakcji. Dlatego w trakcie rozmowy na wideoczacie trudno mu się zorientować w {4} (przekazać) niewerbalnym, bo akcja i reakcja przebiegają asynchronicznie. Z kolei nasze codzienne doświadczenie potwierdza, że na skutek {5} (zasłonić) twarzy maseczką tracimy część porozumienia, które daje rozmowa.',
+      'Drugą ważną rolą rozmowy jest obopólne zapewnianie emocjonalnego {6} (wesprzeć), które pomaga obniżyć poziom stresu. W psychologii utarło się, że {7} (odpowiedzieć) na zagrożenie może być {8} (uciec) lub walka. To dwa najbardziej typowe {9} (podejść). Ale okazało się, że jest jeszcze inny mechanizm, uruchamiany zwykle przez kobiety: gdy znajdują się w niebezpieczeństwie, reagują na nie {10} (nawiązać) przyjacielskiej relacji.'
+    ],
+    src: 'Na podstawie: U. Dąbrowska, Komponenty bliskości, „Wysokie Obcasy”, 13.02. 2021.',
+    answers: {
+      1: ['przytulenie'], 2: ['przygarnięciu'], 3: ['związków'], 4: ['przekazie'], 5: ['zasłonięcia'],
+      6: ['wsparcia'], 7: ['odpowiedzią'], 8: ['ucieczka'], 9: ['podejścia'], 10: ['nawiązaniem']
+    }
+  },
+  {
+    id: 'IV', type: 'gaps', per: 0.5,
+    title: 'Zadanie IV',
+    instr: 'Proszę - zgodnie z przykładami - uzupełnić tekst poprawnymi formami wyrazów utworzonych od słów podanych w nawiasach (tworzenie i odmiana przymiotników).',
+    paras: [
+      'Zabawa z ruchomymi obrazami w ciągu 15 lat przerodziła się w przemysł [[filmowy]] (film) o [[wielomilionowych]] (wiele / milion) obrotach. A Hollywood stało się słynną na całym świecie krainą marzeń.',
+      'W 1891 roku Thomas A. Edison zaprezentował kinetoskop - skrzynię z okularem i korbą, która wprawiała w ruch {1} (kilka / sekunda) film na taśmie celuloidowej. Już w 1903 roku nakręcił swój pierwszy western, w którym aktor strzelał z pistoletu wprost do widzów. Ta {2} (sensacja) scena otwierała i kończyła trwający 12 minut pokaz, wywołując {3} (bez / granica) przestrach.',
+      'Pierwsze filmy kręcono na {4} (przy / brzeg) terenach New Jersey. Wkrótce i długie zimy, i ochrona praw {5} (patent) zniechęciły niektórych producentów. Kusiła ich Kalifornia. Los Angeles gwarantowało 350 {6} (słońce) dni w roku, aktorzy nie żądali wysokich honorariów. Pierwszym studiem hollywoodzkim był budynek opuszczonego {7} (przy / droga) zajazdu.',
+      '{8} (ów / czas) produkcje nie miały przeważnie ambicji, by być {9} (powaga) dziełami. Widzów bawiły {10} (chaos) bieganiny, zderzenia wszystkich ze wszystkimi i bezustanne upadki.'
+    ],
+    src: 'Na podstawie: Burzliwy wiek XX. Jak zmieniał się świat: 1900-2000, wyd. Reader’s Digest, 1999.',
+    answers: {
+      1: ['kilkusekundowy'], 2: ['sensacyjna'], 3: ['bezgraniczny'], 4: ['przybrzeżnych'], 5: ['patentowych'],
+      6: ['słonecznych'], 7: ['przydrożnego'], 8: ['Ówczesne'], 9: ['poważnymi'], 10: ['chaotyczne']
+    }
+  },
+  {
+    id: 'V', type: 'gaps', per: 0.5,
+    title: 'Zadanie V',
+    instr: 'Proszę - zgodnie z przykładami - uzupełnić tekst poprawnymi formami wyrazów podanych w nawiasach (tworzenie i odmiana imiesłowów).',
+    paras: [
+      'Obecnie żaden [[szanujący się]] (szanować się) kolekcjoner sztuki nie wyobraża sobie, by w jego zbiorach zabrakło prac [[wykonanych]] (wykonać) przez Banksy\'ego. [[Wziąwszy]] (wziąć) pod uwagę charakter tych dzieł, jest to jego olbrzymi sukces. [[Wprowadzając]] (wprowadzić) *street art* oraz graffiti na salony, artysta dokonał czegoś, co tradycyjnie zorientowanym znawcom sztuki wydawało się niemożliwe.',
+      '{1} (znaleźć) drogę do wyobraźni masowej publiczności, Banksy został {2} (okrzyknąć) geniuszem pop-artu. *Girl with Balloon* to najsłynniejsza praca, {3} (przedstawiać) młodą dziewczynę z ręką {4} (wyciągnąć) w kierunku czerwonego balonu. Banksy kilkakrotnie jeszcze wykorzystywał motyw dziewczynki z balonikiem w kształcie serca {5} (unosić) przez wiatr. Posłużył się nim, {6} (wspierać) kilka kampanii społecznych po kryzysie uchodźczym.',
+      'Jedną z prac z tej serii sprzedano w londyńskim domu aukcyjnym za 1,1 miliona dolarów. Jednak tuż po ogłoszeniu zwycięzcy aukcji {7} (zaskoczyć) widzowie przyglądali się, jak na ich oczach obraz ulega samozniszczeniu. Pozostał tylko czerwony balonik. Z {8} (udostępnić) przez Banksy’ego nagrania wynika, że artysta zainstalował obsługiwaną przez zdalne urządzenie pułapko-niszczarkę, {9} (umieszczać) ją wewnątrz ramy.',
+      '{10} (stworzyć) w ten sposób kolejny *performance*, artysta zagwarantował sobie wzrost zainteresowania.'
+    ],
+    src: 'Na podstawie: Banksy w Polsce - Polacy masowo wykupują bilety!, „Gazeta Wyborcza”, 12. 02.2021.',
+    answers: {
+      1: ['Znalazłszy'], 2: ['okrzyknięty'], 3: ['przedstawiająca'], 4: ['wyciągniętą'], 5: ['unoszonym'],
+      6: ['wspierając'], 7: ['zaskoczeni'], 8: ['udostępnionego'], 9: ['umieszczając'], 10: ['Stworzywszy']
+    }
+  },
+  {
+    id: 'VI', type: 'select', per: 0.5,
+    title: 'Zadanie VI',
+    instr: 'Proszę - zgodnie z przykładem - uzupełnić tekst odpowiednimi słowami i wyrażeniami z ramki. Uwaga! Każdego z podanych słów i wyrażeń można użyć tylko raz, a dwa wyrazy są zbędne.',
+    ramka: ['by', 'choć', 'choćby', 'czy', 'dla których', 'dopiero', 'gdyż', 'ilekroć', 'a mianowicie', 'na tyle', 'o ile', 'niż', 'to'],
+    used: 'na tyle',
+    paras: [
+      'Podczas jednej z konferencji przedstawiciele instytucji finansowej Goldman Sachs poinformowali, że ich zdaniem bitcoin nie jest [[na tyle]] bezpiecznym instrumentem finansowym, {1} zaliczać go do aktywów inwestycyjnych.',
+      'Prawdą jest, że kryptowaluta ma już za sobą czasy największej popularności. Ale {2} gospodarka popada w turbulencje, oczy wielu inwestorów ponownie zwracają się ku bitcoinowi. Częściej {3} w czasach gospodarczej stagnacji dzieje się tak w okresach niepewności rynkowej. Dlatego tradycyjne instytucje finansowe wciąż mocno dystansują się wobec tej formy pieniądza, {4} w wielu krajach stała się już oficjalnym środkiem płatniczym.',
+      'Dyskusja nad bitcoinem trwa od 2009 roku, ale przedstawiciele jednego z największych banków inwestycyjnych ({5} Goldman Sachs) {6} w maju 2020 r. oficjalnie powiadomili media o swoim stanowisku.',
+      '„Wzrost wartości wirtualnego pieniądza zależy głównie od tego, {7} ktoś jest skłonny zapłacić za niego wyższą cenę. Podczas gdy dla funduszy handel kryptowalutą może być atrakcyjny ze względu na jej zmienność, {8} dla innych graczy nie ma on racjonalnego uzasadnienia. Przede wszystkim nie jest wystarczająco bezpieczny, gdyż nie generuje takich przepływów pieniężnych jak {9} obligacje. Jest to jeden z powodów, {10} należy wstrzymać się od inwestowania.” - podkreślali bankierzy podczas wystąpienia.'
+    ],
+    src: 'Na podstawie: https://businessinsider.com.pl/finanse/kryptowaluty/bitcoin-jako-inwestycja-goldman-sachs-nie-uwaza-btc-za-klase-aktywow-inwestycyjnych/jw3k04z',
+    answers: {
+      1: ['by'], 2: ['ilekroć'], 3: ['niż'], 4: ['choć'], 5: ['a mianowicie'],
+      6: ['dopiero'], 7: ['czy'], 8: ['to'], 9: ['choćby'], 10: ['dla których']
+    },
+    note: 'Zbędne słowa: gdyż, o ile.'
+  },
+  {
+    id: 'VII', type: 'gaps', per: 0.5,
+    title: 'Zadanie VII',
+    instr: 'Proszę - zgodnie z przykładami - uzupełnić tekst poprawnymi formami wyrazów podanych w nawiasach (aspekt i różne formy czasowników).',
+    paras: [
+      'W ostatnim dniu grudnia 1978 roku zima [[zaatakowała]] (atakować/zaatakować) śniegiem i mrozem z taką siłą, że natychmiast [[nazwano]] (nazywać/nazwać) ją zimą stulecia. Zapewne w Warszawie nie [[wspominalibyśmy]] (wspominać/wspomnieć) jej tak często, gdyby nie jedno dramatyczne zdarzenie.',
+      'Jest czwartek 15 lutego 1979 roku. To jeden z tych bardzo mroźnych dni, kiedy pogoda absolutnie nie [[zachęca]] (zachęcać/zachęcić) do wyjścia z domu. W Rotundzie PKO - okrągłym budynku banku u zbiegu ulicy Marszałkowskiej i Alej Jerozolimskich - powoli kończy się poranna zmiana. Gdy zegar na ścianie pokazuje 12.40, potężny wybuch {1} (rozrywać/rozerwać) budynek. Najpierw słychać głuchy odgłos tąpnięcia i Rotunda {2} (pęcznieć/napęcznieć) niczym rosnąca bańka mydlana. Potem rozpada się, a z jej wnętrza {3} (wylatywać/wylecieć) kawałki szkła i metalowych konstrukcji, które ogromna siła rozrzuca po okolicy.',
+      'Zofia Suchenek, kontrolerka rachunków oszczędnościowych, tak wspomina tamto zdarzenie: - Nagle {4} (przygasać/przygasnąć) światła. Zrobiła się cisza, jakby w jednym momencie {5} (zamierać/zamrzeć) życie. A potem jakaś siła uniosła nas w powietrze. Myślałam, że już po mnie, ale w gęstej chmurze dymu w pewnej chwili {6} (dostrzegać/dostrzec) prześwit. Razem z koleżanką ruszyłam w tamtą stronę i przez wybitą szybę wydostałyśmy się na zewnątrz.',
+      'Już kilka minut po wybuchu {7} (podejmować/podjąć) spontaniczną akcję ratunkową. Przystąpili do niej przechodnie, którzy zbiegli się na odgłos eksplozji. Jak później {8} (ustalać/ustalić), spowodował ją wybuch gazu ziemnego. Na skutek niskiej temperatury i ruchów gruntu {9} (pękać/pęknąć) zawór gazociągu biegnącego wzdłuż ulicy, a opary dostały się do przewodów telekomunikacyjnych prowadzących do pomieszczeń archiwum Rotundy. Gdyby nie ta awaria, nie {10} (dochodzić/dojść) do katastrofy.'
+    ],
+    src: 'Na podstawie: https://warszawa.wyborcza.pl/warszawa/1,34862,17400422,_Zobaczylam__jak_nad_skarbcem_zalamuje_sie_sufit__html',
+    answers: {
+      1: ['rozrywa'], 2: ['pęcznieje'], 3: ['wylatują'], 4: ['przygasły'], 5: ['zamarło'],
+      6: ['dostrzegłam'], 7: ['podjęto'], 8: ['ustalono'], 9: ['pękł'], 10: ['doszłoby']
+    }
+  },
+  {
+    id: 'VIII', type: 'gaps', per: 0.5,
+    title: 'Zadanie VIII',
+    instr: 'Proszę - zgodnie z przykładami - uzupełnić tekst poprawnymi formami wyrazów podanych w nawiasach (odmiana rzeczowników, przymiotników, zaimków).',
+    paras: [
+      'Niemal całe życie Gertrudy upłynęło poza Polską. Nie zmienia to faktu, że pozostawione przez [[nią]] (ona) teksty zapoczątkowują dzieje twórczości literackiej w [[naszym]] (nasz) [[kraju]] (kraj).',
+      'Córka polskiego króla Mieszka II, wydana za {1} (książę) Izjasława, dość późno zajęła zasłużone miejsce w historii literatury. Dopiero na początku XX wieku w pergaminowym kodeksie przechowywanym we Włoszech zbadano dodatkowe karty. Nazwano je *Modlitewnikiem Gertrudy*, gdy okazało się, że łacińskie teksty zawierają bardzo osobiste modlitwy. Aby {2} (one) właściwie zrozumieć, musimy sięgnąć do {3} (źródło) duchowości chrześcijańskiego Zachodu, które są niesłychanie inspirujące.',
+      'W jednej z {4} (księga) z XI wieku zachował się niezbyt wyraźny portret {5} (księżna). Nieznany miniaturzysta ukazał ją klęczącą przed świętym Piotrem, w pełnym pokory pochyleniu {6} (tułów), w złotawej szacie w czerwono-brązowe wzory. Spod płaszcza wychyla się kształtna głowa, ale nie widzimy niestety twarzy - w tym właśnie miejscu miniatura uległa zatarciu. Drugi plan tworzą {7} (chrześcijanin) z błagalnie uniesionymi rękami. Nie znamy ich {8} (imię), ale ci {9} (smukły) {10} (młodzieniec) prawdopodobnie należą do orszaku Gertrudy.'
+    ],
+    src: 'Na podstawie: T. Michałowska, Ego Gertruda, Warszawa 2001, s. 9-10.',
+    answers: {
+      1: ['księcia'], 2: ['je'], 3: ['źródeł'], 4: ['ksiąg'], 5: ['księżnej'],
+      6: ['tułowia'], 7: ['chrześcijanie'], 8: ['imion'], 9: ['smukli'], 10: ['młodzieńcy']
+    }
+  }
+];
+
+const MAX = 40, PASS = 24;
+const STORE_KEY = 'c1_gram_2021_06_v1';
+
+// ---------- pomocnicze ----------
+function norm(s) {
+  return String(s || '').toLowerCase()
+    .replace(/[„”"'’‘.,!?;:()]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function fold(s) {
+  return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+}
+function esc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function pl(n) { // 27.5 -> "27,5"
+  return (Math.round(n * 100) / 100).toString().replace('.', ',');
+}
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {}
+}
+
+// ---------- budowanie arkusza ----------
+function renderText(task, para) {
+  let indent = true;
+  if (para.startsWith('!')) { para = para.slice(1); indent = false; }
+  let h = esc(para);
+  h = h.replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+  h = h.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  h = h.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  h = h.replace(/\{(\d+)\}/g, (m, n) => {
+    const id = `${task.id}-${n}`;
+    let field;
+    if (task.type === 'select') {
+      const opts = task.ramka.filter(w => w !== task.used)
+        .map(w => `<option value="${esc(w)}">${esc(w)}</option>`).join('');
+      field = `<select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select>`;
+    } else {
+      field = `<input type="text" data-id="${id}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Luka ${n}">`;
+    }
+    return `<span class="gap" id="g-${id}">${field}<sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+  });
+  return `<p class="${indent ? '' : 'noindent'}">${h}</p>`;
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${t.type === 'transform' ? '5 x 1 p.' : '10 x 0,5 p.'} = 5 p.</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    if (t.type === 'transform') {
+      const e = t.example;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(e.orig)} <b>(${esc(e.kw)})</b><br><i>${esc(e.ans)}</i></div>`;
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="tr-item"><div class="tr-orig">${i + 1}. ${esc(it.orig)} <span class="kw">(${esc(it.kw)})</span></div>
+          <textarea data-id="${id}" placeholder="Napisz całe zdanie, używając słowa „${esc(it.kw)}”..." spellcheck="false"></textarea>
+          <div class="tr-res" id="res-${id}"></div></div>`;
+      });
+    } else {
+      if (t.type === 'select') {
+        html += `<div class="ramka" id="ramka-${t.id}">` + t.ramka.map(w =>
+          `<span class="chip${w === t.used ? ' struck' : ''}" data-w="${esc(w)}">${esc(w)}</span>`).join('') + `</div>`;
+      }
+      html += `<div class="text">` + t.paras.map(p => renderText(t, p)).join('') + `</div>`;
+      html += `<div class="src">${esc(t.src)}</div>`;
+    }
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('[data-id]').forEach(el => {
+    if (saved[el.dataset.id] != null) el.value = saved[el.dataset.id];
+    el.addEventListener('input', () => { save(); updateProgress(); updateRamka(); });
+    el.addEventListener('change', () => { save(); updateProgress(); updateRamka(); });
+  });
+  updateProgress(); updateRamka();
+}
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('[data-id]').forEach(el => { o[el.dataset.id] = el.value; });
+  o.__accept = acceptState;
+  return o;
+}
+let acceptState = (load().__accept) || {};
+
+function updateProgress() {
+  const all = document.querySelectorAll('[data-id]');
+  let filled = 0;
+  all.forEach(el => { if (el.value.trim()) filled++; });
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${all.length}`;
+}
+
+function updateRamka() {
+  const t = TASKS.find(x => x.type === 'select');
+  const chosen = [...document.querySelectorAll(`#task-${t.id} select`)].map(s => s.value).filter(Boolean);
+  document.querySelectorAll(`#ramka-${t.id} .chip`).forEach(c => {
+    if (c.dataset.w === t.used) return;
+    c.classList.toggle('used', chosen.includes(c.dataset.w));
+  });
+}
+
+// ---------- sprawdzanie ----------
+function checkAll() {
+  const vals = {};
+  document.querySelectorAll('[data-id]').forEach(el => { vals[el.dataset.id] = el.value; });
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'transform') {
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const s = norm(vals[id]);
+        const hits = it.els.map(e => s.length > 0 && (typeof e === 'function' ? e(s) : e.test(s)));
+        let pts = hits.filter(Boolean).length * 0.25;
+        const accepted = !!acceptState[id];
+        if (accepted) pts = 1;
+        score += pts;
+        const model = it.model.map(seg => typeof seg === 'string' ? esc(seg)
+          : `<span class="el ${hits[seg[0]] ? 'hit' : 'miss'}">${esc(seg[1])}</span>`).join('');
+        document.getElementById(`res-${id}`).innerHTML =
+          `<span class="tr-score">${pl(pts)} / 1 p.</span> Klucz: <span class="model">${model}</span>
+           <br><label class="accept"><input type="checkbox" data-accept="${id}" ${accepted ? 'checked' : ''}> Moja wersja jest inna, ale poprawna - uznaj 1 p.</label>`;
+      });
+    } else {
+      const local = {};
+      for (const n in t.answers) local[n] = vals[`${t.id}-${n}`] || '';
+      for (const n in t.answers) {
+        const id = `${t.id}-${n}`;
+        const raw = local[n];
+        const v = norm(raw);
+        const a = t.answers[n];
+        // przy odpowiedziach powiązanych (I.8/I.9) pokazuj tylko formę pasującą do sąsiedniej luki
+        const list = Array.isArray(a) ? a : a.show.filter(x => a.check(norm(x), local));
+        const ok = v !== '' && (Array.isArray(a) ? list.map(norm).includes(v) : a.check(v, local));
+        const gap = document.getElementById(`g-${id}`);
+        const fix = gap.querySelector('.fix');
+        gap.classList.remove('ok', 'bad', 'almost');
+        if (ok) {
+          score += t.per; gap.classList.add('ok'); fix.innerHTML = '';
+        } else {
+          const almost = v !== '' && !list.map(norm).includes(v) && list.some(x => fold(x) === fold(raw));
+          gap.classList.add(almost ? 'almost' : 'bad');
+          fix.innerHTML = '→ ' + list.map(esc).join(' / ') + (almost ? ' <span class="hint">(sprawdź polskie znaki)</span>' : '');
+        }
+      }
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / 5 p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    per.push({ t, score });
+  }
+
+  document.querySelectorAll('[data-accept]').forEach(cb => {
+    cb.addEventListener('change', () => { acceptState[cb.dataset.accept] = cb.checked; save(); checkAll(); });
+  });
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / 5 * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / 5</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na czerwono: błędna odpowiedź, obok poprawna z klucza. Na żółto: prawie dobrze, tylko polskie znaki. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+let left = 60 * 60, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < 3600 ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  acceptState = {};
+  clearInterval(tick); running = false; left = 3600; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', checkAll);
+document.getElementById('checkBottom').addEventListener('click', checkAll);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+const TEST_ID = 'gramatyka-2021-06';
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (t.type === 'transform') {
+      t.items.forEach((it, i) => {
+        const el = document.querySelector(`[data-id="${t.id}-${i + 1}"]`);
+        if (el) el.value = it.model.map(s => typeof s === 'string' ? s : s[1]).join('');
+      });
+    } else {
+      for (const n in t.answers) {
+        const a = t.answers[n];
+        const el = document.querySelector(`[data-id="${t.id}-${n}"]`);
+        if (el) el.value = Array.isArray(a) ? a[0] : a.show[0];
+      }
+    }
+  }
+  acceptState = {};
+  save(); updateProgress(); updateRamka();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'gramatyka', session: '2021-06', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Czytanie C1 2022-11</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.opt { display: block; padding: 4px 8px; border-radius: 6px; margin: 2px 0; cursor: pointer; }
+.opt input { margin-right: 8px; }
+.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 600; }
+.opt.bad { background: var(--bad-bg); color: var(--bad); }
+.opt.key { outline: 2px solid var(--ok); }
+.qfix { font: 600 14px/1.3 system-ui, sans-serif; color: var(--ok); margin-top: 4px; }
+.tf { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.tf .opt { margin: 0; border: 1px solid var(--line); padding: 4px 12px; }
+.frag { padding: 6px 10px; margin: 4px 0; background: var(--example); border-radius: 8px; font-size: 15px; }
+.frag b { margin-right: 6px; }
+.frag.used { opacity: .45; }
+.frag.struck { opacity: .6; font-style: italic; }
+.mrow { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.mrow .t { flex: 1 1 240px; font-weight: 600; }
+.mrow select { font: 16px system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; }
+.mrow.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.mrow.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.mrow .fix { flex-basis: 100%; }
+.gap .fix { display: inline; }
+.gap select { width: auto; max-width: 72vw; }
+.gap.cloze select { width: 9em; }
+.gap.letter select { width: 5em; }
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie tekstów pisanych C1 - listopad 2022</span>
+    <span class="timer" id="timer">60:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Rozumienie tekstów pisanych</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja listopad 2022. 5 zadań, 60 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji.</p>
+  <div class="notice" id="timeUp">Czas minął (60 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: arkusz C1 listopad 2022, część "Rozumienie tekstów pisanych" + oficjalny klucz ----------
+const TASKS = [
+ {
+  "id": "I",
+  "type": "match",
+  "per": 0.5,
+  "max": 5,
+  "title": "Zadanie I",
+  "instr": "Proszę - zgodnie z przykładem - połączyć tytuły z kolumny I z fragmentami tekstów z kolumny II. Wybierz literę fragmentu przy każdym tytule.",
+  "textTitle": "Psychoaktywna natura",
+  "frags": {
+   "A": "Purchawka to kulisty grzyb, który rośnie w każdym jasnym lesie, na polanie czy łące. Może być niebezpieczny ze względu na swoje właściwości narkotyczne - wywołuje stany półsnu lub snu na jawie oraz halucynacje słuchowe.",
+   "B": "W medycynie ludowej stosowano wodę bagienną do leczenia chorób dróg oddechowych oraz przewlekłych bólów stawów i kości. Skuteczność kuracji zależała od stężenia dawki.",
+   "C": "Specyficzna wydzielina z gruczołów ropuchy szarej działa żrąco na skórę, opary podrażniają błony śluzowe jamy ustnej i nosa. Osoby, które znalazły się pod jej wpływem, uskarżały się na krótkotrwałe złudzenia optyczne: wydawało im się, że widzą błyski, jaskrawe płomienie lub snop iskier.",
+   "D": "Egzotyczne zwierzęta i rośliny fascynują nas znacznie bardziej niż polska przyroda nie tylko dlatego, że są kolorowe i dziwaczne, ale również z powodu swej tajemniczości i czyhających na człowieka zagrożeń.",
+   "E": "Właściwości lecznicze tataraku porastającego brzegi sztucznych i naturalnych zbiorników wodnych są znane w Europie już od końca średniowiecza za sprawą otrzymywanego z niego olejku eterycznego, który stanowił antidotum na bezsenność, epilepsję, stany gorączkowe, depresję i nerwicę.",
+   "F": "W polskich rzekach i jeziorach żyją ryby, po zjedzeniu których mogą wystąpić nie tylko klasyczne objawy zatrucia pokarmowego, ale również zaburzenia świadomości, połączone z utratą kontroli nad funkcjonowaniem organizmu.",
+   "G": "W medycynie ludów syberyjskich podawano muchomora w stanach skrajnego osłabienia, a preparat z suszonych owocników zalanych zimną wodą stosowano jako antidotum przy ukąszeniach jadowitych węży. W homeopatii ów grzyb był uniwersalnym środkiem na zaburzenia systemu nerwowego.",
+   "H": "Popularna bałtycka makrela ma w sobie groźną substancję, która jest mieszaniną wielu związków chemicznych, powstających w czasie bakteryjnego rozkładu tkanki skórnej i mięśniowej. Objawy zatrucia to kołatanie serca, silne bóle głowy, wymioty oraz wysypka.",
+   "I": "Skóra salamandry zawiera gruczoły, które uwalniają jadowitą wydzielinę pod wpływem bodźców mechanicznych. W jadzie płaza odkryto alkaloidy, które po odpowiednim przetworzeniu wykorzystuje się do produkcji odurzających trunków.",
+   "J": "W Europie znana była „czarodziejska” roślina z gatunku wrzosowatych - bagno zwyczajne, o której odurzających właściwościach pisano już w starożytności. Germanie używali jej do produkcji piwa ze względu na gorycz, której mu nadawała. Jednak tak doprawiony trunek spożywany w dużych ilościach wywoływał napady gniewu i furię.",
+   "K": "Łubin zawiera wyjątkowy alkaloid - lupinidynę, która działa paraliżująco lub pobudzająco na centralny i wegetatywny układ nerwowy. W dużej ilości wywołuje nudności, ślinotok, trudności w przełykaniu."
+  },
+  "used": "D",
+  "example": "Piękna i bestia",
+  "titles": [
+   "Ukojenie znad jezior",
+   "Gorzkie szaleństwo",
+   "Lecznicze mokradła",
+   "Ucisk w gardle",
+   "Lepiej nie dotykać",
+   "Słodkowodna toksyna",
+   "Majaki na łonie natury",
+   "Co nas nie zabije, to nas wzmocni",
+   "Morskie torsje",
+   "Jadowite iluminacje"
+  ],
+  "src": "Na podstawie: https://www.focus.pl/artykul/natura-psychoaktywna",
+  "answers": {
+   "1": "E",
+   "2": "J",
+   "3": "B",
+   "4": "K",
+   "5": "I",
+   "6": "F",
+   "7": "A",
+   "8": "G",
+   "9": "H",
+   "10": "C"
+  }
+ },
+ {
+  "id": "II",
+  "type": "mc",
+  "per": 1,
+  "max": 10,
+  "title": "Zadanie II",
+  "instr": "Proszę przeczytać tekst, a następnie - zgodnie z przykładem - zaznaczyć właściwą odpowiedź.",
+  "textTitle": "Polscy archeolodzy w Egipcie",
+  "paras": [
+   "Polscy archeolodzy wraz ze swoimi egipskimi kolegami odkryli, jak powstawały dzieła sztuki we wzniesionej w XV wieku p.n.e. egipskiej świątyni Hatszepsut. Budowla pełniła funkcję przybytku sakralnego kobiety-faraona. Składała się z trzech usytuowanych kaskadowo tarasów, na każdym zaś znajdowała się kaplica poświęcona innemu bogu. Samej Hatszepsut przeznaczono taras górny, co jest dowodem najwspanialszego boskiego kultu, jakim otaczano faraona. Archeolodzy wzięli pod lupę największe pomieszczenie kompleksu. Starożytne reliefy, czyli płaskorzeźby ze scenami z życia królowej stały się przedmiotem badań prowadzonych przez ekspedycję archeologów i konserwatorów.",
+   "Płaskorzeźby są rozmieszczone symetrycznie na dwóch przeciwległych ścianach pomieszczenia. Przedstawiają procesję ofiarną niosącą dary dla egipskiej królowej. Każde z dzieł mierzy około 13 metrów długości i ukazuje aż 100 postaci ofiarników, zasiadającą na tronie Hatszepsut oraz złożone przed nią dary.",
+   "Polsko-egipski zespół badawczy poświęcił niemal dekadę na opracowanie pełnej dokumentacji tych ogromnych starożytnych reliefów. Działania naukowców polegały na odwzorowaniu dekorowanej powierzchni w skali 1:1 i „przeniesieniu” obrazów wprost ze ścian na przezroczystą folię. Po odrysowaniu oryginalnych reliefów arkusze skanowano, a następnie obrabiano w programie graficznym. Ta sekwencja prac bardzo przybliżyła badaczom atmosferę panującą wśród artystów sprzed wieków. - Nie opuszczało mnie wrażenie, że nasz zespół powtarza czynności ludzi, którzy tworzyli te przedstawienia 3500 lat temu. Tak samo jak my, starożytni rzeźbiarze siedzieli na rusztowaniach, pracując i zapewne gawędząc - mówi dr Anastasiia Stupko-Lubczynska, jedna z uczestniczek badań.",
+   "Dr Stupko-Lubczynska podkreśla, że techniki wykonania egipskich dzieł sztuki były do tej pory znane wyłącznie na podstawie niekompletnych zabytków, w których poszczególne etapy tworzenia zostały „zamrożone w czasie”. Jednak informacje na temat procesu powstawania obiektów w pełni skończonych są niezwykle rzadkie. Wszystko dlatego, że w większości obiektów w miarę postępu prac ślady pierwszych stadiów były niszczone podczas kolejnych etapów. Inaczej jest w przypadku kaplicy Hatszepsut. Pomieszczenie zbudowano z miękkiej skały wapiennej. Materiał ten pozwala na rozpoznanie różnych etapów czynności rzeźbiarskich: począwszy od wygładzenia ściany i tynkowania ubytków w kamieniu oraz spoin między blokami, przez wstępne szkice czerwoną farbą oraz korekty mistrzowskie kolorem czarnym, aż po ostateczne rzeźbienie w powierzchni ściany za pomocą dłuta. Archeolożka odkryła, że mniej doświadczeni rzemieślnicy wykonywali prostsze elementy obrazu - torsy, nogi i ramiona. Z kolei prawdziwi artyści rzeźbili twarze i poprawiali błędy praktykantów. Obie grupy współpracowały nad wykonaniem peruk, ponieważ te były bardzo pracochłonne."
+  ],
+  "src": "Na podstawie: https://www.focus.pl/artykul/polscy-archeolodzy-odkryli-jak-powstaly-rzezby-w-egipskiej-swiatyni-hatszepsut-mistrzowie-poprawiali-bledy-praktykantow-211118111402",
+  "example": {
+   "stem": "Badania nad autorstwem egipskich dzieł sztuki",
+   "opts": [
+    "były prowadzone w międzynarodowym zespole.",
+    "wymagały dogłębnej analizy prawnej.",
+    "odbywały się w sekrecie i zostały ujawnione po latach."
+   ],
+   "ans": 0
+  },
+  "qs": [
+   {
+    "stem": "Układ i zdobienia budynku świadczą o",
+    "opts": [
+     "uznaniu żywionym przez faraonów dla pracy starożytnych architektów.",
+     "długim i dostatnim życiu władców dawnego Egiptu.",
+     "hierarchii panującej wśród czczonych bóstw."
+    ],
+    "ans": "c"
+   },
+   {
+    "stem": "Zdecydowano, że",
+    "opts": [
+     "badacze skupią się na płaskorzeźbach, które poddadzą skrupulatnym oględzinom.",
+     "należy dokładnie zbadać całą świątynię.",
+     "porównane zostaną reliefy pochodzące z różnych kaplic."
+    ],
+    "ans": "a"
+   },
+   {
+    "stem": "Badane obiekty",
+    "opts": [
+     "były w złym stanie i wymagały natychmiastowej konserwacji.",
+     "cechowały się imponującą powierzchnią i wielością szczegółów.",
+     "były pełne tajemniczych zakamarków."
+    ],
+    "ans": "b"
+   },
+   {
+    "stem": "Archeolodzy pracujący przy projekcie",
+    "opts": [
+     "w ciągu kilku lat zrekonstruowali płaskorzeźby na wszystkich ścianach świątyni.",
+     "przeznaczyli prawie dziesięć lat na szczegółowy opis analizowanych reliefów.",
+     "przetransportowali płaskorzeźby do bezpiecznego miejsca."
+    ],
+    "ans": "b"
+   },
+   {
+    "stem": "Czynności archeologiczne i konserwatorskie były prowadzone",
+    "opts": [
+     "na specjalnej konstrukcji zbudowanej na potrzeby projektu.",
+     "przy użyciu nowoczesnego skanera kamiennych murów.",
+     "wyłącznie na podstawie wykonanych wcześniej fotografii."
+    ],
+    "ans": "a"
+   },
+   {
+    "stem": "Zanim zbadano kaplicę Hatszepsut",
+    "opts": [
+     "podczas prac konserwatorskich przypadkowo zniszczono inny cenny zabytek.",
+     "dokładnie określono, jak z upływem czasu zmieniały się techniki pracy starożytnych twórców.",
+     "tajniki pracy egipskich artystów poznawano na podstawie uszkodzonych zabytków."
+    ],
+    "ans": "c"
+   },
+   {
+    "stem": "Obecność wapienia w świątyni pozytywnie wpłynęła na wyniki badań, ponieważ ten rodzaj skały",
+    "opts": [
+     "jest odporny na wilgoć i odkształcenia.",
+     "pozwala na odtworzenie kolejnych czynności twórczych.",
+     "nie wchodzi w reakcję z preparatami stosowanymi przez badaczy."
+    ],
+    "ans": "b"
+   },
+   {
+    "stem": "Egipscy artyści przy pracy nad reliefami",
+    "opts": [
+     "używali popularnych do dziś narzędzi.",
+     "stosowali materiały izolujące.",
+     "zniszczyli wiele bloków skalnych."
+    ],
+    "ans": "a"
+   },
+   {
+    "stem": "Szczegółowa analiza reliefów w świątyni Hatszepsut",
+    "opts": [
+     "początkowo opierała się na błędnych założeniach badawczych.",
+     "pozwoliła zidentyfikować konkretnych artystów i udokumentować ich pracę.",
+     "wykazała elementy pracy zespołowej przy tworzeniu płaskorzeźb."
+    ],
+    "ans": "c"
+   },
+   {
+    "stem": "Z tekstu wynika, że",
+    "opts": [
+     "odkryto różnice między pracami mistrzów a pracami adeptów sztuki.",
+     "prace rzeźbiarzy były jednolite w artystycznym wyrazie i tworzone z wielką wprawą.",
+     "za uchybienia praktykantów karę ponosili też ich mistrzowie."
+    ],
+    "ans": "a"
+   }
+  ]
+ },
+ {
+  "id": "III",
+  "type": "gapfrag",
+  "per": 1,
+  "max": 10,
+  "title": "Zadanie III",
+  "instr": "Proszę przeczytać tekst i - zgodnie z przykładem - dopasować usunięte z niego fragmenty (A-M). Uwaga! Dwa fragmenty są zbędne.",
+  "textTitle": "Arktyczny pojazd",
+  "frags": {
+   "A": "napędzany jest mocnym silnikiem",
+   "B": "można go bez wysiłku holować",
+   "C": "narastające niebezpieczeństwo grożące ludzkości",
+   "D": "przypomina kabinę statku powietrznego",
+   "E": "teren dla transportera z wyposażeniem",
+   "F": "przemyślana konstrukcja wpływa na stabilność",
+   "G": "może bezszelestnie zerwać się do lotu",
+   "H": "rzetelne pomiary stacji badawczej",
+   "I": "pojazd jest popychany przez śmigło",
+   "J": "wykorzystując te podbiegunowe sanie",
+   "K": "utrzymać się na powierzchni śnieżnych połaci",
+   "L": "wytyczył naukowcom szczytne cele",
+   "M": "może się poszczycić nowy środek transportu"
+  },
+  "used": "A",
+  "paras": [
+   "Na początku roku 2008 światło dzienne ujrzał prototyp naziemnego pojazdu śnieżnego, który [[A]] i takim również śmigłem, w czym bardzo przypomina tradycyjny samolot. Kokpit istotnie {1}, ale do sterowania pojazdem służy zwykła kierownica, której używa się w samochodach osobowych. Dzięki temu rozwiązaniu pojazd jest łatwy w pilotażu. Zamiast poruszać się na tradycyjnie stosowanych gąsienicach, z którymi w kopnym (czyli sypkim i grząskim) śniegu może być nie lada problem, {2}, co redukuje ryzyko zakopania się. Dodatkowo jego wyjątkowo szerokie płozy, wykonane ze specjalnego tworzywa, łatwo pozwalają mu {3}.",
+   "Ów pojazd, zwany wiatrakowcem, weźmie udział w wymagającej ekspedycji Moon Regan TransAntarctic Expedition. Wyprawa przetnie Antarktydę, od zachodu przemierzy biegun, by skierować się na południowe wybrzeże kontynentu, a próbny wehikuł ma pełnić funkcję pilota i sprawdzać {4}. Kolejne śnieżne pojazdy pojadą wytyczaną przez nie trasą. Specyfikacja techniczna, którą {5}, jest bardzo obiecująca. Wehikuł napędzany jest biopaliwem, dzięki czemu pozostawia zdecydowanie mniejszy ślad węglowy. Dobrze {6} i wagę całości - mimo że pojazd wyposażony jest w radar do wykrywania ukrytych pod śniegiem szczelin lodowych, jest dość lekki i w trudnym terenie {7}.",
+   "Właściciel prototypu - znany inżynier, wynalazca i biznesmen, włożywszy wiele trudu i pieniędzy w projekt oraz budowę nowej maszyny, {8}. Dokładne rozpoznanie krainy wiecznego lodu pozwoli między innymi na określenie bezpiecznych szlaków, którymi będzie można przemieszczać się do stacji badawczych. Przy okazji jednak, {9} w transporcie w skrajnie trudnych warunkach i jednocześnie dbając o jak najmniejsze zużycie energii, uczestnicy ekspedycji chcą zrealizować jeszcze jeden ważny cel. Pragną uświadomić światu {10} w związku z zanikaniem pokrywy lodowej i globalnym ociepleniem."
+  ],
+  "src": "Na podstawie: https://www.focus.pl/artykul/arktyczny-wiatrakowiec",
+  "answers": {
+   "1": "D",
+   "2": "I",
+   "3": "K",
+   "4": "E",
+   "5": "M",
+   "6": "F",
+   "7": "B",
+   "8": "L",
+   "9": "J",
+   "10": "C"
+  },
+  "note": "Zbędne fragmenty: G, H."
+ },
+ {
+  "id": "IV",
+  "type": "tf",
+  "per": 1,
+  "max": 10,
+  "title": "Zadanie IV",
+  "instr": "Proszę przeczytać tekst, a następnie - jak w przykładzie - zaznaczyć: TAK - gdy zdanie jest zgodne z tekstem; NIE - gdy nie jest zgodne z tekstem; BI - gdy w tekście brakuje informacji na dany temat.",
+  "textTitle": "Sposoby na kredyt",
+  "paras": [
+   "Od października Rada Polityki Pieniężnej ogłasza co miesiąc podwyżki stóp procentowych. Jednym z efektów wspomnianych działań jest to, że złotówkowe kredyty mieszkaniowe wyraźnie zdrożały. Jeśli jakiś szczęśliwiec cieszy się wciąż niezmienioną ratą, to lada moment dostanie informację o podwyżce. Nikogo nie dziwi więc fakt, że wiele osób stara się już teraz ograniczyć koszty zaciągniętego kredytu.",
+   "Zacznijmy od rozwiązania, które może bardzo szybko i skutecznie pomóc osobom zadłużonym. Chodzi o rządowy program, czyli o Fundusz Wsparcia Kredytobiorców. Jego funkcjonowanie opiera się na prostej zasadzie - jeśli posiadacz kredytu mieszkaniowego znajduje się w trudnej sytuacji finansowej, to może dostać pożyczkę na spłatę zaległości wobec banku. Co ważne, nie mamy do czynienia z „leczeniem dżumy cholerą”. Pożyczka ta jest nieoprocentowana, a jeśli będzie spłacana terminowo, zostanie częściowo umorzona. Oczywiście na wsparcie może liczyć ten, kto spełnia ustalone wymogi: przynajmniej jeden z kredytobiorców (np. mąż lub żona) stracił pracę, rata przekracza połowę dochodu gospodarstwa domowego, dochód po potrąceniu raty nie przekracza 1402 złotych w przypadku singli i 1056 złotych na osobę w przypadku wieloosobowych gospodarstw domowych. Niestety są też pewne ograniczenia. Ze wsparcia nie mogą skorzystać osoby posiadające więcej niż jedno mieszkanie lub dom (widełki czasowe sięgają pół roku wstecz), utraciły pracę w wyniku zwolnienia bez wypowiedzenia z winy pracownika albo same złożyły wypowiedzenie. Ponadto nie można korzystać ze wsparcia dłużej niż 36 miesięcy. Fundusz nie pomoże też w sytuacji, gdy zbyt długo zwlekano z prośbą o pomoc i umowa kredytu została już wypowiedziana oraz w przypadku pobierania świadczeń z tytułu ubezpieczenia od utraty pracy.",
+   "Jeśli Fundusz Wsparcia Kredytobiorców okaże się rozwiązaniem niedostępnym, wtedy lepiej dojść do ugody z bankiem i wypertraktować czasowe zawieszenie raty lub jej części. Kredytobiorcy nie powinno jednak zaskoczyć to, że niespłacane przez ten czas odsetki powiększą jego zadłużenie. Trochę łagodniej dostanie się po kieszeni, jeśli poprosi się nie o zawieszenie całej spłaty, ale o okresowe pomniejszenie raty. Chodzi o to, że przez jakiś czas można spłacać tylko odsetki, a w spokoju pozostawić pożyczony kapitał. Teoretycznie można też spróbować negocjować z bankiem wysokość marży, dzięki czemu zredukowane zostanie oprocentowanie.",
+   "Inny potencjalny scenariusz wyjścia z trudnej sytuacji dotyczy osób, które posiadają więcej niż jedno mieszkanie. Choć nie mają one możliwości skorzystania z funduszu wsparcia, to mogą podwyższyć czynsz najmującym. Jeśli nie rozwiązuje to problemów właściciela, a inne środki zawiodą, to w ostateczności warto rozważyć sprzedaż nieruchomości. Jeśli natomiast kredytobiorca jest wypłacalny, a jedynie martwi go rosnąca rata, to dziś szczególnie wartym uwagi rozwiązaniem jest nadpłata kredytu."
+  ],
+  "src": "Na podstawie: https://pieniadze.rp.pl/budzet-rodzinny/art35698021-kredyt-hipoteczny-kilka-sposobow-na-problemy-z-rosnaca-rata",
+  "example": {
+   "stem": "Mimo podwyżek raty długów hipotecznych są systemowo utrzymywane na stałym poziomie.",
+   "ans": "NIE"
+  },
+  "qs": [
+   {
+    "stem": "Zwyżki oprocentowania nie dotyczą kredytów walutowych.",
+    "ans": "BI"
+   },
+   {
+    "stem": "Dłużnicy będą mogli skorzystać ze wsparcia polegającego na zmniejszeniu stóp procentowych.",
+    "ans": "NIE"
+   },
+   {
+    "stem": "Wniosek o wsparcie finansowe należy złożyć w najbliższym Urzędzie Miasta.",
+    "ans": "BI"
+   },
+   {
+    "stem": "Odbiorcami propozycji Funduszu Wsparcia Kredytobiorców są między innymi rodziny wielodzietne obciążone kredytem.",
+    "ans": "TAK"
+   },
+   {
+    "stem": "Beneficjentami rządowego programu nie mogą być osoby dyscyplinarnie usunięte z zakładu pracy.",
+    "ans": "TAK"
+   },
+   {
+    "stem": "Odwlekanie spłaty całej raty kredytowej w czasie nie jest korzystnym rozwiązaniem.",
+    "ans": "TAK"
+   },
+   {
+    "stem": "Kredytodawcy zachęcają klientów do negocjowania warunków kredytu.",
+    "ans": "BI"
+   },
+   {
+    "stem": "Osoby posiadające więcej mieszkań powinny jak najszybciej sprzedać jedną nieruchomość.",
+    "ans": "NIE"
+   },
+   {
+    "stem": "Korzystnym rozwiązaniem jest wpłata zgromadzonych oszczędności na poczet zaciągniętego długu.",
+    "ans": "TAK"
+   },
+   {
+    "stem": "Zaproponowane scenariusze zachęcają dłużników do wejścia na drogę sądową z kredytodawcami.",
+    "ans": "NIE"
+   }
+  ]
+ },
+ {
+  "id": "V",
+  "type": "cloze",
+  "per": 0.5,
+  "max": 5,
+  "title": "Zadanie V",
+  "instr": "Proszę - zgodnie z przykładem - podkreślić najlepszą odpowiedź spośród propozycji podanych w nawiasach (na egzaminie podkreślasz ją, tutaj wybierasz z listy).",
+  "textTitle": "Wytęż wzrok",
+  "paras": [
+   "Kurator wystawy „Fotomorgana”, Robert Kuśmirowski, jako twórca niepokorny ([[przyzwyczaił]], dopasował, wciągnął, wyniósł) widzów do nieustannych fatamorgan. Znany Polakom artysta perfekcyjnie bawi się iluzją, {1:skłania|podsyca|miesza|zwodzi} odbiorcę, który niejednokrotnie gubi się w gąszczu przekazów i interpretacji, a przy okazji stawia dość istotne pytania o {2:racje|kryteria|treści|wzory} wartościowania dzieł sztuki oraz relacje między wyobrażeniami a rzeczywistością.",
+   "Do swej najnowszej wizji artystycznej Kuśmirowski {3:zaabsorbował|wywołał|zaangażował|uzyskał} ponad 20 polskich i zagranicznych artystów reprezentujących różne dziedziny sztuki - od malarstwa i grafiki po taniec i pantomimę. Znalazła się wśród nich m.in. {4:zdobywczyni|rekordzistka|następczyni|medalistka} prestiżowej nagrody Paszportu Polityki sprzed lat dwu - Weronika Gęsicka - fotografka i artystka wizualna, dla której istotnym elementem w procesie twórczym są archiwalia. Ten melanż dzieł i form Kuśmirowski połączył - jak to zresztą zwykł czynić - {5:efektywną|owocną|efektowną|charyzmatyczną}, acz pracochłonną scenografią, którą wykonał osobiście.",
+   "Kurator-artysta przygotowując wystawę, skoncentrował się na fotografii, co tłumaczy tytułowe wyrażenie odnoszące się do zmysłu wzroku. {6:Ogarnęły|Zaintrygowały|Zwabiły|Skupiły} go szczególnie prace, które wydały się czym innym niż są w rzeczywistości. Jak choćby wykonane podczas lotu paralotnią pejzażowe zdjęcia fotografika, architekta i zarazem pilota - Kacpra Kowalskiego, które, za sprawą celowo rozmytych kadrów będących przecież głównym ich atutem, {7:sprowadzają|kierują|przywodzą|przytaczają} na myśl wyrafinowane, abstrakcyjne obrazy. I na odwrót - w galerii obejrzymy też hiperrealistyczne pociągnięcia pędzlem, które do {8:znużenia|złudzenia|urojenia|przywidzenia} przypominają realistyczne zdjęcia. Na tej wystawie iluzja goni iluzję, Kuśmirowski bawi się z nami pojęciem „odzwierciedlenia rzeczywistości”, przypominając przy okazji, że tradycyjny sens tego zwrotu zniknął już dawno. Dziś, {9:bywając|wojując|obcując|obradując} ze sztuką, coraz bardziej jesteśmy skazani na wizualne wyzwania, które wszakże mają potężną zaletę: skłaniają do intelektualnego {10:musu|wysiłku|natężenia|zabiegu}, uczą uważności i zachęcają do interpretowania każdego przejawu indywidulanej twórczości."
+  ],
+  "src": "Na podstawie: Piotr Sarzyński, Wytęż wzrok , w: „Polityka”, nr 27, 30.06-6.07.2021, s. 83.",
+  "answers": {
+   "1": "zwodzi",
+   "2": "kryteria",
+   "3": "zaangażował",
+   "4": "zdobywczyni",
+   "5": "efektowną",
+   "6": "Zaintrygowały",
+   "7": "przywodzą",
+   "8": "złudzenia",
+   "9": "obcując",
+   "10": "wysiłku"
+  }
+ }
+];
+
+const MAX = 40, PASS = 24;
+const TEST_ID = 'czytanie-2022-11';
+const STORE_KEY = 'c1_czyt_2022_11_v1';
+const TOTAL_SEC = 60 * 60;
+const SELFTEST = /[?&]selftest\b/.test(location.search);
+
+// ---------- pomocnicze ----------
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+function load() { if (SELFTEST) return {}; try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { if (SELFTEST) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {} }
+
+// ---------- budowanie arkusza ----------
+function textBlock(t, gapFn) {
+  let h = `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>`;
+  h += t.paras.map(p => {
+    let x = esc(p);
+    x = x.replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+    if (gapFn) x = x.replace(/\{(\d+)(?::([^}]*))?\}/g, (m, n, o) => gapFn(n, o));
+    return `<p>${x}</p>`;
+  }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+  return h;
+}
+function letterSelect(t, id, n, letters) {
+  const opts = letters.map(l => `<option value="${l}">${l}</option>`).join('');
+  return `<span class="gap letter" id="g-${id}"><select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select><sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+}
+function fragList(t) {
+  return `<div id="frags-${t.id}">` + Object.keys(t.frags).map(l =>
+    `<div class="frag${l === t.used ? ' struck' : ''}" data-l="${l}"><b>${l}.</b>${esc(t.frags[l])}${l === t.used ? ' <span class="src">(PRZYKŁAD)</span>' : ''}</div>`).join('') + `</div>`;
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">10 x ${pl(t.per)} p. = ${t.max} p.</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    if (t.type === 'mc' || t.type === 'tf') {
+      html += `<div class="text">${t.textTitle ? '<p class="noindent"><b>' + esc(t.textTitle) + '</b></p>' : ''}${t.paras.map(p => `<p>${esc(p)}</p>`).join('')}</div><div class="src">${esc(t.src)}</div>`;
+      if (t.type === 'mc') {
+        const e = t.example;
+        html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div><b>${esc(e.stem)}</b><br>` +
+          e.opts.map((o, i) => `<span style="${i === e.ans ? 'font-weight:700;text-decoration:underline dotted' : ''}">${'abc'[i]}) ${esc(o)}</span>`).join('<br>') + `</div>`;
+        t.qs.forEach((q, i) => {
+          const id = `${t.id}-${i + 1}`;
+          html += `<div class="q" id="q-${id}"><div class="stem">${i + 1}. ${esc(q.stem)}</div>` +
+            q.opts.map((o, j) => `<label class="opt" data-v="${'abc'[j]}"><input type="radio" name="${id}" value="${'abc'[j]}">${'abc'[j]}) ${esc(o)}</label>`).join('') +
+            `<div class="qfix"></div></div>`;
+        });
+      } else {
+        html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div>${esc(t.example.stem)} <b>- ${t.example.ans}</b></div>`;
+        t.qs.forEach((q, i) => {
+          const id = `${t.id}-${i + 1}`;
+          html += `<div class="q" id="q-${id}"><div class="stem">${i + 1}. ${esc(q.stem)}</div><div class="tf">` +
+            ['TAK', 'NIE', 'BI'].map(v => `<label class="opt" data-v="${v}"><input type="radio" name="${id}" value="${v}">${v}</label>`).join('') +
+            `</div><div class="qfix"></div></div>`;
+        });
+      }
+    } else if (t.type === 'gapfrag') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="example-box"><div class="lbl">FRAGMENTY (A-M)</div></div>` + fragList(t);
+      html += textBlock(t, (n) => letterSelect(t, `${t.id}-${n}`, n, letters));
+    } else if (t.type === 'match') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p></div>`;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(t.example)} - <b>${t.used}</b></div>`;
+      html += `<div class="example-box"><div class="lbl">KOLUMNA II - FRAGMENTY</div></div>` + fragList(t);
+      html += `<div class="example-box" style="margin-top:12px"><div class="lbl">KOLUMNA I - TYTUŁY: wybierz literę</div></div>`;
+      t.titles.forEach((ti, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="mrow" id="g-${id}"><span class="t">${i + 1}. ${esc(ti)}</span><select data-id="${id}" aria-label="Tytuł ${i + 1}"><option value=""></option>${letters.map(l => `<option value="${l}">${l}</option>`).join('')}</select><span class="fix"></span></div>`;
+      });
+      html += `<div class="src">${esc(t.src)}</div>`;
+    } else if (t.type === 'cloze') {
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>` + t.paras.map(p => {
+        let x = esc(p).replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+        x = x.replace(/\{(\d+):([^}]*)\}/g, (m, n, o) => {
+          const id = `${t.id}-${n}`;
+          const opts = o.split('|').map(w => `<option value="${w}">${w}</option>`).join('');
+          return `<span class="gap cloze" id="g-${id}"><select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select><sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+        });
+        return `<p>${x}</p>`;
+      }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+    }
+    if (t.note && t.type !== 'cloze') html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('select[data-id]').forEach(el => {
+    if (saved[el.dataset.id] != null) el.value = saved[el.dataset.id];
+    el.addEventListener('change', () => { save(); updateProgress(); updateFrags(); });
+  });
+  root.querySelectorAll('input[type=radio]').forEach(el => {
+    if (saved[el.name] === el.value) el.checked = true;
+    el.addEventListener('change', () => { save(); updateProgress(); });
+  });
+  updateProgress(); updateFrags();
+}
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('select[data-id]').forEach(el => { o[el.dataset.id] = el.value; });
+  document.querySelectorAll('input[type=radio]:checked').forEach(el => { o[el.name] = el.value; });
+  return o;
+}
+function totalQuestions() {
+  return document.querySelectorAll('select[data-id]').length + document.querySelectorAll('.q').length;
+}
+function updateProgress() {
+  const o = collect();
+  const filled = Object.values(o).filter(v => v).length;
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${totalQuestions()}`;
+}
+function updateFrags() {
+  for (const t of TASKS) {
+    if (!t.frags) continue;
+    const chosen = [...document.querySelectorAll(`#task-${t.id} select`)].map(s => s.value).filter(Boolean);
+    document.querySelectorAll(`#frags-${t.id} .frag`).forEach(f => {
+      if (f.dataset.l === t.used) return;
+      f.classList.toggle('used', chosen.includes(f.dataset.l));
+    });
+  }
+}
+
+// ---------- sprawdzanie ----------
+function checkAll() {
+  const vals = collect();
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const got = vals[id] || '';
+        const box = document.getElementById(`q-${id}`);
+        box.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad', 'key');
+          if (l.dataset.v === q.ans) l.classList.add('key');
+          if (l.dataset.v === got) l.classList.add(got === q.ans ? 'ok' : 'bad');
+        });
+        const fx = box.querySelector('.qfix');
+        if (got === q.ans) { score += t.per; fx.textContent = ''; }
+        else fx.textContent = '→ poprawna odpowiedź: ' + (t.type === 'mc' ? q.ans + ') ' + q.opts['abc'.indexOf(q.ans)] : q.ans);
+      });
+    } else {
+      for (const n in t.answers) {
+        const id = `${t.id}-${n}`;
+        const a = t.answers[n];
+        const raw = vals[id] || '';
+        const ok = raw !== '' && raw === a;
+        const gap = document.getElementById(`g-${id}`);
+        const fix = gap.querySelector('.fix');
+        gap.classList.remove('ok', 'bad', 'almost');
+        if (ok) { score += t.per; gap.classList.add('ok'); fix.textContent = ''; }
+        else {
+          gap.classList.add('bad');
+          fix.textContent = '→ ' + a + (t.frags ? ' (' + t.frags[a].slice(0, 60) + '...)' : '');
+        }
+      }
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / ${t.max} p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    per.push({ t, score });
+  }
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błąd, obok poprawna odpowiedź z klucza. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+let left = TOTAL_SEC, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL_SEC ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  clearInterval(tick); running = false; left = TOTAL_SEC; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', () => checkAll());
+document.getElementById('checkBottom').addEventListener('click', () => checkAll());
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+// ---------- kontrakt z pulpitem ----------
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.qs.forEach((q, i) => {
+        const r = document.querySelector(`input[type=radio][name="${t.id}-${i + 1}"][value="${q.ans}"]`);
+        if (r) r.checked = true;
+      });
+    } else {
+      for (const n in t.answers) {
+        const el = document.querySelector(`select[data-id="${t.id}-${n}"]`);
+        if (el) el.value = t.answers[n];
+      }
+    }
+  }
+  save(); updateProgress(); updateFrags();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'czytanie', session: '2022-11', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

@@ -1,0 +1,1020 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Słuchanie C1 kwiecień 2023</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.q label.opt { display: flex; gap: 8px; align-items: flex-start; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+.q label.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.q label.opt.bad { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.q.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.q.row .stem { flex: 1 1 320px; margin: 0; font-weight: 400; }
+.q select { font: 16px/1.2 system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; max-width: 72vw; }
+.q .slot.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.q .slot.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.slots { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.q .fix { font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); }
+.audio { background: var(--example); border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; }
+.audio audio { width: 100%; margin-top: 8px; }
+.audio .fname { font-size: 13px; color: var(--muted); margin-left: 6px; }
+details.tr { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--input-bg); }
+details.tr summary { cursor: pointer; font-weight: 700; }
+details.tr .warn { color: var(--warn); font-size: 14px; font-weight: 600; }
+details.tr p { font-family: Georgia, serif; font-size: 16px; margin: 8px 0; }
+.legend { display: grid; gap: 4px; margin: 0 0 12px; padding: 10px 12px; background: var(--example); border-radius: 8px; font-size: 15px; }
+.tf { display: flex; gap: 14px; }
+
+.oslot { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin: 6px 0; }
+.oslot .lab { width: 1.6em; font-weight: 700; }
+.oslot input[type=text] { flex: 1 1 280px; min-width: 0; font: 16px/1.3 system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 6px 8px; }
+.oslot input[type=text]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.oslot.ok input[type=text] { border-color: var(--ok); background: var(--ok-bg); }
+.oslot.bad input[type=text] { border-color: var(--bad); background: var(--bad-bg); }
+.oslot .pp { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.okey { font-size: 14px; margin-top: 4px; }
+.okey .keyline { color: var(--ok); font-weight: 600; }
+.leadq { font-weight: 700; margin: 8px 0; }
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie ze słuchu C1 - kwiecień 2023</span>
+    <span class="timer" id="timer">40:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+<div class="wrap">
+  <h1>Rozumienie ze słuchu</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja kwiecień 2023. 5 zadań, do 40 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji. Nagrań nie ma w pliku: w każdym zadaniu kliknij „Wczytaj nagranie” i wskaż plik audio z komputera. Na egzaminie zadanie I słucha się jeden raz, pozostałe dwa razy.</p>
+  <div class="notice" id="timeUp">Czas minął (40 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+<script>
+const TASKS = [
+ {
+  "id": "I",
+  "title": "Zadanie I",
+  "max": 6,
+  "ptsLabel": "6 x 1 p. = 6 p.",
+  "kind": "radio",
+  "plays": "Nagranie zostanie odtworzone tylko jeden raz.",
+  "instr": "Proszę wysłuchać kilku krótkich nagrań i zaznaczyć właściwe odpowiedzi.",
+  "example": {
+   "stem": "Z tego nagrania wynika, że",
+   "opts": [
+    "a) branża medialna interpretuje nowe obowiązki fiskalne inaczej niż rząd.",
+    "b) rząd chce ograniczyć publikowanie reklam w prasie.",
+    "c) nowe podatki dotkną też placówki kulturalne oraz medyczne."
+   ],
+   "ans": "a"
+  },
+  "items": [
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "polityka klimatyczna jest punktem spornym pomiędzy Niemcami a Francją.",
+     "b": "państwa Unii Europejskiej dążą do ujednolicenia polityki klimatycznej.",
+     "c": "zmniejszenie emisji jest jedynym celem polityki klimatycznej."
+    },
+    "key": [
+     "a"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "pomysłodawca od początku był pewien powodzenia akcji.",
+     "b": "niewidome dzieci odbyły lot helikopterem.",
+     "c": "fundusze na wyjazd pochodziły z utylizacji telefonów."
+    },
+    "key": [
+     "c"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "Antoni Ptak dorobił się fortuny dzięki uprawie czereśni.",
+     "b": "pierwsza praca Antoniego Ptaka była związana z ogrodnictwem.",
+     "c": "Antoni Ptak przejął firmę ogrodniczą po rodzicach."
+    },
+    "key": [
+     "b"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "mężczyzna miał spore doświadczenie w pracy z dziećmi.",
+     "b": "mężczyznę irytuje zachowanie prowadzących programy z dziećmi.",
+     "c": "partnerskie podejście do dzieci nie przyniosło oczekiwanych efektów."
+    },
+    "key": [
+     "b"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "zasypanie dziury nie będzie możliwe ze względu na brak dojazdu.",
+     "b": "zapadlisko pojawiło się na jednym z osiedli mieszkaniowych.",
+     "c": "usuwanie szkód muszą poprzedzić prace przygotowawcze."
+    },
+    "key": [
+     "c"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "przejęcie kamienicy przez samorząd gminy było nieuniknione.",
+     "b": "omawiana kamienica jest w nienagannym stanie.",
+     "c": "spadkobiercy zostali pozbawieni prawa do dziedziczenia budynku."
+    },
+    "key": [
+     "a"
+    ]
+   }
+  ],
+  "src": "Na podstawie: https://www.youtube.com/watch?v=IWHsnaqGB30&ab_channel=Tr%C3%B3jkaProgram3PolskiegoRadia; https://www.youtube.com/watch?v=l32gv7BQHRU&feature=youtu.be; https://www.youtube.com/watch?v=rrVhyRuTIhA&ab_channel=Nabogato; https://www.youtube.com/watch?v=th-eVckNL5M&ab_channel=TVNStyle; https://www.youtube.com/watch?v=pjf9v18KJpA&ab_channel=polsatnews.pl; https://www.youtube.com/watch?v=CnsUPDyq8Vs&ab_channel=TVSUDECKAPL",
+  "tr": [
+   "Przykład: Wydawcy medialni ostro protestują przeciwko nowemu podatkowi, który rząd nazywa składką - składką na służbę zdrowia czy na ochronę zabytków. Tak naprawdę to haracz od reklam i zagrożenie dla wolności prasy.",
+   "Na podstawie: https://audycje.tokfm.pl/podcast/101814",
+   "1. Polityka klimatyczna, jak każda polityka, jest przede wszystkim w tym momencie jeszcze polityką. Kwestie klimatu czasami schodzą na plan dalszy. I musimy to powiedzieć wprost - żadne państwo, żadna też organizacja międzynarodowa nie wdraża polityk klimatycznych tylko po to, żeby redukować emisję. Za tym zawsze stoją pewne inne cele, np. budowa przewag konkurencyjnych. I niestety Unia Europejska jest rozdarta nieco w kwestii polityki klimatycznej między kilka mniejszych frakcji. Powiedzmy też, są takie dwa duże obozy, jeden pod przewodnictwem Niemiec, drugi pod przewodnictwem Francji, które nie zgadzają się ze sobą co do chociażby takich instrumentów jak unijna taksonomia.",
+   "Na podstawie: https://www.youtube.com/watch?v=IWHsnaqGB30&ab_channel=Tr%C3%B3jkaProgram3PolskiegoRadia",
+   "2. Uczniowie tej warszawskiej szkoły 200 starych komórek przeznaczyli na rzecz niewidomych dzieci. Dla inicjatora akcji Janka to sukces. „Ja się cieszę, że to tak się udało, bo na początku miałem wątpliwości co do tego, czy ktoś w ogóle przyniesie takie telefony”. Komórki można przekazywać Towarzystwu Ociemniałych w Laskach, które je odsprzedaje firmie utylizującej odpady. W ten sposób szkoła zebrała ponad 200 tys. złotych. Za te pieniądze niewidomi uczniowie pojechali na tygodniową wycieczkę. „Można było wsiąść do helikoptera. No niestety nie lataliśmy, chociaż żałuję”.",
+   "Na podstawie: https://www.youtube.com/watch?v=l32gv7BQHRU&feature=youtu.be",
+   "3. Przedsiębiorca Antoni Ptak z majątkiem szacowanym na 1 950 000 000 zł zajmuje jedenaste miejsce na liście najbogatszych Polaków Forbesa. Kto wie, czy szybowałby dziś tak wysoko, gdyby pewnego razu nie wylądował w błocie. Urodził się w 1952 roku, dorastał w Piotrkowie Trybunalskim. Jego rodzice prowadzili zakład ogrodniczy. Pierwsze pieniądze zarabiał w wakacje, zbierając czereśnie. Kiedy zdobył tytuł technika ogrodnika, zajął się hodowlą warzyw i kwiatów.",
+   "Na podstawie: https://www.youtube.com/watch?v=rrVhyRuTIhA&ab_channel=Nabogato",
+   "4. Trudno mówić, że ja z tymi dziećmi wcześniej jakimikolwiek miałem jakiś rozwinięty kontakt, gdzieś tam się pojawiały po drodze w moim życiu, ale jedno mnie wkurzało zawsze, mianowicie we wszystkich prawie programach czy widowiskach dziecięcych, gdzie jest jakiś prowadzący, to było zdziecinnienie głównie prowadzącego. Ja sobie pomyślałem: będę do tych dzieciaków mówił normalnie jak do partnerów. I to zagrało… .",
+   "Na podstawie: https://www.youtube.com/watch?v=th-eVckNL5M&ab_channel=TVNStyle",
+   "5. Ponad sto ciężarówek mieszaniny ziemi i piasku potrzeba, by zasypać to olbrzymie zapadlisko. Prace zaczęły się skoro świt, a skończą w najlepszym wypadku po weekendzie. Wyszła trudność dodatkowa, bo okazało się, że trzeba utwardzić drogę dojazdową dla ciężarówek. Bo olbrzymia dziura w ziemi pojawiła się na terenie ogródków działkowych w Trzebini. Z odsieczą na prośbę mieszkańców ruszyli strażacy.",
+   "Na podstawie: https://www.youtube.com/watch?v=pjf9v18KJpA&ab_channel=polsatnews.pl",
+   "6. Gmina Bielawa nabyła w spadku po zmarłej mieszkance naszego miasta mocno zdegradowaną kamienicę o wartości ponad 300 tys. zlokalizowaną przy placu Kościelnym 4 oraz zobowiązania finansowe na kwotę blisko 700 tys. złotych „Spadkobiercy zdecydowali, że nie chcą przejmować takiego spadku, który trzeba będzie dopłacać do tego tematu. Natomiast w takiej sytuacji Samorząd Gminny staje się spadkobiercą, który nie może odrzucić spadku. I tak się właśnie stało w tym… w tej sytuacji”.",
+   "Na podstawie: https://www.youtube.com/watch?v=CnsUPDyq8Vs&ab_channel=TVSUDECKAPL"
+  ]
+ },
+ {
+  "id": "II",
+  "title": "Zadanie II",
+  "max": 8,
+  "ptsLabel": "8 x 1 p. = 8 p.",
+  "kind": "tf",
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać felietonu na temat bioprintingu (biodruku), czyli możliwości tworzenia organów i zaznaczyć: TAK - gdy zdanie jest zgodne z nagraniem; NIE - gdy nie jest zgodne z nagraniem.",
+  "example": {
+   "stem": "Polscy naukowcy pracują nad stworzeniem trzustki.",
+   "ans": "TAK"
+  },
+  "items": [
+   {
+    "stem": "Substancje potrzebne do biodruku umieszczone są w różnych zbiornikach w drukarce.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Zaraz po zakończeniu wydruku organ jest gotowy do wykorzystania.",
+    "key": [
+     "NIE"
+    ]
+   },
+   {
+    "stem": "Każdy z ośrodków zaangażowanych w projekt odpowiada za inny jego aspekt.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Według narratora za 3-4 lata przeszczepy drukowanych organów będą mogły być wykonywane na szeroką skalę.",
+    "key": [
+     "NIE"
+    ]
+   },
+   {
+    "stem": "Szacuje się, że w Polsce liczba chorych na cukrzycę wzrośnie do 5 milionów osób.",
+    "key": [
+     "NIE"
+    ]
+   },
+   {
+    "stem": "Narrator nakreśla kolejne etapy w rozwoju przeszczepów przy użyciu biodruku.",
+    "key": [
+     "NIE"
+    ]
+   },
+   {
+    "stem": "W bioprintingu wykorzystuje się materiał komórkowy osoby chorej.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Narrator uważa rozwiązania medyczne przedstawiane w utworach fantastycznych za mało prawdopodobne.",
+    "key": [
+     "NIE"
+    ]
+   }
+  ],
+  "src": "Na podstawie: https://www.youtube.com/watch?v=m-AqFsZwvoY&t=186s&ab_channel=Nauka.ToLubi%C4%99",
+  "tr": [
+   "Wyobrażacie sobie drukowanie części ciała? Z żywych komórek. Drukowanie skóry, żył, kości, a za niedługo nawet serc, trzustek i wątroby. W polskiej Fundacji Badań i Rozwoju Nauki w konsorcjum Bionic naukowcy starają się wydrukować w pełni działającą żywą trzustkę. Brzmi to abstrakcyjnie, ale co do idei jest w zasadzie dość proste. W odpowiednich pojemnikach w drukarce umieszcza się płyny, a w nich w jednym znajdują się żywe komórki produkujące insulinę, w drugim komórki śródbłonka do tworzenia naczyń, a w trzecim znajduje się zawiesina tzw. macierzy zewnątrzkomórkowej, czyli rusztowania, które będzie to wszystko trzymało w całości. Kolejny krok nie różni się w zasadzie od zwykłego drukowania 3D. Program układa warstwa po warstwie odpowiednią zawartość tych pojemników. Następnie tak wydrukowany organ umieszcza się na kilka dni w inkubatorze i voilà, trzustka gotowa.",
+   "Na jakim etapie dzisiaj jesteśmy? Prace trwają równolegle w kilku polskich ośrodkach naukowych. W Instytucie Biologii im. Nenckiego bada się, jak stworzyć, jak komórki pobrane od dorosłego człowieka można by wykorzystać do drukowania właśnie trzustki. Na Politechnice Warszawskiej powstaje biotusz, czyli płyn, w którym zawieszone będą te żywe komórki. Z kolei na Warszawskim Uniwersytecie Medycznym trwają przygotowania do pierwszych prób na zwierzętach. Jeżeli wszystko się powiedzie, za około 3-4 lata możliwe będą pierwsze próby z udziałem ludzi.",
+   "Polska jest w światowej czołówce, a może nawet na pierwszym miejscu ośrodków, krajów, które zajmują się drukowaniem trzustki. W naszym kraju 3 mln osób choruje na cukrzycę. W skali całego globu cierpi na nią około 400 mln osób, a z powodu związanych z cukrzycą powikłań umiera około 5 mln ludzi rocznie. Jak będzie wyglądała przyszłość transplantologii? Dzisiaj bardzo trudno odpowiedzieć na to pytanie. W biodruku nie chodzi tylko o to, by każdy, kto potrzebuje, dostał organ do przeszczepu. W tej technologii tkanki czy narządy mogą być drukowane z namnożonych komórek pacjenta, a to oznacza, że znika ryzyko odrzucenia przeszczepu. Nadzieje są oczywiście ogromne, a niecierpliwym polecam poważniejsze traktowanie filmów czy książek science fiction. W wielu z nich, chociażby w Star Treku, części uszkodzone, uszkodzone części ciała były po prostu replikowane.",
+   "Na podstawie: https://www.youtube.com/watch?v=m-AqFsZwvoY&t=186s&ab_channel=Nauka.ToLubi%C4%99"
+  ]
+ },
+ {
+  "id": "III",
+  "title": "Zadanie III",
+  "max": 7,
+  "ptsLabel": "7 x 1 p. = 7 p.",
+  "kind": "radio",
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać wypowiedzi trzech kobiet: Sylwii, Barbary oraz Alicji na temat domowego majsterkowania i zaznaczyć właściwe odpowiedzi.",
+  "example": {
+   "stem": "Mieszkanie Sylwii",
+   "opts": [
+    "a) po remoncie zmieniło wygląd na bardziej klasyczny.",
+    "b) było remontowane przez nieprofesjonalnych fachowców.",
+    "c) było remontowane przez kilka ekip."
+   ],
+   "ans": "b"
+  },
+  "items": [
+   {
+    "stem": "Sylwia zajęła się remontem mieszkania, ponieważ",
+    "opts": {
+     "a": "chciała pomóc fachowcom.",
+     "b": "nalegała na to jej rodzina.",
+     "c": "prace wykończeniowe zbytnio się przeciągały."
+    },
+    "key": [
+     "c"
+    ]
+   },
+   {
+    "stem": "Sylwia zaczęła uczyć się majsterkowania",
+    "opts": {
+     "a": "podczas pisania artykułu na ten temat.",
+     "b": "bez pomocy innych osób.",
+     "c": "chodząc na warsztaty dla początkujących."
+    },
+    "key": [
+     "b"
+    ]
+   },
+   {
+    "stem": "Sylwia uważa, że",
+    "opts": {
+     "a": "kobiety mają więcej zrozumienia dla jej pasji niż mężczyźni.",
+     "b": "kupowanie gotowych rzeczy jest domeną kobiet.",
+     "c": "mężczyźni mają opory przed proszeniem o pomoc lub radę."
+    },
+    "key": [
+     "c"
+    ]
+   },
+   {
+    "stem": "Bracia Sylwii",
+    "opts": {
+     "a": "regularnie przywożą jej własne meble do naprawy.",
+     "b": "przekonali siostrę do majsterkowania.",
+     "c": "zmienili swoją opinię, widząc rezultaty wysiłków siostry."
+    },
+    "key": [
+     "c"
+    ]
+   },
+   {
+    "stem": "Barbara w dzieciństwie",
+    "opts": {
+     "a": "razem z przyjaciółkami odnawiała stare przedmioty.",
+     "b": "obserwowała pracę znajomych nad naprawą mebli.",
+     "c": "uczęszczała na zajęcia artystyczne prowadzone w ASP."
+    },
+    "key": [
+     "b"
+    ]
+   },
+   {
+    "stem": "Barbara podczas remontu",
+    "opts": {
+     "a": "odkryła, że z Sylwią łączy ją coś więcej niż tylko obowiązki zawodowe.",
+     "b": "musiała wyrzucić wiele mebli z powodu ich złej jakości.",
+     "c": "publikowała w sieci zdjęcia dokumentujące prace renowacyjne."
+    },
+    "key": [
+     "a"
+    ]
+   },
+   {
+    "stem": "Oprócz renowacji mebli kobiety",
+    "opts": {
+     "a": "wykonują ozdoby z nietypowych materiałów.",
+     "b": "zajęły się naprawą starego sprzętu elektronicznego.",
+     "c": "odnawiają starą i zniszczoną biżuterię."
+    },
+    "key": [
+     "a"
+    ]
+   }
+  ],
+  "src": "Na podstawie: https://reportaz.polskieradio.pl/artykul/1512426",
+  "tr": [
+   "U mnie się tak zaczęło bardzo prosto, tak, od remontu. Ja miałam remont mieszkania robiony i klasycznie miałam ekipę. Ale ekipa jak to ekipa, coś naprawiła, coś zniszczyła, coś wyremontowała tak, że trzeba było po nich poprawić. I oczywiście, tam prosiłam brata czy braci, czy ojca, żeby w czymś mi pomógł na koniec, ale to trwało miesiącami, więc wreszcie zaczęłam sama poprawiać te niedoróbki.",
+   "Normalnie nie mam nic związanego zawodowo, życiowo z majsterkowaniem. Jestem dziennikarką i to taką ekonomiczną, więc kompletnie na samym początku było to samouctwo. Dopiero jak zaczęłam się wciągać w tematykę związaną z tym szeroko pojętym majsterkowaniem, no to zaczęłam trafiać do stolarzy jakichś lokalnych, na warsztaty z renowacji mebli, z ciesielstwa. Nie szłam tam jak taka biała karta, ja już swoje trochę przeszłam, trochę umiałam.",
+   "Przyznam się, że częściej się zdarzały jakieś takie głosy sceptyczne ze strony koleżanek niż kolegów, no właśnie takie po co wam to dziewczyny, tak?, mało macie pracy, nie wiem, zniszczycie sobie ręce, tego typu. Tak? Faceci to kompletnie, tak naprawdę ja mam wrażenie, że dla nich jest to o tyle takie ciekawe, że sami często nie potrafią albo się wstydzą, nie byli uczeni tego w domach, tak? Bo już to nasze pokolenie jest tym pokoleniem wychowanym na zasadzie wszystko możesz kupić, więc jako że sami nie robią, nie bardzo potrafią się kogoś spytać, nie bardzo kogoś potrafią się doradzić często gęsto, jak zrobić. Może moi młodsi bracia, którzy uważają właśnie, że też mam za dużo wolnego czasu, aczkolwiek oni się też zaczęli bardzo przekonywać ostatnio, widząc takie rzeczy, które robimy, bo są zaskoczeni, że to się naprawdę da i sami dzwonią i mówią „słuchaj, fajny mebel na śmietniku, może tam ci przyniosę?”.",
+   "A ja majsterkowaniem zajmowałam się praktycznie od dzieciństwa. Jako mała dziewczynka zawsze chciałam zdawać na ASP i jakoś miałam w tym kierunku zapędy, ale wtedy zrezygnowałam i wybrałam dziennikarstwo, natomiast zawsze tęskniłam do takich robótek ręcznych i do wyżywania się artystycznego. Rodzice moich… moich najlepszych przyjaciółek też zajmowali się renowacją mebli, więc ja jako małe dziecko podpatrywałam, jak to wygląda, a czasem też im pomagałam. Przez parę ładnych lat nie miałam zupełnie związku z majsterkowaniem ani takimi właśnie pracami ręcznymi, bo podobnie jak Sylwia wybrałam dziennikarstwo i pisałam. Tym momentem… tym impulsem, który mnie skłonił ku majsterkowaniu z powrotem był remont i wiadomo, poprawki i jakiś taki pęd do tego, żeby zrobić coś swojego, oryginalnego, coś indywidualnego. Wtedy się zgadałyśmy z Sylwią, że nagle, okazuje się, robimy to samo, że robimy podobne rzeczy, mamy podobne zainteresowania i nagle okazuje się, że zamiast rozmawiać o tematach zgłaszanych na kolegium, i o…, o…, dużo bardziej ciekawsze okazały się rozmowy na temat mebla, który znalazłyśmy na śmietniku i który właśnie odnawiamy w domu albo jakichś inspiracji DIY-owych, czyli Do it yourself podpatrzonych gdzieś w knajpie albo w internecie. Ale żeby nie było, że majsterkowanie to jest tylko taka brudna, ciężka i męska robota, bo my robimy też dużo fajnych, dużo… dużo lżejszych rzeczy, na przykład biżuterię. Biżuterię robimy z… między innymi ze starych klawiatur. I tu mam taki przed sobą naszyjnik, który wykonałyśmy ze starych klawiatur z… To jest akurat klawiatura ze starego laptopa, więc te klawisze są bardzo cienkie, idealnie nadają się do tego, żeby na przykład wykonać naszyjnik z konkretnym napisem, tutaj mamy napis FOCH.",
+   "Na podstawie: https://reportaz.polskieradio.pl/artykul/1512426"
+  ]
+ },
+ {
+  "id": "IV",
+  "title": "Zadanie IV",
+  "max": 9,
+  "ptsLabel": "9 x 1 p. = 9 p.",
+  "kind": "select",
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać reportażu na temat organizacji harcerskiej Leśna Szkółka i dopasować osoby (1-6) do wypowiadanych przez nie informacji (A-G). Uwaga! Jedna osoba może wypowiadać więcej niż jedną opinię.",
+  "lead": "Która z osób:",
+  "example": {
+   "stem": "Porównuje różne organizacje harcerskie.",
+   "ans": "1"
+  },
+  "selOpts": [
+   [
+    "1",
+    "1"
+   ],
+   [
+    "2",
+    "2"
+   ],
+   [
+    "3",
+    "3"
+   ],
+   [
+    "4",
+    "4"
+   ],
+   [
+    "5",
+    "5"
+   ],
+   [
+    "6",
+    "6"
+   ]
+  ],
+  "items": [
+   {
+    "tag": "A",
+    "stem": "Podkreśla życiową przydatność cech wyniesionych z harcerstwa.",
+    "key": [
+     "2"
+    ]
+   },
+   {
+    "tag": "B",
+    "stem": "Jest przeciwieństwem stereotypowego wyobrażenia harcerza.",
+    "key": [
+     "2"
+    ]
+   },
+   {
+    "tag": "C",
+    "stem": "Dała się poznać szerszym kręgom dzięki rozwijaniu w harcerstwie swoich zainteresowań.",
+    "key": [
+     "3"
+    ]
+   },
+   {
+    "tag": "D",
+    "stem": "Tłumaczy pochodzenie swojego pseudonimu.",
+    "key": [
+     "4"
+    ]
+   },
+   {
+    "tag": "E",
+    "stem": "Nawiązuje do ważnej postaci z historii harcerstwa.",
+    "key": [
+     "4",
+     "5"
+    ],
+    "any": true
+   },
+   {
+    "tag": "F",
+    "stem": "Przedstawia elementy wyróżniające Leśną Szkółkę.",
+    "key": [
+     "1",
+     "6"
+    ],
+    "any": true
+   },
+   {
+    "tag": "G",
+    "stem": "Przybliża genezę jednej z zasad stosowanych w harcerstwie.",
+    "key": [
+     "5"
+    ]
+   }
+  ],
+  "src": "Na podstawie: https://jedynka.polskieradio.pl/artykul/1401243",
+  "tr": [
+   "1. U nas w Leśnej Szkółce idea jest taka, żeby mundur był skromny. Czarna chusta z czerwonym obszyciem, a na drugim ramieniu naszywka naszej organizacji Leśna Szkółka. Tak samo jak ZHP czy ZHR jest w pełni organizacją harcerską. To jest jedna z najmniejszych organizacji w Polsce. Organizacji w Polsce jest kilkanaście tak naprawdę, o czym niewiele osób wie.",
+   "2. Mam przyjaciół w harcerstwie, ale też poza, i zawsze stykałem się z czymś takim, że kiedy gdzieś wychodziło w rozmowie, że jestem harcerzem, to zawsze słyszałem: Tak? Bo nie wyglądasz. Bo ja właśnie nie wyglądam na harcerza i bardzo dobrze, bo harcerz to nie jest żaden dziwak, który ma znamię na czole. Punktualność, sumienność, prawdomówność, dotrzymywanie jakiegoś własnego słowa, braterstwo, czyli takie bycie, po prostu życie dobrze z innymi ludźmi, tak. To jest też właśnie ciekawe, że z harcerstwa ludzie idą w różnych kierunkach, ale potem jednak mają wspólny mianownik. Druhna Balbina jest doktorem na Politechnice Gdańskiej. Jest jedną z naszych instruktorek, jest członkinią honorową, gdzie zaczynając od obozów w Bieszczadach albo tutaj na Pomorzu i organizując te obozy, skończyła, organizując obóz na Spitzbergenie, tak? bo... Ale właśnie druhna Balbina wyraźnie podkreślała, że to była właśnie naturalna konsekwencja jej działalności harcerskiej.",
+   "3. Mój tutaj może przykład jest dosyć ciekawy o tyle, że ja dzięki Leśnej Szkółce otworzyłem już tak na poważnie moją pasję do filmowania. Jednym z pierwszych filmów, jakie zrealizowałem, był film promujący Leśną Szkółkę jako w ogóle zjawisko, który wziął udział w takim dziejącym się w Gdyni, nominalnie ogólnopolskim, bo faktycznie były środowiska z całej Polski, festiwalu filmów harcerskich i wygrał. Ja wtedy uwierzyłem w siebie, że kurczę, udało się!",
+   "4. Moja ksywa to Rudy, Filip Rudolf się nazywam, i to się właśnie wzięło stąd, że jeden z naszych bohaterów narodowych, Jan Bytnar, pseudonim „Rudy\", harcmistrz, członek Szarych Szeregów, uczestnik konspiracji antyhitlerowskiej, nosił taką ksywę od swoich rudych włosów.",
+   "5. Powiem tak, skąd się wzięło przywitanie lewą ręką. To się wzięło od założyciela skautingu, lorda Baden-Powella. On jako oficer brytyjski walczył między innymi z Burami i jedno z plemion, bardzo wojowniczych, to było plemię Aszanti. Wódz, podając mu rękę, podał mu lewą rękę. On mówi: „Dlaczego podajesz mi lewą rękę?” - „Ponieważ w lewej ręce trzymam tarczę, którą odsłaniam się od wrogów”.",
+   "6. Nie mieliśmy zupełnie tej świadomości, że to będzie coś tak oryginalnego. Mówienie sobie po pseudonimach było bardzo dobrym pomysłem od początku Leśnej Szkółki i to spowodowało taką niepowtarzalną atmosferę.",
+   "Na podstawie: https://jedynka.polskieradio.pl/artykul/1401243"
+  ]
+ },
+ {
+  "id": "V",
+  "title": "Zadanie V",
+  "max": 10,
+  "ptsLabel": "10 p.",
+  "kind": "open",
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać wypowiedzi na temat zagrożeń, jakie niosą za sobą kosmiczne śmieci, i odpowiedzieć na pytania. Uwaga! Forma gramatyczna odpowiedzi powinna być dopasowana do pytania.",
+  "example": {
+   "q": "Co się wydarzyło w 2001 roku na pustyni w Arabii Saudyjskiej?",
+   "a": "Spadł tam (siedemdziesięciokilogramowy) kawałek silnika rakiety."
+  },
+  "items": [
+   {
+    "q": "Ile śmieci krąży po orbicie okołoziemskiej?",
+    "pts": [
+     1
+    ],
+    "mode": "any",
+    "concepts": [
+     "\\b20\\s?(tys|000)",
+     "(dwadziescia|dwudziestu)\\s+tysiec",
+     "\\b8\\s?(tys|000)",
+     "(osiem|osmiu)\\s+tysiec",
+     "eif+e?l"
+    ],
+    "key": [
+     "Około 20 tys. śmieci / ponad 8 tys. ton / więcej niż waży rama wieży Eiffla."
+    ],
+    "fill": [
+     "Około 20 tys. śmieci"
+    ]
+   },
+   {
+    "q": "Co - oprócz części rakiet - znajduje się na orbicie okołoziemskiej?",
+    "pts": [
+     0.5,
+     0.5
+    ],
+    "mode": "pair",
+    "concepts": [
+     "(sprzet|wyposazeni|narzedzi|ekwipunek|przedmiot)\\w*.{0,30}(astronaut|kosmonaut)|(astronaut|kosmonaut)\\w*.{0,30}(sprzet|wyposazeni|narzedzi|ekwipunek|przedmiot)",
+     "(nieczynn|niedzial|nieaktywn|zepsut|martw|zuzyt|nieuzywan)\\w*\\s+(\\w+\\s+)?satelit|satelit\\w*\\s+(nieczynn|niedzial|nieaktywn|zepsut|martw|zuzyt|nieuzywan)|satelit\\w*(\\s+\\w+){0,2}\\s+nie\\s+dzialaj"
+    ],
+    "key": [
+     "sprzęt astronautów",
+     "nieczynne satelity"
+    ],
+    "fill": [
+     "sprzęt astronautów",
+     "nieczynne satelity"
+    ]
+   },
+   {
+    "q": "Jakie są konsekwencje zderzenia się obiektów na orbicie?",
+    "pts": [
+     1
+    ],
+    "mode": "any",
+    "concepts": [
+     "(powst|pojaw|tworz|przybyw|przybedz|przybyc|namnaz|wiecej)\\w*.{0,40}(smieci|odpad|szczatk|kawalk|fragment)",
+     "(nowe|nowych|kolejne|kolejnych)\\s+(\\w+\\s+)?(smieci|odpad|szczatk)",
+     "\\d+\\s?(tys|000).{0,20}(smieci|odpad)"
+    ],
+    "key": [
+     "Powstanie (2-3 tys.) nowych śmieci / dużych ilości nowych śmieci."
+    ],
+    "fill": [
+     "Powstanie nowych śmieci"
+    ]
+   },
+   {
+    "q": "Jakie były następstwa pierwszego zderzenia się odpadów na orbicie?",
+    "pts": [
+     1,
+     1
+    ],
+    "mode": "pair",
+    "concepts": [
+     "komunikac|lacznosc|lacznosci",
+     "(powst|pojaw|przybyw|przybyl|tworz)\\w*.{0,40}(odpad|smieci|szczatk|kawalk|fragment)|(\\d+|nowe|nowych|drobne|drobnych)\\s+(\\w+\\s+)?(odpad|smieci|szczatk)"
+    ],
+    "key": [
+     "problemy komunikacyjne w Stanach Zjednoczonych / USA",
+     "powstanie (600) nowych odpadów (o wadze półtorej / 1,5 tony)"
+    ],
+    "fill": [
+     "problemy komunikacyjne w Stanach Zjednoczonych",
+     "powstanie nowych odpadów"
+    ]
+   },
+   {
+    "q": "Jakie utrudnienia w codziennym życiu może spowodować uszkodzenie satelity?",
+    "pts": [
+     0.5,
+     0.5
+    ],
+    "mode": "pair",
+    "concepts": [
+     "nawigac|\\bgps\\b",
+     "pogod|informacj|biezac|aktualn"
+    ],
+    "key": [
+     "brak nawigacji samochodowej",
+     "brak dostępu do bieżących informacji, np. pogody"
+    ],
+    "fill": [
+     "brak nawigacji samochodowej",
+     "brak dostępu do bieżących informacji, np. pogody"
+    ]
+   },
+   {
+    "q": "Co było bezpośrednią przyczyną wypadku wahadłowca w 1983 roku?",
+    "pts": [
+     1
+    ],
+    "mode": "any",
+    "concepts": [
+     "farb|odprysk|lakier"
+    ],
+    "key": [
+     "Odprysk/listek farby uszkodził szybę."
+    ],
+    "fill": [
+     "Odprysk farby uszkodził szybę."
+    ]
+   },
+   {
+    "q": "Co jest szczególnie narażone na konsekwencje zetknięcia z kosmośmieciami?",
+    "pts": [
+     0.5,
+     0.5
+    ],
+    "mode": "pair",
+    "concepts": [
+     "lot\\w*\\s+(w\\s+)?kosmos|lot\\w*\\s+kosmiczn|misj\\w*\\s+(\\w+\\s+)?kosmiczn|wypraw\\w*\\s+(\\w+\\s+)?kosmiczn|kosmiczn\\w*\\s+(lot|misj|wypraw)",
+     "stacj\\w*\\s+(\\w+\\s+)?kosmiczn|\\biss\\b|kosmiczn\\w*\\s+stacj"
+    ],
+    "key": [
+     "loty kosmiczne",
+     "(międzynarodowa) stacja kosmiczna"
+    ],
+    "fill": [
+     "loty kosmiczne",
+     "stacja kosmiczna"
+    ]
+   },
+   {
+    "q": "Gdzie szukali schronienia astronauci pracujący w stacji kosmicznej?",
+    "pts": [
+     1
+    ],
+    "mode": "any",
+    "concepts": [
+     "sojuz|soyuz|statk|kapsul"
+    ],
+    "key": [
+     "Schowali się w stacji statku (Sojuz)."
+    ],
+    "fill": [
+     "Schowali się w stacji statku Sojuz."
+    ]
+   },
+   {
+    "q": "Dlaczego należy monitorować przemieszczanie się śmieci po orbitach?",
+    "pts": [
+     1
+    ],
+    "mode": "any",
+    "concepts": [
+     "(zmien|zmian|przesun|korygowa|korekt|manewr|unikn|unik)\\w*.{0,60}(polozeni|kurs|orbit|trajektor|statk|satelit|stacj)|(polozeni|kurs|trajektor)\\w*.{0,40}(zmien|zmian|korekt)"
+    ],
+    "key": [
+     "Aby móc zmienić położenie statku lub (działającego) satelity."
+    ],
+    "fill": [
+     "Aby móc zmienić położenie statku lub satelity."
+    ]
+   }
+  ],
+  "note": "Wartości liczbowe (podane w kluczu w nawiasach) są nieobowiązkowe, od zdających nie oczekuje się podawania precyzyjnych danych liczbowych. Należy uznać też inne odpowiedzi zgodne z transkrypcją.",
+  "src": "Na podstawie: https://www.youtube.com/watch?v=2kJaCeI99Pw&t=45s&ab_channel=TTV",
+  "tr": [
+   "Badacze alarmują, że liczba śmieci na orbicie okołoziemskiej osiągnęła już wartość krytyczną i może stanowić zagrożenie. W 2001 roku na teren pustyni w Arabii Saudyjskiej spadł aż siedemdziesięciokilogramowy kawałek silnika rakiety Delta 2. Sześć lat później szczątki radzieckiego satelity znalazły się tuż obok lecącego nad Pacyfikiem samolotu pasażerskiego.",
+   "- Obecnie działa około 1500 satelitów na orbicie - aktywnych, pracujących satelitów, natomiast jest kilkanaście tysięcy satelitów czy części satelitów, które nie działają. Według Europejskiej Agencji Kosmicznej po orbicie okołoziemskiej krąży około 20 tys. śmieci o masie ponad 8 tys. ton, czyli o około tysiąc ton więcej niż stalowa rama wieży Eiffla. Wśród nich znajdują się głównie zużyte fragmenty rakiet, nieczynne satelity, a nawet sprzęt należący do astronautów. Nad częścią z nich ludzie nie mają kontroli, a biorąc pod uwagę, że każdy z odpadów porusza się ze średnią prędkością ponad 20 tys. km/h, o zderzenia nietrudno.",
+   "- Na Ziemi, gdy nam zderzą się dwa śmieci, to mamy nadal dwa śmieci. Na orbicie mamy sytuację inną. Zderzenie się dwóch śmieci powoduje powstanie 3 tys. czy 2 tys. śmieci.",
+   "Do bezpośredniego zderzenia odpadów po raz pierwszy w historii doszło w 2009 roku i spowodowało to problemy telekomunikacyjne w Stanach Zjednoczonych. Ponadto powstało około 600 nowych drobnych odpadów o wadze około półtorej tony. Każdy taki kolejny wypadek i uszkodzenie działającego satelity może nieść za sobą opłakane skutki.",
+   "- Musielibyśmy zapomnieć o nawigacji w samochodzie, na pewno musielibyśmy zapomnieć o tym, że mamy informacje na bieżąco, to znaczy w tym sensie, że możemy w komórce sprawdzić pogodę, to byłoby raczej niemożliwe.",
+   "Do katastrofy może doprowadzić nawet listek farby, jak miało to miejsce w 1983 roku w przypadku misji kosmicznej STS7, kiedy to odprysk uszkodził szybę w wahadłowcu Challenger. NASA alarmuje, że ilość śmieci na orbicie to zagrożenie numer jeden dla lotów w kosmos, jak również dla międzynarodowej stacji kosmicznej, gdzie astronauci przeprowadzają liczne badania, m.in. nad chorobami. Rozwój nauki może być jednak zahamowany właśnie przez kosmośmieci. We wrześniu 2020 roku potężny odpad znalazł się w odległości niespełna dwóch kilometrów od międzynarodowej stacji kosmicznej. Astronauci musieli niezwłocznie zmienić jej kurs, a sami w obawie o swoje życie schronili się w zacumowanym przy stacji statku Sojuz. A to nie pierwszy taki manewr, bo kurs stacji zmieniano już około 25 razy, dlatego ruch śmieci po orbitach trzeba stale obserwować, by w razie zagrożenia zmienić położenie statku czy działającego satelity.",
+   "Na podstawie: https://www.youtube.com/watch?v=2kJaCeI99Pw&t=45s&ab_channel=TTV"
+  ]
+ }
+];
+const MAX = 40, PASS = 24;
+const STORE_KEY = 'c1_sluch_2023_04_v1';
+const TEST_ID = 'sluchanie-2023-04';
+const TOTAL_SEC = 40 * 60;
+
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+function nOpen(s) { return String(s || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l').replace(/[^a-z0-9]+/g, ' ').trim(); }
+let state = {};
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+state = load();
+
+function slotsOf(t, it) { return t.kind === 'open' ? it.pts.length : it.key.length; }
+function ids(t, i) { const it = t.items[i]; const n = slotsOf(t, it); return Array.from({length: n}, (_, k) => `${t.id}-${i + 1}` + (n > 1 ? `-${k + 1}` : '')); }
+
+function build() {
+  const root = document.getElementById('tasks'); let html = '';
+  TASKS.forEach(t => {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${t.ptsLabel}</span></h2>`;
+    html += `<p class="src" style="margin:0 0 8px">${esc(t.plays)}</p>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    html += `<div class="audio"><label><b>Wczytaj nagranie:</b> <input type="file" accept="audio/*" data-audio="${t.id}"></label><span class="fname" id="fn-${t.id}"></span><audio controls id="au-${t.id}"></audio></div>`;
+    if (t.lead) html += `<p class="leadq">${esc(t.lead)}</p>`;
+    const e = t.example;
+    if (t.kind === 'open') {
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(e.q)}<br><b>${esc(e.a)}</b></div>`;
+    } else {
+      let ex = esc(e.stem);
+      if (e.opts) ex += '<br>' + e.opts.map(esc).join('<br>');
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${ex}<br><b>Odpowiedź: ${esc(e.ans)}</b></div>`;
+    }
+    t.items.forEach((it, i) => {
+      const sid = ids(t, i);
+      const baseId = `${t.id}-${i + 1}`;
+      if (t.kind === 'radio') {
+        html += `<div class="q" id="q-${baseId}"><div class="stem">${i + 1}. ${esc(it.stem)}</div>` +
+          Object.keys(it.opts).map(k => `<label class="opt" data-k="${k}"><input type="radio" name="${baseId}" data-id="${baseId}" value="${k}"> <span>${k}) ${esc(it.opts[k])}</span></label>`).join('') +
+          `<span class="fix"></span></div>`;
+      } else if (t.kind === 'tf') {
+        html += `<div class="q row" id="q-${baseId}"><div class="stem">${i + 1}. ${esc(it.stem)}</div><div class="tf">` +
+          ['TAK', 'NIE'].map(k => `<label class="opt" data-k="${k}"><input type="radio" name="${baseId}" data-id="${baseId}" value="${k}"> <span>${k}</span></label>`).join('') +
+          `</div><span class="fix"></span></div>`;
+      } else if (t.kind === 'select') {
+        const opts = t.selOpts.map(o => `<option value="${o[0]}">${esc(o[1])}</option>`).join('');
+        html += `<div class="q row" id="q-${baseId}"><div class="stem">${it.tag}. ${esc(it.stem)}${it.any ? ' (dwie osoby, kolejność dowolna)' : ''}</div><span class="slots">` +
+          sid.map(s => `<span class="slot" id="s-${s}"><select data-id="${s}" aria-label="${esc(it.tag)}"><option value=""></option>${opts}</select></span>`).join('') +
+          `</span><span class="fix"></span></div>`;
+      } else {
+        html += `<div class="q" id="q-${baseId}"><div class="stem">${i + 1}. ${esc(it.q)}</div>` +
+          sid.map((s, k) => `<div class="oslot" id="s-${s}"><span class="lab">${sid.length > 1 ? 'ab'[k] + ')' : ''}</span><input type="text" data-id="${s}" autocomplete="off" spellcheck="false" aria-label="Odpowiedź ${i + 1}${sid.length > 1 ? 'ab'[k] : ''}"><span class="pp">(${pl(it.pts[k])} p.)</span></div>`).join('') +
+          `<div class="okey"></div></div>`;
+      }
+    });
+    html += `<div class="src">${esc(t.src)}</div>`;
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `<details class="tr" id="tr-${t.id}"><summary>Transkrypcja</summary><div class="warn">Otwieraj dopiero po sprawdzeniu (po kliknięciu Sprawdź otworzy się sama).</div>` +
+      t.tr.map(p => `<p>${esc(p)}</p>`).join('') + `</details>`;
+    html += `</section>`;
+  });
+  root.innerHTML = html;
+  root.querySelectorAll('[data-id]').forEach(el => {
+    if (el.type === 'radio') { if (state[el.dataset.id] === el.value) el.checked = true; }
+    else if (state[el.dataset.id] != null) el.value = state[el.dataset.id];
+    el.addEventListener(el.type === 'text' ? 'input' : 'change', () => { state[el.dataset.id] = el.value; save(); updateProgress(); });
+  });
+  root.querySelectorAll('[data-audio]').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const f = inp.files && inp.files[0]; if (!f) return;
+      const a = document.getElementById('au-' + inp.dataset.audio);
+      if (a.dataset.url) URL.revokeObjectURL(a.dataset.url);
+      const u = URL.createObjectURL(f); a.dataset.url = u; a.src = u;
+      document.getElementById('fn-' + inp.dataset.audio).textContent = f.name;
+    });
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  let total = 0, filled = 0;
+  TASKS.forEach(t => t.items.forEach((it, i) => ids(t, i).forEach(s => { total++; if (String(state[s] || '').trim()) filled++; })));
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${total}`;
+}
+
+// odpowiedzi otwarte: kazda czesc kluczowa (pojecie z klucza) rozpoznawana wyrazeniem regularnym na tekscie bez polskich znakow
+function openCredit(it, txts, acc) {
+  const re = it.concepts.map(c => new RegExp(c));
+  const nn = txts.map(nOpen);
+  const ok = it.pts.map(() => false);
+  const m = (k, j) => nn[k] !== '' && re[j].test(nn[k]);
+  if (it.mode === 'any') {
+    ok[0] = re.some((_, j) => m(0, j));
+  } else {
+    const free = ok.map((_, k) => k).filter(k => !acc[k]);   // kolejnosc a/b dowolna
+    if (free.length === 1) {
+      const k = free[0];
+      if (re.some((_, j) => m(k, j))) ok[k] = true;
+    } else if (free.length === 2) {
+      const [a, b] = free;
+      const o1 = [m(a, 0), m(b, 1)], o2 = [m(a, 1), m(b, 0)];
+      const c = o => o.filter(Boolean).length;
+      const pick = c(o1) >= c(o2) ? o1 : o2;
+      if (pick[0]) ok[a] = true;
+      if (pick[1]) ok[b] = true;
+    }
+  }
+  return ok.map((v, k) => v || !!acc[k]);
+}
+
+function checkAll(noScroll) {
+  const per = [];
+  TASKS.forEach(t => {
+    let score = 0;
+    t.items.forEach((it, i) => {
+      const sid = ids(t, i), base = `${t.id}-${i + 1}`;
+      const q = document.getElementById('q-' + base);
+      if (t.kind === 'open') {
+        const txts = sid.map(s => state[s] || '');
+        const acc = sid.map(s => !!state['acc_' + s]);
+        const credit = openCredit(it, txts, acc);
+        credit.forEach((c, k) => {
+          const el = document.getElementById('s-' + sid[k]);
+          el.classList.remove('ok', 'bad'); el.classList.add(c ? 'ok' : 'bad');
+          if (c) score += it.pts[k];
+        });
+        const keyTxt = it.key.map((x, j) => (it.key.length > 1 ? 'ab'[j] + ') ' : '') + x).join('   ');
+        q.querySelector('.okey').innerHTML = `<div class="keyline">Klucz: ${esc(keyTxt)}</div>` +
+          sid.map((s, k) => `<label class="accept"><input type="checkbox" data-accept="${s}" ${acc[k] ? 'checked' : ''}> Moja odpowiedź${sid.length > 1 ? ' (' + 'ab'[k] + ')' : ''} jest inna, ale zgodna z nagraniem - uznaj ${pl(it.pts[k])} p.</label>`).join('<br>');
+        return;
+      }
+      const fix = q.querySelector('.fix');
+      const vals = sid.map(s => state[s] || '');
+      let got = 0;
+      vals.forEach((v, k) => {
+        let ok = false;
+        if (v) {
+          if (it.any) ok = it.key.includes(v) && vals.indexOf(v) === k;
+          else ok = v === it.key[k];
+        }
+        if (ok) got++;
+        if (t.kind === 'select') { const el = document.getElementById('s-' + sid[k]); el.classList.remove('ok', 'bad'); el.classList.add(ok ? 'ok' : 'bad'); }
+      });
+      score += got;
+      if (t.kind !== 'select') {
+        q.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad');
+          if (l.dataset.k === it.key[0]) l.classList.add('ok');
+          else if (l.dataset.k === vals[0]) l.classList.add('bad');
+        });
+      }
+      const allOk = got === sid.length;
+      if (allOk) fix.textContent = '';
+      else if (t.kind === 'select') fix.textContent = '→ ' + it.key.join(', ') + (it.any ? ' (kolejność dowolna)' : '');
+      else fix.textContent = '→ ' + it.key[0];
+    });
+    const el = document.getElementById('pts-' + t.id);
+    el.textContent = `${pl(score)} / ${t.max} p.`; el.classList.add('scored');
+    const note = document.getElementById('note-' + t.id);
+    if (note) note.style.display = 'block';
+    document.getElementById('tr-' + t.id).open = true;
+    per.push({ t, score });
+  });
+  document.querySelectorAll('[data-accept]').forEach(cb => {
+    cb.addEventListener('change', () => { state['acc_' + cb.dataset.accept] = cb.checked; save(); checkAll(true); });
+  });
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100), pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `<div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass ? 'Zdane - próg to 60% (24 p.)' : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błędna, obok poprawna z klucza. W zadaniu V odpowiedzi otwarte program sprawdza po słowach kluczowych z klucza, a gdy Twoja odpowiedź jest inna, ale zgodna z nagraniem, zaznacz „uznaj”. Transkrypcje pod zadaniami są już rozwinięte. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  if (!noScroll) res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+let left = TOTAL_SEC, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60, el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL_SEC ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) { clearInterval(tick); running = false; document.getElementById('timerBtn').textContent = 'Koniec'; document.getElementById('timeUp').classList.add('show'); }
+    }, 1000);
+  } else clearInterval(tick);
+}
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  state = {};
+  clearInterval(tick); running = false; left = TOTAL_SEC; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', () => checkAll());
+document.getElementById('checkBottom').addEventListener('click', () => checkAll());
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+function fillCorrect() {
+  state = {};
+  TASKS.forEach(t => t.items.forEach((it, i) => {
+    ids(t, i).forEach((s, k) => {
+      if (t.kind === 'open') state[s] = it.fill[k];
+      else if (t.kind === 'select') state[s] = it.key[k];
+      else state[s] = it.key[0];
+    });
+  }));
+  save(); build();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'sluchanie', session: '2023-04', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

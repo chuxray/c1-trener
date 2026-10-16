@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Słuchanie C1 2024</title>
+<script src="assets/c1-common.js"></script>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.q label.opt { display: flex; gap: 8px; align-items: flex-start; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+.q label.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.q label.opt.bad { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.q.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.q.row .stem { flex: 1 1 320px; margin: 0; font-weight: 400; }
+.q select { font: 16px/1.2 system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; max-width: 72vw; }
+.q .slot.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.q .slot.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.slots { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.q .fix { font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); }
+.audio { background: var(--example); border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; }
+.audio audio { width: 100%; margin-top: 8px; }
+.audio .fname { font-size: 13px; color: var(--muted); margin-left: 6px; }
+details.tr { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--input-bg); }
+details.tr summary { cursor: pointer; font-weight: 700; }
+details.tr .warn { color: var(--warn); font-size: 14px; font-weight: 600; }
+details.tr p { font-family: Georgia, serif; font-size: 16px; margin: 8px 0; }
+.legend { display: grid; gap: 4px; margin: 0 0 12px; padding: 10px 12px; background: var(--example); border-radius: 8px; font-size: 15px; }
+.tf { display: flex; gap: 14px; }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie ze słuchu C1 - kwiecień 2024</span>
+    <span class="timer" id="timer">40:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+<div class="wrap">
+  <h1>Rozumienie ze słuchu</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja kwiecień 2024. 5 zadań, do 40 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji. W każdym zadaniu wczytaj plik z nagraniem. Na egzaminie zadanie I słucha się raz, zadania II-V dwa razy.</p>
+  <div class="notice" id="timeUp">Czas minął (40 minut). Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+<script>
+const TASKS = [
+ { id:'I', title:'Zadanie I', max:7, plays:'Nagranie zostanie odtworzone tylko jeden raz.',
+   instr:'Proszę wysłuchać wiadomości z radiowego serwisu informacyjnego i zaznaczyć właściwe odpowiedzi.',
+   example:{ stem:'Z tego nagrania wynika, że', opts:['a) branża medialna interpretuje nowe obowiązki fiskalne inaczej niż rząd.','b) rząd chce ograniczyć publikowanie reklam w prasie.','c) placówki kulturalne oraz medyczne również będą płaciły nowe podatki.'], ans:'a' },
+   kind:'radio',
+   items:[
+    {stem:'Z tego nagrania wynika, że', opts:{a:'uczniowie z południowej Polski rozpoczynają ferie jako pierwsi.',b:'kierowcy dzielą się w internecie informacjami o kontrolach drogowych.',c:'policja zachęca do zgłaszania autobusów wycieczkowych do kontroli.'}, key:['c']},
+    {stem:'Z tego nagrania wynika, że', opts:{a:'cena energii będzie stała, jeśli użytkownik nie przekroczy limitu zużycia prądu.',b:'planowane są dopłaty w wysokości 2000 zł dla trzech grup konsumentów.',c:'program został wprowadzony jako reakcja na wyjątkowo niskie temperatury.'}, key:['a']},
+    {stem:'Z tego nagrania wynika, że', opts:{a:'leśnicy dążą do połączenia stad w celu zwiększenia populacji żubrów.',b:'niższa liczebność stada ogranicza rozprzestrzenianie się chorób.',c:'bieszczadzkie żubry migrują do innych polskich lasów.'}, key:['b']},
+    {stem:'Z tego nagrania wynika, że', opts:{a:'akcja miała na celu promocję fundacji charytatywnej.',b:'ostatni odcinek trasy Kamil przeszedł w towarzystwie innych osób.',c:'mężczyzna planuje pokonać pieszo trasę z Krakowa do Porto.'}, key:['b']},
+    {stem:'Z tego nagrania wynika, że', opts:{a:'powodem utraty pieniędzy była nietrafiona inwestycja.',b:'oszust podawał się za policjanta z wydziału cyberprzestępstw.',c:'kobieta utraciła dostęp do konta, na które przelała swoje pieniądze.'}, key:['c']},
+    {stem:'Z tego nagrania wynika, że', opts:{a:'awaria systemu nawigacji przyczyniła się do zagrożenia w ruchu lotniczym.',b:'ruch lotniczy kontynuowano mimo zakłóceń w działaniu systemu GPS.',c:'powodem awarii była niezgodność nawigacji satelitarnej z polskimi radarami.'}, key:['b']},
+    {stem:'Z tego nagrania wynika, że', opts:{a:'system informatyczny stanowi wsparcie dla komisji wyborczych.',b:'w wyborach samorządowych będzie można zagłosować zdalnie.',c:'problemy w działaniu serwerów mogły wpłynąć na wynik wyborów.'}, key:['a']}
+   ],
+   src:'Na podstawie: Aktualności Jedynki (Polskie Radio) z dni: 12 stycznia 2024, 29 września 2022, 23 maja 2023, 11 lipca 2023, 17 stycznia 2024, 27 grudnia 2023, 14 listopada 2014, 17 stycznia 2024.',
+   tr:[
+    'Przykład: Wydawcy medialni ostro protestują przeciwko nowemu podatkowi, który rząd nazywa składką - składką na służbę zdrowia czy na ochronę zabytków. Tak naprawdę to haracz od reklam i zagrożenie dla wolności prasy.',
+    '1. Uczniowie z województw dolnośląskiego, mazowieckiego, opolskiego i zachodniopomorskiego jako pierwsi rozpoczynają ferie. Już od jutra na drogach spodziewany jest wzmożony ruch, szczególnie w kierunku południowej części kraju. W związku z tym policja zapowiada więcej kontroli drogowych. Na stronie policja.pl można znaleźć wykaz miejsc, w których są prowadzone kontrole autokarów i kierowców autobusów wiozących dzieci i młodzież na zimowy wypoczynek. Policja przypomina, aby kilka dni wcześniej zgłosić chęć kontroli autokaru.',
+    '2. Około siedemnastu milionów gospodarstw domowych skorzysta z programu zamrożenia cen energii elektrycznej. Nad przepisami w tej sprawie pracuje sejm, po południu - głosowanie. Ustawa zakłada gwarantowaną cenę prądu dla tych gospodarstw domowych, które w przyszłym roku zmieszczą się w limicie 2000 kilowatogodzin. Wyższy pułap obejmie osoby z niepełnosprawnościami oraz duże rodziny i rolników.',
+    '3. W Polsce z roku na rok zwiększa się populacja żubrów. W odbudowie populacji pomaga nadleśnictwo w Janowie Lubelskim, gdzie w 2021 roku zostało osiedlone stado żubrów wolnożyjących. Jedno z takich kamieni milowych było tego projektu, żeby stworzyć małe stada i je rozproszyć. O to chodzi, że duże stada, takie jak Białowieża czy Bieszczady, są narażone na czynniki chorobotwórcze, a rozdrobnienie stad na mniejsze i w mniejszej ilości osobników po prostu izoluje je od tych chorób.',
+    '4. Prawie 4 lata, 2800 kilometrów i ponad 3000 ulic. W Krakowie dobiegł końca wyjątkowy wyczyn. Kamil Bąbel, socjolog i pracownik jednej z fundacji, przeszedł wszystkie nazwane ulice w mieście. Jako pierwszą przeszedł ulicę Praską, przy której mieszka. Dziś pokonał ostatni kilometr swojego wyzwania, spacerując wspólnie ze znajomymi przez ulicę Ostatnią. Kamil Bąbel w sumie, przemierzając miasto, pokonał odległość z Krakowa do Porto.',
+    '5. 48-letnia mieszkanka Lublina straciła 170 tysięcy złotych, kiedy postanowiła zainwestować w kryptowaluty. Mówi nadkomisarz Kamil Gołębiowski z Komendy Policji w Lublinie. W internecie poznała doradcę, który obiecywał jej duże zyski. Nakłonił kobietę do przekazania oszczędności na specjalny rachunek. Po pewnym czasie kontakt z mężczyzną urwał się, kobieta straciła dostęp do tej e-platformy.',
+    '6. W Polsce pojawiły się zakłócenia sygnału nawigacji satelitarnej GPS. Poinformowała o tym Polska Agencja Żeglugi Powietrznej. Jak przekazał rzecznik agencji Tomasz Modrzejewski, w związku z zakłóceniami nie ma zagrożenia dla ruchu lotniczego. Tam, gdzie to konieczne, żeglugę powietrzną wspierają nasze systemy i infrastruktura radarowa, oczywiście za pośrednictwem kontrolerów ruchu lotniczego. Jesteśmy przygotowani na pracę w takich sytuacjach, na wspieranie załóg samolotów, dzięki czemu możliwe jest prowadzenie bezpiecznych operacji lotniczych nad Polską. Przyczyny zakłóceń nie są na razie znane.',
+    '7. Państwowa Komisja Wyborcza testuje serwery informatycznego systemu wyborczego tak, by w niedzielę podczas wyborów samorządowych wszystko działało jak należy. Jednak, jak podkreśla Krzysztof Lorenz z Państwowej Komisji Wyborczej, działanie systemu nie będzie miało wpływu na wynik wyborczy. Wynik wyborów ustalają ludzie, nie komputery. To komisje obwodowe liczą, ile na kogo oddano głosów, a ta informatyka wyborcza służy tylko usprawnieniu i przyspieszeniu pracy.',
+    'Na podstawie: Aktualności Jedynki (Polskie Radio)'] },
+ { id:'II', title:'Zadanie II', max:9, plays:'Nagranie zostanie odtworzone dwukrotnie.',
+   instr:'Proszę wysłuchać informacji o niezwykłych roślinach i dopasować gatunek rośliny (1-4) do jej opisu (A-G). Uwaga! Jeden opis może pasować do więcej niż jednej rośliny.',
+   legend:['1 - MUCHOŁÓWKA AMERYKAŃSKA','2 - MIMOZA NIEŚMIAŁA','3 - DZBANECZNIK','4 - CZYSTEK'],
+   example:{ stem:'Która z roślin umie poradzić sobie z niedoborem azotu w podłożu.', ans:'1' },
+   kind:'select',
+   selOpts:[['1','1 - Muchołówka amerykańska'],['2','2 - Mimoza nieśmiała'],['3','3 - Dzbanecznik'],['4','4 - Czystek']],
+   items:[
+    {tag:'A', stem:'jest wrażliwa nawet na najsubtelniejsze bodźce.', key:['2']},
+    {tag:'B', stem:'może stać się źródłem składników odżywczych dla kolejnych roślin tego samego gatunku.', key:['4']},
+    {tag:'C', stem:'wytwarza płyny rozkładające substancje organiczne. (dwie odpowiedzi, kolejność dowolna)', key:['1','3'], any:true},
+    {tag:'D', stem:'wabi swoje ofiary aromatem wytwarzanego nektaru.', key:['3']},
+    {tag:'E', stem:'zachowuje ciągłość gatunku nawet w trudnych warunkach.', key:['4']},
+    {tag:'F', stem:'ma niezwykłe właściwości dzięki szybkiemu przemieszczaniu się płynów w jej obrębie. (dwie odpowiedzi, kolejność dowolna)', key:['1','2'], any:true},
+    {tag:'G', stem:'wykorzystuje fakt, że niektóre z jej powierzchni są nieprzyczepne.', key:['3']}
+   ],
+   src:'Na podstawie: https://www.youtube.com/watch?v=f8o2-OPCU1c',
+   tr:[
+    '1. Muchołówka amerykańska. To mała mięsożerna roślina o niezwykłych zdolnościach. Roślina ma od 4 do 7 liści, z których każdy jest pułapką. Wewnątrz znajdują się małe włoski, które działają jak czujki. Jednorazowe dotknięcie nie da żadnego efektu, ale gdy tylko owad dwukrotnie dotknie jeden z nich, pułapka zamyka się w mgnieniu oka. Ten skomplikowany mechanizm jest niezbędny, aby uniknąć niepotrzebnych zatrzaśnięć od kropel deszczu lub innych przypadkowych dotknięć, ponieważ ich liczba jest ograniczona. Dokładna zasada działania pułapki wciąż nie jest w pełni zrozumiała, ale naukowcy uważają, że wiąże się ona z szybkim transferem wody między komórkami rośliny. Po schwytaniu owada muchołówka uwalnia enzymy trawienne i rozpuszcza ofiarę.',
+    '2. Mimoza nieśmiała. Rośliny potrafią czasem zaskoczyć. Na przykład mimoza nieśmiała bierze swoją nazwę stąd, że przy najmniejszym dotknięciu składa liście. Liście mimozy zwijają się nie tylko od dotyku, wystarczy lekki podmuch. Sekret polega na tym, że liście tej rośliny mają czujki reagujące na dotyk. U podstawy ogonków znajdują się membrany wodne, a po dotknięciu mimozy woda w membranie natychmiast przepływa w to miejsce. W ten sposób liście u dołu rośliny stają się płaskie, a w górnej części zwijają się tylko czubki.',
+    '3. Dzbanecznik. Pułapki dzbanecznika są dość duże. Kształtem przypominają dzbanuszki przymocowane do czubków liści. Każdy z nich ma podniesione wieczko - jest to pas do lądowania dla ofiar - które poza tym chroni roślinę przed deszczem. Owady przyciąga zapach wydzielanego nektaru. Łatwo wejść do środka, ale po gładkich ścianach nie da się już wrócić. Znajdująca się na dnie dzbanka ciecz działa jak sok żołądkowy. W ten sposób ofiara szybko ulega trawieniu.',
+    '4. Czystek. Krzewy ozdobne czystka dają duże kwiaty, które kwitną tylko jeden dzień. Olejki eteryczne uwalniane przez liście i łodygi mogą wywołać samozapalenie się krzewu, jeśli temperatura powietrza przekroczy 32°C. W efekcie z rośliny zostaje tylko popiół, który użyźnia glebę, co umożliwia wyrośnięcie na niej nowych roślin. Ale jak wyrastają nowe rośliny, skoro wszystko spłonęło? Czystek dba o swoje potomstwo, ukrywając nasiona w twardej skorupie, której ogień nie trawi. Na popiele z nasion kiełkują nowe pędy życia.',
+    'Na podstawie: https://www.youtube.com/watch?v=f8o2-OPCU1c'] },
+ { id:'III', title:'Zadanie III', max:9, plays:'Nagranie zostanie odtworzone dwukrotnie.',
+   instr:'Proszę wysłuchać rozmowy na temat serwisu muzycznego MySpace. Proszę zaznaczyć: TAK - gdy zdanie jest zgodne z tekstem; NIE - gdy nie jest zgodne z tekstem.',
+   example:{ stem:'Portal internetowy MySpace powstał przed Facebookiem i YouTubem.', ans:'TAK' },
+   kind:'tf',
+   items:[
+    {stem:'Serwis MySpace był bezpośrednią inspiracją dla portali Facebook i YouTube.', key:['NIE']},
+    {stem:'MySpace pozwolił zaistnieć muzykom, których twórczość często nie mieściła się w głównych nurtach.', key:['TAK']},
+    {stem:'MySpace pozwalał słuchaczom wpływać na sukces nieznanych powszechnie twórców.', key:['TAK']},
+    {stem:'Na rozwój serwisu duży wpływ miało rozpoczęcie współpracy z wytwórniami muzycznymi.', key:['NIE']},
+    {stem:'Aby zdobyć rozgłos, muzycy mający wsparcie wytwórni podawali się za debiutantów.', key:['TAK']},
+    {stem:'Dołączenie profesjonalnych muzyków do serwisu umożliwiło promocję twórczości amatorów.', key:['NIE']},
+    {stem:'W dzisiejszych czasach to przede wszystkim autentyczność twórcy stanowi o wartości jego dzieła.', key:['TAK']},
+    {stem:'Na serwisie MySpace pojawiły się pierwsze reklamy w mediach społecznościowych.', key:['NIE']},
+    {stem:'W ostatnich latach rola internetu w promocji twórczości artystycznej uległa zmianie.', key:['TAK']}
+   ],
+   src:'Na podstawie: https://www.polskieradio.pl/8/2890/artykul/881402,myspace-youtube-facebook-%E2%80%93-tam-mozesz-zostac-gwiazda',
+   tr:[
+    'Dziennikarka: Lidia Rudzińska, kulturoznawca ze Szkoły Wyższej Psychologii Społecznej jest moim gościem, dzień dobry.',
+    'Kulturoznawczyni: Dzień dobry, witam państwa.',
+    'D: MySpace, przypomnijmy, powstał w 2003 roku, czyli rok przed Facebookiem, i był taki czas, że był dużo silniejszy od Facebooka. Powstał również 2 lata przed YouTube. To ten serwis - MySpace - był takim rozrusznikiem, można powiedzieć, tego, co się stało i z YouTubem, i z Facebookiem. Wydaje mi się, że mamy do czynienia z taką sytuacją, że w sposób naturalny MySpace coś uruchomiło, uruchomiło jakąś rewolucję, i jednocześnie stało się ofiarą tej rewolucji.',
+    'K: Zgadzam się, moim zdaniem MySpace pojawiło się w idealnym momencie, w idealnym miejscu. Dało pole do popisu twórcom amatorskim, twórcom niepokornym, którzy nie byli w stanie porozumieć się z wytwórniami, czy też prezentowali po prostu niszową muzykę. Tak samo dla użytkowników, którzy nie chcieli słuchać tego, co prezentowały programy inne muzyczne, mogli być w takiej pozycji poszukiwacza skarbów i wyszukać perełki, a jednocześnie swoim zainteresowaniem mogli promować naprawdę niszowe nurty muzyczne. I w momencie, kiedy pojawiły się te pierwsze gwiazdy, wypromowane przez MySpace, wytwórnie zrozumiały, że na MySpace’ie można zrobić biznes.',
+    'D: Poszło przekonanie wytwórni płytowych, że można właśnie w ten sposób promować niby niezależnego artystę, ale tak naprawdę nie niezależnego, bo stały za nim wytwórnie.',
+    'K: Tak, oni podszywali się pod amatorów, mając jednocześnie nie tylko warsztat, ale także pieniądze na to, żeby mieć lepsze klipy, czy dźwiękowo, czy wizualnie, i tym samym pokonywali tych prawdziwych amatorów, którzy byli na MySpace. Można przez jakiś czas użytkowników internetu omamić, ale w pewnym momencie oni się zorientują. Użytkownicy MySpace stracili zaufanie do całego portalu, chociaż na tym portalu nadal są amatorzy i nadal są cenni i wartościowi ludzie. Znaczy, ja nie mówię, że profesjonaliści nie są cenni i wartościowi, ale jednak mają ten fałsz, który użytkownikom się nie podoba.',
+    'D: Po tym, jak MySpace powstało, bardzo dużo zmieniło się w ogóle w sieci i w serwisach społecznościowych.',
+    'K: I żyjemy teraz w takim momencie kultu amatora. Coraz częściej cenimy bardziej amatora czy oddolnego twórcę niż profesjonalistę. Cenimy amatorskie blogi nieraz wyżej niż profesjonalnych dziennikarzy, tak samo z muzyką.',
+    'D: Po MySpace przyszła zmiana, pojawiają się w tych serwisach reklamy. To jest coś, co zasadniczo zmieniło rynek muzyczny. To znaczy MySpace uruchomiło tę zmianę, ale przez kolejne lata ona pogłębiała się. Co konkretnie się wydarzyło?',
+    'K: Wielu twórców zrozumiało, że internet jest początkiem, ale i też ostatecznym medium, w którym mają się pokazywać. I jest to medium wystarczające, dające i bardziej wymierne korzyści, i większą publiczność. I nie musi być już żadnego pośrednika pomiędzy twórcą a fanem. Czyli to już nie jest droga „Internet jako szczebel w karierze”, to jest droga „Internet jako ostateczne miejsce”.',
+    'Na podstawie: https://www.polskieradio.pl/8/2890/artykul/881402,myspace-youtube-facebook-%E2%80%93-tam-mozesz-zostac-gwiazda'] },
+ { id:'IV', title:'Zadanie IV', max:7, plays:'Nagranie zostanie odtworzone dwukrotnie.',
+   instr:'Proszę wysłuchać audycji na temat badań związanych z zaburzeniami snu i zaznaczyć właściwą odpowiedź.',
+   example:{ stem:'Zespół eksplodującej głowy', opts:['a) zawdzięcza swoją nazwę filmowi animowanemu.','b) objawia się podczas zapadania w sen i przebudzania się.','c) może być wywoływany przez ciągły hałas.'], ans:'b' },
+   kind:'radio',
+   items:[
+    {stem:'Towarzyszące temu zespołowi dolegliwości', opts:{a:'wpływają na funkcjonowanie w ciągu dnia.',b:'mają podłoże fizjologiczne.',c:'wynikają z zaburzeń i stanów lękowych.'}, key:['a']},
+    {stem:'Powodem występowania zespołu eksplodującej głowy jest', opts:{a:'za duża ilość snu głębokiego.',b:'brak wyciszenia podczas zasypiania.',c:'niewłaściwa aktywność neuronów.'}, key:['c']},
+    {stem:'Aplikacja Happy Wake Up', opts:{a:'została opracowana dzięki współpracy lekarza i pacjenta.',b:'na bieżąco analizuje sen użytkownika.',c:'gwarantuje pobudki o tej samej porze.'}, key:['b']},
+    {stem:'Słabą stroną aplikacji jest to, że', opts:{a:'wymaga położenia urządzenia przy ciele.',b:'nie uwzględnia różnic w zegarze biologicznym.',c:'może błędnie rozpoznać chrapanie.'}, key:['a']},
+    {stem:'Badanie snu amerykańskich nastolatków', opts:{a:'potwierdziło negatywny wpływ gier na jakość snu.',b:'było oceniane jako kontrowersyjne przez innych naukowców.',c:'wykazało zaskakująco niewielką różnicę między badanymi grupami.'}, key:['c']},
+    {stem:'Według informacji zawartych w nagraniu niewłaściwe odżywianie', opts:{a:'wynika z rozkojarzenia u osób z bezsennością.',b:'wiąże się z modą na jedzenie poza domem.',c:'może być przyczyną zaburzeń snu.'}, key:['a']},
+    {stem:'Szwajcarskie badanie wykazało, że', opts:{a:'lepiej w nocy spać w hamaku niż w łóżku.',b:'drzemka powinna trwać maksymalnie godzinę.',c:'kołysanie sprzyja zasypianiu również u dorosłych.'}, key:['c']}
+   ],
+   src:'Na podstawie: G. Dobroń-Nowakowska, Zaburzenia snu - zespół eksplodującej głowy, Polskie Radio.',
+   tr:[
+    'Zespół eksplodującej głowy to nie jest obraz z kreskówki czy horroru. To dość poważne, ale jeszcze słabo poznane zaburzenie snu. Podczas zasypiania albo wybudzania ludzie na przykład słyszą głośne dźwięki: trzaskanie drzwiami, fajerwerki, strzały z broni palnej. Każdy z nas by się po prostu tego wystraszył, więc za tym idzie lęk, a za lękiem, no wiadomo, niewyspanie, słabość, rozkojarzenie i kolejny stracony dzień, no bo w ciągu dnia wtedy człowiek zwyczajnie przysypia. U niektórych dochodzi jeszcze ból głowy i błyski. Zespół eksplodującej głowy został opisany w 1988 roku w czasopiśmie „Lancet”, a wcześniej funkcjonowała nazwa trzaskanie mózgu. Co stoi za tymi trzaskami? Przypuszczenie, że kiedy ciało nie wyłącza się ze snu we właściwej sekwencji, a zamiast tego włączają się inne grupy neuronów, to mózg zaczyna właśnie trzaskać, a do tego jeśli sen jest płytki, przerywany, epizody mogą być częstsze. Żeby zbadać, co dzieje się w ciągu nocy z nami, jeśli cierpimy na zaburzenia snu, do niedawna trzeba było spędzić czas w laboratorium - męczył się i pacjent, i lekarz, bo obaj nie spali. Od niedawna jest aplikacja Happy Wake Up, którą można ściągnąć na komórkę, a tam inteligentne urządzenie zarejestruje, co robimy w nocy, ale też obudzi delikatnie przed czasem, jeśli kręcimy się w pościeli, albo pozwoli spać do wyznaczonej przez nas godziny. Ten fiński wynalazek zarejestruje, kiedy śpisz mocnym snem, kiedy się budzisz, kiedy poruszasz. Podobno używanie tej aplikacji pomoże zegarowi biologicznemu w opanowaniu właściwych wzorców snu. Służy też do wykrywania bezdechu, zespołu niespokojnych nóg czy chrapania. Niestety, komórkę trzeba trzymać blisko głowy, a to już wiadomo że nie jest takie korzystne i nie jest takie zdrowe.',
+    'W ogóle jak szykujemy się do snu, zalecenia są proste: wyłączaj się powoli od aktywności, nie oglądaj horrorów, nie graj w gry, aby sen mógł przyjść. Ale testy wykonane w amerykańskiej Akademii Snu na grupie nastolatków na chwilę zburzyły mit nocnego wyciszenia. Chłopcy co prawda nie mieli kłopotów ze snem, grali w brutalną grę przez 50 minut albo oglądali film dokumentalny „Marsz pingwinów”. W obu przypadkach zasypiali potem snem kamiennym i mimo tak mocnej aktywności, czas zasypiania po grze w porównaniu do filmu wzrósł o dziwo zaledwie z trzech do ośmiu minut. Proszę jednak nie wnioskować, że u każdego nic się nie wydarzy i trzymać rękę na pulsie, uważając, co przed snem robią nasze dzieci.',
+    'Jak człowiek się nie wyśpi, to nie tylko jest słabszy intelektualnie, ale też nic mu się nie chce, nie krząta się po kuchni, nie pitrasi, a chętnie zje coś gotowego na mieście, więc sięga po fast foody, obiad zje w restauracji. To mało korzystne dla zdrowia. Ostatnie badania łączą stan niedospania z cukrzycą, otyłością czy depresją, ale, no warto zakończyć jakoś dobrze, pozytywnie. Czy jest coś, co pięknie ukołysze do snu prócz ramion ukochanej osoby? Kołyska. Szwajcarzy z Uniwersytetu w Genewie udowodnili, że kołysani dorośli również zasypiają szybciej, a sen jest głęboki. Co prawda badali tylko godzinne drzemki w hamaku i zyskali taką charakterystykę, więc co dopiero by się działo, gdybyśmy spali całą noc w ogromnych kołyskach.',
+    'Na podstawie: G. Dobroń-Nowakowska, Zaburzenia snu - zespół eksplodującej głowy, Polskie Radio.'] },
+ { id:'V', title:'Zadanie V', max:8, plays:'Nagranie zostanie odtworzone dwukrotnie.',
+   instr:'Proszę wysłuchać wypowiedzi na temat świątecznej diety i połączyć informacje z dwóch kolumn. Odpowiedzi proszę wpisać do tabeli.',
+   legend:['A - może powodować niepożądane skutki.','B - wspomaga pracę żołądka.','C - to produkt zalecany cukrzykom.','D - stanowi dobre środowisko dla bakterii.','E - prowokuje skurcze mięśni.','F - usprawnia pracę wielu organów.','G - chroni przed zapominaniem.','H - ma właściwości relaksacyjne i uspokajające.','I - wpływa na działanie mózgu.'],
+   example:{ stem:'Jedzenie spożywane w złym towarzystwie', ans:'E - prowokuje skurcze mięśni.' },
+   kind:'select',
+   selOpts:[['A','A - może powodować niepożądane skutki'],['B','B - wspomaga pracę żołądka'],['C','C - to produkt zalecany cukrzykom'],['D','D - stanowi dobre środowisko dla bakterii'],['E','E - prowokuje skurcze mięśni'],['F','F - usprawnia pracę wielu organów'],['G','G - chroni przed zapominaniem'],['H','H - ma właściwości relaksacyjne i uspokajające'],['I','I - wpływa na działanie mózgu']],
+   items:[
+    {tag:'1', stem:'Świeżo wyciskany sok warzywno-owocowy', key:['F'], plain:true},
+    {tag:'2', stem:'Woda z octem', key:['H'], plain:true},
+    {tag:'3', stem:'Tabletka', key:['A'], plain:true},
+    {tag:'4', stem:'Lepkie jedzenie', key:['D'], plain:true},
+    {tag:'5', stem:'Kompot z przyprawami korzennymi', key:['B'], plain:true},
+    {tag:'6', stem:'Zielona herbata', key:['I'], plain:true},
+    {tag:'7', stem:'Kawa', key:['C'], plain:true},
+    {tag:'8', stem:'Kofeina', key:['G'], plain:true}
+   ],
+   src:'Na podstawie: Materiały dźwiękowe Polskiego Radia.',
+   tr:[
+    'Święta to zawsze jest dużo jedzenia i wszystko na raz. Próbując tylko, człowiek staje się pełny, a w środku ma taki prawdziwy miszmasz. Wiadomo też, że nawet przekąska, w sytuacji, gdy obok jest ktoś, kto nas nie lubi, może zaszkodzić, spowodować bóle brzucha, albo nieświadome napięcie mięśni. Co wtedy? Tabletka? No, niekoniecznie. Słynny chiński dietetyk ujawnił, że wypicie świeżego napoju - burak, marchew, jabłko plus woda - nie tylko złagodzi ból różnego pochodzenia, ale oczyści wątrobę, nerki, trzustkę, wzmocni płuca, poratuje przed zawałem, wyrzuci toksyny, oczyści skórę, a przy tym nie ma żadnych efektów ubocznych. Rozmowy przy świątecznym stole, no niejednemu podniosły ciśnienie. Co zrobić? Mieć zawsze ze sobą banany, regulują ciśnienie, bo zmniejszają stres i poprawiają nastrój. Może też być ocet jabłkowy z wodą, ale warto upewnić się, że jest to prawdziwy produkt, a nie destylat. Tabletki zawsze dają efekty uboczne, więc jeśli można tego uniknąć, no jestem za tymi rozwiązaniami.',
+    'A co, kiedy coś wyjątkowo smacznego spadnie ze stołu na podłogę? Jest taka stara zasada pięciu sekund. Profesor mikrobiologii, Anthony Hilton z Aston University, przeprowadził eksperyment polegający na badaniu ilości bakterii E. coli i gronkowca złocistego na różnych pokarmach, kiedy spadają na różne podłogi. Podnoszono je oczywiście zgodnie z zasadą pięciu sekund. Lepkie jedzenie, pasztet, jajo w majonezie zbiera bakterie natychmiast.',
+    'Co pić? No kompot ze śliwek z cynamonem i goździkami, bo pozwoli dobrze trawić. Zieloną herbatę - naukowcy z uniwersytetu w Bazylei odkryli, że zielona herbata może mieć zastosowanie w leczeniu chorób psychicznych. Ale niektórzy w święta nie mogą obejść się bez kawy. To choć uczeni z Uniwersytetu Colorado po zakończeniu czteroletnich badań poinformowali, że kawa ma dobry wpływ na pacjentów z ciężkim schorzeniem wątroby, wcześniej udowodniono też, że regularne picie kawy ma pozytywny wpływ na ludzi z cukrzycą typu drugiego, to kofeina, proszę państwa, poprawia też pamięć długoterminową. Zatem wszystkie urazy zostaną w pamięci na długie dni i długie miesiące, więc jedzcie, pijcie, wybierajcie.',
+    'Na podstawie: Materiały dźwiękowe Polskiego Radia.'] }
+];
+const MAX = 40, PASS = 24;
+const STORE_KEY = 'c1_sluch_2024_04_v1';
+const TOTAL_SEC = 40 * 60;
+
+function norm(s) { return String(s || '').toLowerCase().replace(/[„”"'’‘.,!?;:()]/g, ' ').replace(/\s+/g, ' ').trim(); }
+function fold(s) { return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l'); }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+let state = {};
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+state = load();
+
+function slotsOf(it) { return it.key.length; }
+function ids(t, i) { const it = t.items[i]; const n = slotsOf(it); return Array.from({length:n}, (_, k) => `${t.id}-${i+1}` + (n > 1 ? `-${k+1}` : '')); }
+
+function build() {
+  const root = document.getElementById('tasks'); let html = '';
+  TASKS.forEach(t => {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${t.max} x 1 p. = ${t.max} p.</span></h2>`;
+    html += `<p class="src" style="margin:0 0 8px">${esc(t.plays)}</p>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    html += `<div class="audio"><label><b>Wczytaj nagranie:</b> <input type="file" accept="audio/*" data-audio="${t.id}"></label><span class="fname" id="fn-${t.id}"></span><audio controls id="au-${t.id}"></audio></div>`;
+    if (t.legend) html += `<div class="legend">` + t.legend.map(l => `<div>${esc(l)}</div>`).join('') + `</div>`;
+    const e = t.example;
+    let ex = esc(e.stem);
+    if (e.opts) ex += '<br>' + e.opts.map(esc).join('<br>');
+    html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${ex}<br><b>Odpowiedź: ${esc(e.ans)}</b></div>`;
+    t.items.forEach((it, i) => {
+      const sid = ids(t, i);
+      const baseId = `${t.id}-${i+1}`;
+      if (t.kind === 'radio') {
+        html += `<div class="q" id="q-${baseId}"><div class="stem">${i+1}. ${esc(it.stem)}</div>` +
+          Object.keys(it.opts).map(k => `<label class="opt" data-k="${k}"><input type="radio" name="${baseId}" data-id="${baseId}" value="${k}"> <span>${k}) ${esc(it.opts[k])}</span></label>`).join('') +
+          `<span class="fix"></span></div>`;
+      } else if (t.kind === 'tf') {
+        html += `<div class="q row" id="q-${baseId}"><div class="stem">${i+1}. ${esc(it.stem)}</div><div class="tf">` +
+          ['TAK','NIE'].map(k => `<label class="opt" data-k="${k}"><input type="radio" name="${baseId}" data-id="${baseId}" value="${k}"> <span>${k}</span></label>`).join('') +
+          `</div><span class="fix"></span></div>`;
+      } else {
+        const opts = t.selOpts.map(o => `<option value="${o[0]}">${esc(o[1])}</option>`).join('');
+        html += `<div class="q row" id="q-${baseId}"><div class="stem">${it.plain ? it.tag + '. ' : it.tag + '. Która z roślin '}${esc(it.stem)}</div><span class="slots">` +
+          sid.map(s => `<span class="slot" id="s-${s}"><select data-id="${s}" aria-label="${esc(it.tag)}"><option value=""></option>${opts}</select></span>`).join('') +
+          `</span><span class="fix"></span></div>`;
+      }
+    });
+    html += `<div class="src">${esc(t.src)}</div>`;
+    html += `<details class="tr" id="tr-${t.id}"><summary>Transkrypcja</summary><div class="warn">Otwieraj dopiero po sprawdzeniu (po kliknięciu Sprawdź otworzy się sama).</div>` +
+      t.tr.map(p => `<p>${esc(p)}</p>`).join('') + `</details>`;
+    html += `</section>`;
+  });
+  root.innerHTML = html;
+  root.querySelectorAll('[data-id]').forEach(el => {
+    if (el.type === 'radio') { if (state[el.dataset.id] === el.value) el.checked = true; }
+    else if (state[el.dataset.id] != null) el.value = state[el.dataset.id];
+    el.addEventListener('change', () => { state[el.dataset.id] = el.value; save(); updateProgress(); });
+  });
+  root.querySelectorAll('[data-audio]').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const f = inp.files && inp.files[0]; if (!f) return;
+      const a = document.getElementById('au-' + inp.dataset.audio);
+      if (a.dataset.url) URL.revokeObjectURL(a.dataset.url);
+      const u = URL.createObjectURL(f); a.dataset.url = u; a.src = u;
+      document.getElementById('fn-' + inp.dataset.audio).textContent = f.name;
+    });
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  let total = 0, filled = 0;
+  TASKS.forEach(t => t.items.forEach((it, i) => ids(t, i).forEach(s => { total++; if (state[s]) filled++; })));
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${total}`;
+}
+
+function checkAll() {
+  const per = [];
+  TASKS.forEach(t => {
+    let score = 0;
+    t.items.forEach((it, i) => {
+      const sid = ids(t, i), base = `${t.id}-${i+1}`;
+      const vals = sid.map(s => state[s] || '');
+      const q = document.getElementById('q-' + base);
+      const fix = q.querySelector('.fix');
+      let got = 0;
+      vals.forEach((v, k) => {
+        let ok = false;
+        if (v) {
+          if (it.any) ok = it.key.includes(v) && vals.indexOf(v) === k;
+          else ok = v === it.key[k];
+        }
+        if (ok) got++;
+        if (t.kind === 'select') { const el = document.getElementById('s-' + sid[k]); el.classList.remove('ok', 'bad'); el.classList.add(ok ? 'ok' : 'bad'); }
+      });
+      score += got;
+      if (t.kind !== 'select') {
+        q.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad');
+          if (l.dataset.k === it.key[0]) l.classList.add('ok');
+          else if (l.dataset.k === vals[0]) l.classList.add('bad');
+        });
+      }
+      const allOk = got === sid.length;
+      if (allOk) fix.textContent = '';
+      else if (t.kind === 'select') fix.textContent = '→ ' + it.key.join(', ') + (it.any ? ' (kolejność dowolna)' : '');
+      else fix.textContent = '→ ' + it.key[0].toUpperCase().replace('TAK', 'TAK').replace('NIE', 'NIE');
+    });
+    const el = document.getElementById('pts-' + t.id);
+    el.textContent = `${pl(score)} / ${t.max} p.`; el.classList.add('scored');
+    document.getElementById('tr-' + t.id).open = true;
+    per.push({ t, score });
+  });
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100), pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `<div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass ? 'Zdane - próg to 60% (24 p.)' : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błędna, obok poprawna z klucza. Transkrypcje pod zadaniami są już rozwinięte. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+let left = TOTAL_SEC, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60, el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL_SEC ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) { clearInterval(tick); running = false; document.getElementById('timerBtn').textContent = 'Koniec'; document.getElementById('timeUp').classList.add('show'); }
+    }, 1000);
+  } else clearInterval(tick);
+}
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  state = {};
+  clearInterval(tick); running = false; left = TOTAL_SEC; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', checkAll);
+document.getElementById('checkBottom').addEventListener('click', checkAll);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+const TEST_ID = 'sluchanie-2024-04';
+function fillCorrect() {
+  TASKS.forEach(t => t.items.forEach((it, i) => {
+    ids(t, i).forEach((sid, k) => { state[sid] = it.key[k]; });
+  }));
+  document.querySelectorAll('#tasks [data-id]').forEach(el => {
+    if (el.type === 'radio') el.checked = (state[el.dataset.id] === el.value);
+    else el.value = state[el.dataset.id] || '';
+  });
+  save(); updateProgress();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'sluchanie', session: '2024-04', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Słuchanie C1 2020</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+</style>
+<style>
+.audiobox { background: var(--example); border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.audiobox audio { width: 100%; }
+.audiobox .fname { font-size: 13px; color: var(--muted); }
+.audiobox label.btnlike { cursor: pointer; border: 1px solid var(--line); background: var(--card); border-radius: 8px; padding: 7px 14px; font-weight: 600; }
+.audiobox input[type=file] { display: none; }
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .qt { font-weight: 600; margin-bottom: 6px; }
+.opt { display: flex; gap: 8px; align-items: flex-start; padding: 5px 8px; border-radius: 6px; border: 1px solid transparent; cursor: pointer; }
+.opt input { margin-top: 5px; }
+.opt.ok { background: var(--ok-bg); border-color: var(--ok); }
+.opt.bad { background: var(--bad-bg); border-color: var(--bad); }
+.opt.key { border-color: var(--ok); }
+.res { font-size: 14px; font-weight: 600; margin-top: 4px; min-height: 1em; }
+.res.ok { color: var(--ok); } .res.bad { color: var(--bad); }
+details.tr { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--input-bg); }
+details.tr summary { cursor: pointer; font-weight: 700; }
+details.tr .warn { color: var(--warn); font-size: 13px; font-weight: 600; }
+details.tr p { margin: 8px 0; font-family: Georgia, serif; font-size: 16px; line-height: 1.7; }
+.mrow { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.mrow:first-of-type { border-top: 0; }
+.mrow .lt { font-weight: 800; width: 1.6em; }
+.mrow .mt { flex: 1 1 260px; }
+.mrow select { font: 16px system-ui; padding: 4px 6px; border: 1px solid var(--line); border-radius: 4px; background: var(--input-bg); color: var(--ink); border-bottom: 2px solid var(--muted); }
+.mrow.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.mrow.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.skarby { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+.chk { display: flex; gap: 8px; align-items: flex-start; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; margin: 4px 0; cursor: pointer; }
+.chk.ok { background: var(--ok-bg); border-color: var(--ok); }
+.chk.bad { background: var(--bad-bg); border-color: var(--bad); }
+.chk.miss { border-color: var(--ok); border-style: dashed; }
+.chk input { margin-top: 5px; }
+.chk .n { font-weight: 800; width: 1.8em; flex: none; }
+.sub { display: flex; gap: 8px; align-items: center; margin: 4px 0; flex-wrap: wrap; }
+.sub .lab { font-weight: 700; width: 1.4em; }
+.sub input[type=text] { flex: 1 1 260px; font: 16px system-ui; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 5px 8px; }
+.sub.ok input[type=text] { border-color: var(--ok); background: var(--ok-bg); }
+.sub.bad input[type=text] { border-color: var(--bad); background: var(--bad-bg); }
+.sub.almost input[type=text] { border-color: var(--warn); background: var(--warn-bg); }
+.keyline { font-size: 14px; color: var(--ok); font-weight: 600; margin-top: 4px; }
+.cnt { font-size: 14px; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+</style>
+<style>
+.src, .qt, details.tr p, .mrow .mt { overflow-wrap: anywhere; }
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie ze słuchu C1 - test przykładowy 2020</span>
+    <span class="timer" id="timer">40:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Rozumienie ze słuchu</h1>
+  <p class="lead">Oficjalny test przykładowy egzaminu certyfikatowego C1 z 2020 roku. 5 zadań, do 40 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji. Nagrań nie ma w pliku: w każdym zadaniu kliknij „Wczytaj nagranie” i wskaż plik audio z komputera. Na egzaminie zadanie I słucha się jeden raz, pozostałe dwa razy.</p>
+  <div class="notice" id="timeUp">Czas minął (40 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: oficjalny test przykładowy C1 (2020), część "Rozumienie ze słuchu" + oficjalny klucz ----------
+const TASKS = [
+  {
+    id: 'I', type: 'mc', max: 6, rec: 'jeden raz', ptsLabel: '6 x 1 p. = 6 p.',
+    title: 'Zadanie I',
+    instr: 'Proszę uważnie słuchać tego nagrania i wykonywać zadanie zgodnie z podanym przykładem. Uwaga! Nagranie zostanie odtworzone tylko jeden raz. Proszę wysłuchać kilku krótkich tekstów i zaznaczyć właściwe odpowiedzi.',
+    example: { q: 'Z tego nagrania wynika, że', opts: ['sytuacja pszczół to wynik zmiany trendów w zadrzewianiu terenów.', 'spadź drzew iglastych jest cennym pokarmem dla pszczół.', 'w ostatnich latach sadzi się coraz więcej drzew liściastych.'], ans: 'a',
+      src: 'Na podstawie: http://www.radiokrakow.pl/wiadomosci/nowy-sacz/co-pszczoly-lubia-najbardziej-malopolska-karmi-pszczoly' },
+    items: [
+      { q: 'Z tego nagrania wynika, że', opts: ['w wyborach mogą brać udział tylko osoby pełnoletnie.', 'głos można oddawać na dwa sposoby.', 'głosowaniu podlegają projekty ogólnokrajowe.'], ans: 'b',
+        src: 'Na podstawie: http://www.radiokrakow.pl/wiadomosci/krakow/od-soboty-mozna-w-krakowie-glosowac-w-budzecie-obywatelskim/' },
+      { q: 'Z tego nagrania wynika, że', opts: ['mecz z Izraelem ma decydujące znaczenie w eliminacjach.', 'drużyna polska zakwalifikowała się do mistrzostw Europy.', 'polscy piłkarze nie traktują tego meczu poważnie'], ans: 'b',
+        src: 'Na podstawie: https://teleexpress.tvp.pl/' },
+      { q: 'Z tego nagrania wynika, że', opts: ['jubileusz Hawany stał się powodem nocnych zamieszek.', 'Kubańczycy świętują datę uniezależnienia się od Hiszpanii.', 'w swojej mowie rektor nawiązał do trudnej historii Hawany.'], ans: 'c',
+        src: 'Na podstawie: https://teleexpress.tvp.pl/' },
+      { q: 'Z tego nagrania wynika, że', opts: ['LOT wycofał z użycia wszystkie samoloty boeing 737 MAX.', 'rejs do Astany był ostatnim rejsem samolotem tego typu.', 'linie lotnicze na całym świecie zawiesiły użycie boeingów 737 MAX.'], ans: 'a',
+        src: 'Na podstawie: https://panorama.tvp.pl/' },
+      { q: 'Z tego nagrania wynika, że', opts: ['przywódca grupy przestępczej nie był wcześniej karany.', 'bandyci napadali głównie na policjantów.', 'przestępców aresztowano podczas jednego z napadów.'], ans: 'c',
+        src: 'Na podstawie: https://teleexpress.tvp.pl/' },
+      { q: 'Z tego nagrania wynika, że', opts: ['przeszczepy krzyżowe podlegają specjalnej procedurze prawnej.', 'jedna z kobiet otrzymała nerkę męża drugiej kobiety.', 'przeszczep nerek odbył się między osobami spokrewnionymi.'], ans: 'a',
+        src: 'Na podstawie: https://panorama.tvp.pl/' }
+    ],
+    trans: [
+      'Przykład: Jeżeli zadrzewiać, to czymś, co również daje pożytek dla pszczół. Drzewa lipowe, klonowe, jaworowe jest to zagłębie pokarmu pszczelego, którego coraz bardziej nam brakuje, ponieważ przyszła moda na drzewa iglaste - na świerki, na jodły i inne. No, niestety, oprócz tego, że na tych drzewach iglastych występuje spadź, to ubożeje zagłębie najważniejszego pokarmu, jakim jest białko. Tam go nie ma.',
+      'Na podstawie: http://www.radiokrakow.pl/wiadomosci/nowy-sacz/co-pszczoly-lubia-najbardziej-malopolska-karmi-pszczoly/',
+      '1. W tym roku głosujemy wszyscy, więc od przedszkola, szkoły podstawowej, średniej do seniorów. Wszyscy mieszkańcy mogą oddać głos na 118 projektów ogólnomiejskich, 439 dzielnicowych, więc jest w czym wybierać i mam nadzieję, że każdy z mieszkańców będzie mógł - albo w formie tradycyjnej przez wrzucenie karty do urny, albo w formie elektronicznej wybrać jakiś projekt, który dotyczy jego najbliższej okolicy.',
+      'Na podstawie: http://www.radiokrakow.pl/wiadomosci/krakow/od-soboty-mozna-w-krakowie-glosowac-w-budzecie-obywatelskim/',
+      '2. To będzie gorący piłkarski wieczór z Polakami w rolach głównych. Za niecałe cztery godziny w Jerozolimie Biało-Czerwoni zagrają z Izraelem w przedostatnim meczu eliminacji mistrzostw Europy. Podopieczni Jerzego Brzęczka awans mają już w kieszeni, ale odpuszczać nie zamierzają.',
+      'Na podstawie: https://teleexpress.tvp.pl/',
+      '3. Hawana minionej nocy nie spała i pewnie nie zaśnie przez najbliższe godziny, bo stolica Kuby hucznie świętuje pięćsetlecie istnienia. Miasto założył hiszpański konkwistador Diego Velázquez de Cuéllar. 16 listopada 1519 roku przeszedł do historii jako narodziny Hawany. Szybko stała się najważniejszym portem hiszpańskim w nowym świecie. Przeszła wiele, ale przetrwała i trwać będzie, powiedział rektor Uniwersytetu Hawańskiego w przemówieniu rocznicowym.',
+      'Na podstawie: https://teleexpress.tvp.pl/',
+      '4. Coraz więcej państw na świecie zamyka swoją przestrzeń powietrzną dla boeingów 737 MAX. Wczoraj zrobiła to Europejska Agencja Bezpieczeństwa Lotniczego. Na jak długo? Nie wiadomo. LOT ma 5 boeingów 737 MAX i wszystkie uziemił. W zamian sprowadził inne maszyny. Dziś odwołano jeden rejs - do Astany.',
+      'Na podstawie: https://panorama.tvp.pl/',
+      '5. Stołeczna policja oraz antyterroryści zatrzymali gangsterów na gorącym uczynku. Mężczyźni, podając się za policjantów, wchodzili do bloku ofiary.',
+      '- Wśród tej piątki zatrzymanych był 41-latek o pseudonimie Fama. Mężczyzna większość swojego życia spędził za kratami.',
+      'Na podstawie: https://teleexpress.tvp.pl/',
+      '6. A teraz historia zupełnie niezwykła. Dwa obce sobie małżeństwa połączył krzyżowy przeszczep nerek.',
+      '- Po ponad czterech latach poszukiwań i kilkunastu próbach krzyżowych udało się skojarzyć pary w ten sposób, że pani Edyta oddała swoją nerkę pani Magdzie, mąż pani Magdy oddał swoją mężowi pani Edyty.',
+      '- Zgodnie z polskim prawem dawcą może być tylko osoba spokrewniona genetycznie lub związana emocjonalnie. Przeszczepy krzyżowe są dopuszczone, ale wymagana jest zgoda sądu.',
+      'Na podstawie: https://panorama.tvp.pl/'
+    ]
+  },
+  {
+    id: 'II', type: 'tf', max: 8, rec: 'dwukrotnie', ptsLabel: '8 x 1 p. = 8 p.',
+    title: 'Zadanie II',
+    instr: 'Proszę uważnie słuchać tego nagrania i wykonywać zadanie zgodnie z podanym przykładem. Uwaga! Nagranie zostanie odtworzone dwukrotnie. Proszę wysłuchać rozmowy na temat zabezpieczeń banknotów i zaznaczyć: TAK - gdy zdanie jest zgodne z tekstem; NIE - gdy nie jest zgodne z tekstem.',
+    example: { q: 'Dziennikarce termin lifting kojarzy się głównie z zabiegami upiększającymi ciało.', ans: 'T' },
+    items: [
+      { q: 'Specjaliści nie stosują określenia lifting w odniesieniu do pieniędzy.', ans: 'N' },
+      { q: 'Celem przeprowadzonych zmian miało być unowocześnienie szaty graficznej.', ans: 'N' },
+      { q: 'Na powierzchni wszystkich banknotów umieszczono jednakowe wzory.', ans: 'T' },
+      { q: 'Umieszczanie eurionów to drugi, obok okręgów, sposób zabezpieczania banknotów.', ans: 'N' },
+      { q: 'Większość zabezpieczeń znana jest głównie ekspertom, autorom i projektantom banknotów.', ans: 'T' },
+      { q: 'Tylko pomysłodawcy lub emitenci mogą w stu procentach ocenić autentyczność pieniędzy.', ans: 'T' },
+      { q: 'Biegły jest obecny na wszystkich etapach weryfikacji autentyczności banknotów.', ans: 'N' },
+      { q: 'Identyfikacja banknotów dokonywana jest w ściśle określonych miejscach.', ans: 'T' }
+    ],
+    src: 'Na podstawie: http://www.radiokrakow.pl/audycje/moj-zawod-135544/biegly-z-zakresu-kryminalistycznych-badan-dokumentow/',
+    trans: [
+      'D: Banknot po liftingu to dzisiejsza tajemnica i dzisiejsze pytanie. Ten lifting to raczej z twarzą czy z ciałem kobiety mi się kojarzy, a nie z banknotem. A tymczasem pan nas zaskakuje. Cóż to jest banknot po liftingu?',
+      'R: Tak, nie jest to oczywiście profesjonalne określenie, jest to taki żargon, którego używamy między sobą. Lifting, czyli poprawienie wyglądu, w tym sensie, upiększenie, no też to można tak nazwać, jeżeli ktoś się pasjonuje wyglądem banknotów i ich szatą graficzną i tak dalej, może to traktować jako upiększenie. Ale ten lifting, który te banknoty nasze polskie przeszły, miał za zadanie przede wszystkim zawęzić sposób czy wyeliminować pewien sposób fałszowania tychże banknotów. Takim najciekawszym, najbardziej sensownym według mnie zabiegiem liftingującym na nowym banknocie, na wszystkich nowych banknotach papierowych, polegał na zamieszczeniu tzw. kółeczek na jego powierzchni (D: kropeczek takich wypukłych), tak takich kółeczek, to są okręgi otwarte, puste w środku, powszechnie się to nazywa eurionami.',
+      'Banknoty są zabezpieczone na wielu poziomach, na różnych etapach produkcji, bardzo wiele z tych zabezpieczeń znanych jest przede wszystkim ekspertom, no oczywiście twórcom także banknotów, projektantom. I jest pewna pula zabezpieczeń, którą znają tylko i wyłącznie emitenci albo ci pomysłodawcy banknotów, którzy na tej podstawie są w stanie bardzo szybko zweryfikować banknot, oddzielić ziarno od plew, mówiąc krótko, autentycznego od fałszywego banknotu. I dopiero wtedy, kiedy przejdą tą pierwszą weryfikację te, które zostały odrzucone, które nie mają tego jednego, indywidualnego, niezdradzonego nikomu zabezpieczenia, podlegają dalszym badaniom i weryfikacjom. No, powiem szczerze, że to jest etap, który mnie jest niedostępny, ponieważ ja jestem tylko biegłym. Wiem tylko to, co emitenci ujawnią, więc, ten proces identyfikacji banknotów odbywa się na pewno w Narodowym Banku Polskim albo w drukarni, która te banknoty wykonuje.',
+      'Na podstawie: http://www.radiokrakow.pl/audycje/moj-zawod-135544/biegly-z-zakresu-kryminalistycznych-badan-dokumentow/'
+    ]
+  },
+  {
+    id: 'III', type: 'match', max: 10, rec: 'dwukrotnie', ptsLabel: '10 x 1 p. = 10 p.',
+    title: 'Zadanie III',
+    instr: 'Proszę uważnie słuchać tego nagrania i wykonywać zadanie zgodnie z podanym przykładem. Uwaga! Nagranie zostanie odtworzone dwukrotnie. Proszę wysłuchać informacji na temat najczęstszych zjawisk paranormalnych i dopasować nazwy zjawisk (1-5) do ich charakterystycznych cech (A-J). Uwaga! Do każdego stwierdzenia należy dopasować tylko jedno zjawisko.',
+    names: ['DÉJÀ VU [wym. deżawi]', 'LUNATYKOWANIE', 'PRZECZUCIA', 'ODCZUWANIE CZYJEJŚ OBECNOŚCI', 'KSENOGLOSJA'],
+    stem: 'Które z opisywanych zjawisk',
+    example: { q: 'łączy wydarzenia aktualne ze zdarzeniami z przeszłości?', ans: '1' },
+    items: [
+      { l: 'A', q: 'może mieć podłoże genetyczne?', ans: '2' },
+      { l: 'B', q: 'najczęściej jest wynikiem autosugestii?', ans: '4' },
+      { l: 'C', q: 'umożliwia wpływanie na bieg wydarzeń?', ans: '3' },
+      { l: 'D', q: 'może prowadzić do bardzo poważnych konsekwencji?', ans: '2' },
+      { l: 'E', q: 'można wyjaśnić na podstawie praw fizyki?', ans: '4' },
+      { l: 'F', q: 'może być skutkiem nieprawidłowej podaży tlenu do mózgu?', ans: '2' },
+      { l: 'G', q: 'zwykle dotyka ludzi dbających o swoją kondycję umysłową?', ans: '5' },
+      { l: 'H', q: 'może być wynikiem opóźnionego przepływu informacji w strukturach mózgu?', ans: '1' },
+      { l: 'I', q: 'bywa wynikiem poniesionej straty?', ans: '4' },
+      { l: 'J', q: 'dotyczy większości społeczeństwa?', ans: '3' }
+    ],
+    src: 'Na podstawie: https://www.youtube.com/watch?v=0yPSb--1Wkc&t=9s',
+    trans: [
+      'Ludzie najczęściej traktują istnienie zjawisk paranormalnych z przymrużeniem oka. Mało kto jednak zdaje sobie sprawę, że ponad połowę społeczeństwa dotykają pewne fenomeny, których nawet nauka nie jest w stanie do tej pory wyjaśnić.',
+      'Fenomen pierwszy - déjà vu',
+      'Jak to się jednak dzieje, że czasami mamy wrażenie przeżywania czegoś, co się już kiedyś wydarzyło. Niektóre źródła podają, że déjà vu spowodowane jest zaburzeniem pracy mózgu, którego nie da się odczuć podczas normalnego funkcjonowania. Podobno informacje, które mają przedostać się do drugiej półkuli, nie dostają się do niej natychmiast. W związku z tym minimalnym opóźnieniem zdarzenie nie zostaje na trwałe zarejestrowane w naszej pamięci. Zatem osoba może nie pamiętać, że już coś przeżyła, co wychodzi na jaw w momencie, kiedy przeżywa podobną sytuację po raz drugi.',
+      'Fenomen drugi - lunatykowanie',
+      'Chodzenie przez sen to bardzo częste zjawisko, którego doświadcza około jednej piątej populacji. Jednak lekarze do dziś nie wiedzą, skąd bierze się ta dziwaczna przypadłość. Nie można wykluczyć, że lunatyzm jest przypadłością dziedziczną, a wiąże się prawdopodobnie z zaburzeniami faz snu, której przyczyną może być na przykład nerwica. Przypuszcza się, że za przypadłością stoją także problemy z oddychaniem, co ma bardzo negatywny wpływ na funkcjonowanie mózgu. Jednego można być pewnym - lunatyzm jest przypadłością niebezpieczną, gdyż człowiek, który lunatykuje, nie jest zupełnie świadomy tego, co się z nim dzieje.',
+      'Fenomen trzeci - przeczucia',
+      'Przeczucia zdarzają się niemal każdemu z nas. Nie wolno ich jednak porównywać do jasnowidzenia, nie są bowiem konkretną projekcją przyszłości, a jedynie niejasnym obrazem bądź przekonaniem o nadchodzącym niepowodzeniu. Co więcej przeczucia dotyczą tylko tych negatywnych zjawisk, którym możemy zapobiec.',
+      'Fenomen czwarty - odczuwanie czyjejś obecności',
+      'Mówi się, że po śmierci bliskiej osoby wielu ludzi wciąż odczuwa jej obecność. Najprościej byłoby wytłumaczyć ten fenomen obecnością duchów, wielu jednak to nie przekonuje, dlatego też mamy bardziej racjonalną teorię. To nietypowe zjawisko spowodowane jest prawdopodobnie zaburzeniami pola magnetycznego powodowanego przez urządzenia elektryczne, co w połączeniu z sugestią, strachem i poczuciem straty może prowadzić do odczuwania czyjejś obecności.',
+      'I fenomen piąty - ksenoglosja',
+      'Umiejętność rozumienia nieznanego nam wcześniej języka lub nawet porozumiewania się w nim została opisana już dawno. Zjawiska tego najczęściej doświadczają osoby, które nieustannie pracują nad własnym umysłem, na przykład poprzez medytację.',
+      'Na podstawie: https://www.youtube.com/watch?v=0yPSb--1Wkc&t=9s'
+    ]
+  },
+  {
+    id: 'IV', type: 'mc', max: 8, rec: 'dwukrotnie', ptsLabel: '8 x 1 p. = 8 p.',
+    title: 'Zadanie IV',
+    instr: 'Proszę uważnie słuchać tego nagrania i wykonywać zadanie zgodnie z podanym przykładem. Uwaga! Nagranie zostanie odtworzone dwukrotnie. Proszę wysłuchać reportażu na temat sytuacji życiowej jednego z mieszkańców Nowej Huty i zaznaczyć właściwe odpowiedzi.',
+    example: { q: 'Bohater reportażu', opts: ['od wielu lat pomaga bezdomnym.', 'od dwóch lat jest bezdomny.', 'działa w Fundacji Los Polakos.'], ans: 'b' },
+    items: [
+      { q: '„Połaź z nami” to projekt', opts: ['zainicjowany przez pana Tadeusza kilka lat temu.', 'zwiedzania w Nowej Hucie lokali z lat 70.', 'oferujący oprowadzanie po Nowej Hucie.'], ans: 'c' },
+      { q: 'Bohater audycji', opts: ['pracował jako przewodnik, kiedy był młodszy.', 'ma swoje ulubione tematy związane z Nową Hutą.', 'planuje zapisać się na kurs przewodników po Krakowie.'], ans: 'b' },
+      { q: 'Zdaniem pana Tadeusza', opts: ['w jego sytuacji trudno o optymizm.', 'nie wszyscy potrafią cieszyć się życiem.', 'są sytuacje, w których trzeba się poddać.'], ans: 'b' },
+      { q: 'Spacery z panem Tadeuszem', opts: ['przyciągnęły już 20 tysięcy chętnych.', 'odbywają się nawet kilka razy dziennie.', 'pozwoliły zebrać pieniądze na wynajem mieszkania.'], ans: 'c' },
+      { q: 'Trudno wynająć mieszkanie dla pana Tadeusza, ponieważ', opts: ['problemem jest wiek pana Tadeusza.', 'mężczyzna odrzuca wszystkie propozycje.', 'właściciele lokali nie chcą ich wynajmować tylko na rok.'], ans: 'a' },
+      { q: 'Inicjatorzy akcji szukają mieszkania w Nowej Hucie, ponieważ', opts: ['to ulubiona dzielnica bohatera reportażu.', 'jest tam największy wybór mieszkań.', 'pan Tadeusz nie będzie musiał dojeżdżać do pracy.'], ans: 'c' },
+      { q: 'Jolanta Kaczmarczyk mówi o', opts: ['kłopotach związanych z bezdomnymi dotąd lokatorami.', 'potrzebie angażowania się w sprawy społeczne.', 'przyczynach bezdomności w dużych miastach.'], ans: 'b' },
+      { q: 'Warto wynajmować mieszkania osobom bezdomnym,', opts: ['tylko jeśli mają wsparcie finansowe organizacji charytatywnych.', 'bo to przynosi radość przede wszystkim właścicielom mieszkania.', 'gdyż dzięki temu wpływa się pozytywnie na rzeczywistość.'], ans: 'c' }
+    ],
+    src: 'Na podstawie: http://www.radiokrakow.pl/wiadomosci/krakow/bezdomny-przewodnik-po-nowej-hucie-wciaz-bez-lokum-powodem-nie-sa-pieniadze/',
+    trans: [
+      'D: Pan Tadeusz stracił dach nad głową dwa lata temu. Z pomocą pospieszyła mu Fundacja Los Polacos, która zorganizowała projekt „Połaź z nami”. W jego ramach organizowane są spacery, które prowadzi właśnie pan Tadeusz. Najchętniej opowiada o latach siedemdziesiątych, nieistniejących już lokalach i momentach przełomowych dla tej dzielnicy Krakowa. Jak sam przyznaje, nie jest profesjonalnym przewodnikiem, ale dzieląc się osobistymi opowieściami o Nowej Hucie, radzi sobie ze swoją trudną sytuacją.',
+      'PT: Wychodzę z założenia, że trzeba podnieść głowę i iść dalej, bo życie jest naprawdę piękne, tylko nie wszyscy go doceniają. Jak się człowiek znajdzie w jakiejś takiej ciężkiej sytuacji, to wtedy zaczyna doceniać.',
+      'D: A wycieczkami z panem Tadeuszem zainteresowało się już kilkaset osób. Podczas kilku spacerów udało się zebrać 20 tysięcy złotych. Fundacja Los Polacos chce za te pieniądze wynająć mężczyźnie mieszkanie na rok. Ciągle jednak nie udało nam się znaleźć odpowiedniego lokum - podkreśla Marek Piątkowski, inicjator wycieczek.',
+      'MP: Sporo osób, niestety, nie chce wynająć osobie starszej. To jest dla nas przykre, mimo że chcemy zapłacić z góry, za dłuższy okres. Natomiast, no jest jakiś opór. Myślę, że będziemy celować w Nową Hutę, żeby pan Tadeusz miał blisko do swojej pracy.',
+      'D: Jolanta Kaczmarczyk z „Dzieła Pomocy Świętego Ojca Pio” podkreśla, że w Krakowie prowadzonych jest dziewięć mieszkań wspieranych i nigdy nie było problemów z takimi lokatorami.',
+      'JK: Zachęcam osoby, które mają takie mieszkania na wynajem, żeby nie bały się udostępniać. Państwo naprawdę, w momencie, kiedy podejmują ten trud wejścia do mieszkania, to jest dla nich ogromna radość. I są też wspierani przez organizacje, które w tym kierunku działają. Państwo biorą udział w projekcie społecznym poprzez to i to naprawdę zmienia rzeczywistość nie tylko danej osoby, konkretnej, ale myślę, że zmienia też świat na lepszy.',
+      'Na podstawie: http://www.radiokrakow.pl/wiadomosci/krakow/bezdomny-przewodnik-po-nowej-hucie-wciaz-bez-lokum-powodem-nie-sa-pieniadze/'
+    ]
+  },
+  {
+    id: 'V', type: 'open', max: 8, rec: 'dwukrotnie', ptsLabel: '8 x 1 p. = 8 p.',
+    title: 'Zadanie V',
+    instr: 'Proszę uważnie słuchać tego nagrania i wykonywać zadanie zgodnie z podanym przykładem. Uwaga! Nagranie zostanie odtworzone dwukrotnie. Proszę wysłuchać reportażu na temat psychobiotyków i odpowiedzieć na pytania. Uwaga! Forma gramatyczna odpowiedzi powinna być dopasowana do pytania.',
+    example: { q: 'Ile mikrobów znajduje się w ludzkim ciele?', a: 'Blisko 100 milionów mikrobów.' },
+    items: [
+      { q: 'Czym są mikrobiomy?', parts: 1, pp: 1,
+        key: 'są ogółem mikroorganizmów żyjących w ludzkim ciele',
+        req: ['mikroorganizm|mikrob|drobnoustroj|bakteri', 'ciele|ciala|czlowiek|ludzk|nosimy|\\bw nas\\b|jelit|w sobie|w organizmie'] },
+      { q: 'Jaką rolę, zdaniem Igora Łoniewskiego, mogą spełniać psychobiotyki?', parts: 1, pp: 1,
+        key: 'mogą uzupełniać leczenie farmakologiczne',
+        req: ['uzupelni|wspoma|wspier|dopelni|dodatk|obok|rownolegl', 'lecze|farmako|terapi|\\blek'] },
+      { q: 'Którzy specjaliści powinni, zdaniem doktora Łoniewskiego, zalecać stosowanie psychobiotyków?', parts: 3, pp: 0.5,
+        keyParts: ['psychiatrzy', 'dietetycy', 'psychologowie'],
+        groups: ['psychiatr', 'dietet', 'psycholo(g|dz)'] },
+      { q: 'Dlaczego jogurty naturalne nie są bogate w psychobiotyki?', parts: 1, pp: 1,
+        key: 'ponieważ nie zawierają specjalnych, dobroczynnych dla człowieka szczepów bakterii',
+        req: ['szczep'] },
+      { q: 'Po jakim czasie od zastosowania stwierdzono skuteczność psychobiotyków w leczeniu depresji?', parts: 1, pp: 0.5,
+        key: 'po czterech (4) tygodniach',
+        req: ['\\b4\\b|czter', 'tydz|tyg'] },
+      { q: 'Jak długo można było obserwować pozytywne skutki działania psychobiotyków u pacjentów z depresją?', parts: 1, pp: 0.5,
+        key: 'przez osiem (8) tygodni',
+        req: ['\\b8\\b|osiem|osmiu', 'tydz|tyg'] },
+      { q: 'Jakie metody wspierania leczenia farmakologicznego wymienia doktor Łoniewski?', parts: 3, pp: 0.5,
+        keyParts: ['psychoterapię', 'odpowiednią dietę', 'ruch'],
+        groups: ['psychoterap', 'diet', 'ruch|aktywno|cwicz|sport'] },
+      { q: 'Co udowadniają przywołane w programie badania?', parts: 1, pp: 1,
+        key: 'że dopiero kompleksowe postępowanie przynosi najlepsze efekty kliniczne',
+        req: ['kompleks', 'efekt|skutk|wynik|skutecz|przynosi|najlepsz|lepsz|klinicz'] }
+    ],
+    src: 'Na podstawie: https://www.radiokrakow.pl/audycje/pracuja-na-nobla/naszym-zdrowiem-psychicznym-rzadza-jelita/',
+    note: 'Klucz Komisji: „Należy uznać też inne odpowiedzi zgodne z transkrypcją.” Sprawdzanie automatyczne szuka słów kluczowych, więc jeśli twoja odpowiedź jest poprawna, ale inna niż w kluczu, zaznacz „uznaj” i sprawdź jeszcze raz. W pytaniach z trzema odpowiedziami (a, b, c) kolejność jest dowolna.',
+    trans: [
+      'Proszę sobie wyobrazić, że w jelicie człowieka znajduje się ponad 100 milionów mikrobów. Oznacza to, że mieszkańcy jelit zajmują dwa kilogramy naszej wagi. Psychobiotyki powstały w efekcie badań właśnie nad rolą mikrobiomów, czyli ogółu mikroorganizmów, jakie nosimy w sobie. Zdaniem mojego gościa - doktora nauk medycznych Igora Łoniewskiego z Pomorskiego Uniwersytetu Medycznego - psychobiotyki mogą uzupełniać farmakoterapię zalecaną przez psychiatrów.',
+      'D: Pan przepisuje psychobiotyki równolegle z innymi terapiami?',
+      'IŁ: Psychobiotyki nie są na receptę, ale zdecydowanie powinny być stosowane razem z innym leczeniem, czyli mogą być stosowane właśnie przez psychiatrów, mogą być stosowane przez dietetyków, i to co jest bardzo ciekawe - nowy obszar - mogą być też zalecane przez psychologów. Psycholog nie musi leczyć tylko słowem, ale może też uzupełniająco na przykład zastosować psychobiotyki.',
+      'D: Panie doktorze, nie wystarczy sięgnąć po jogurty naturalne, gdzie są naturalne bakterie?',
+      'IŁ: Naturalne jogurty nie zawierają probiotyków ani nie zawierają psychobiotyków, dlatego że psychobiotyk czy probiotyk musi zawierać konkretny szczep, który ma dobroczynny wpływ na zdrowie człowieka.',
+      'D: Pan się powoływał nawet na badania z 2018 roku, czyli bardzo świeże ekspertyzy, gdzie pacjenci z depresją stosowali te psychobiotyki i po czterech tygodniach stosowania nastąpiło obniżenie nasilenia zaburzeń nastroju, lęku, stresu, a utrzymywały się nawet do ośmiu tygodni od zakończenia podawania. No, trochę to się wydaje paradoksalne, dlatego że wydawałoby się, że tutaj muszą być leki trzeciej generacji, antydepresanty, cała pula leków, a pan mówi, że przecież psychobiotyki też mogą ratować pacjenta.',
+      'IŁ: Chodzi o to, że leczenie chorego powinno być kompleksowe, farmakologiczne, powinna być zastosowana psychoterapia, powinna być zastosowana dieta, ruch i tak dalej, i tak dalej. I dopiero takie kompleksowe postępowanie przynosi najlepszy efekt kliniczny i te badania tego dowodzą.',
+      'Na podstawie: https://www.radiokrakow.pl/audycje/pracuja-na-nobla/naszym-zdrowiem-psychicznym-rzadza-jelita/'
+    ]
+  }
+];
+
+const MAX = 40, PASS = 24;
+const TEST_ID = 'sluchanie-2020';
+const STORE_KEY = 'c1_sluch_2020_v1';
+const TOTAL = 40 * 60;
+
+// ---------- pomocnicze ----------
+function norm(s) {
+  return String(s || '').toLowerCase()
+    .replace(/[„”"'’‘.,!?;:()]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function fold(s) {
+  return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+}
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+const SELFTEST = /[?&]selftest\b/.test(location.search);
+function load() { if (SELFTEST) return {}; try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { if (SELFTEST) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {} }
+
+let acceptState = (load().__accept) || {};
+const urls = {};
+
+// ---------- budowanie arkusza ----------
+function audioBox(t) {
+  return `<div class="audiobox"><label class="btnlike" for="file-${t.id}">Wczytaj nagranie</label>
+    <input type="file" id="file-${t.id}" accept="audio/*" data-file="${t.id}">
+    <span class="fname" id="fname-${t.id}">Nie wybrano pliku (nagranie do tego zadania odtwarzane ${t.rec}).</span>
+    <audio controls id="audio-${t.id}" preload="none"></audio></div>`;
+}
+function transBox(t) {
+  return `<details class="tr" id="tr-${t.id}"><summary>Transkrypcja <span class="warn">(otwórz dopiero po sprawdzeniu odpowiedzi)</span></summary>${t.trans.map(p => `<p>${esc(p)}</p>`).join('')}</details>`;
+}
+function optLabel(it, k) { return `${k}) ${it.opts['abc'.indexOf(k)]}`; }
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${t.ptsLabel}</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    html += audioBox(t);
+    if (t.type === 'mc') {
+      const e = t.example;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(e.q)}<br>` +
+        e.opts.map((o, i) => { const k = 'abc'[i]; return `<div>${k === e.ans ? '<b>' : ''}${k}) ${esc(o)}${k === e.ans ? '</b> (poprawna)' : ''}</div>`; }).join('') +
+        (e.src ? `<div class="src">${esc(e.src)}</div>` : '') + '</div>';
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="q" id="q-${id}"><div class="qt">${i + 1}. ${esc(it.q)}</div>` +
+          it.opts.map((o, j) => { const k = 'abc'[j];
+            return `<label class="opt" data-k="${k}"><input type="radio" name="r-${id}" data-id="${id}" value="${k}"><span>${k}) ${esc(o)}</span></label>`; }).join('') +
+          (it.src ? `<div class="src">${esc(it.src)}</div>` : '') +
+          `<div class="res" id="res-${id}"></div></div>`;
+      });
+    } else if (t.type === 'tf') {
+      const e = t.example;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(e.q)} - <b>${e.ans === 'T' ? 'TAK' : 'NIE'}</b></div>`;
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="q" id="q-${id}"><div class="qt">${i + 1}. ${esc(it.q)}</div>` +
+          [['T', 'TAK'], ['N', 'NIE']].map(([k, l]) =>
+            `<label class="opt" data-k="${k}" style="display:inline-flex;margin-right:10px"><input type="radio" name="r-${id}" data-id="${id}" value="${k}"><span>${l}</span></label>`).join('') +
+          `<div class="res" id="res-${id}"></div></div>`;
+      });
+    } else if (t.type === 'match') {
+      html += `<div class="skarby">` + t.names.map((n, i) => `<span class="chip"><b>${i + 1}.</b> ${esc(n)}</span>`).join('') + `</div>`;
+      html += `<p class="instr" style="margin:8px 0 6px">${esc(t.stem)}</p>`;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(t.example.q)} - <b>${t.example.ans}</b></div>`;
+      t.items.forEach((it) => {
+        const id = `${t.id}-${it.l}`;
+        html += `<div class="mrow" id="q-${id}"><span class="lt">${it.l}.</span><span class="mt">${esc(it.q)}</span>
+          <select data-id="${id}" aria-label="Opis ${it.l}"><option value=""></option>${t.names.map((n, i) => `<option value="${i + 1}">${i + 1}. ${esc(n)}</option>`).join('')}</select>
+          <span class="fix" id="res-${id}"></span></div>`;
+      });
+    } else if (t.type === 'open') {
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(t.example.q)}<br><i>${esc(t.example.a)}</i></div>`;
+      t.items.forEach((it, i) => {
+        const n = i + 1;
+        const ppl = `(${pl(it.pp)} p.)`;
+        html += `<div class="q" id="q-${t.id}-${n}"><div class="qt">${n}. ${esc(it.q)}${it.parts === 1 ? ` <span class="src">${ppl}</span>` : ''}</div>`;
+        for (let p = 0; p < it.parts; p++) {
+          const id = it.parts > 1 ? `${t.id}-${n}${'abc'[p]}` : `${t.id}-${n}`;
+          html += `<div class="sub" id="sub-${id}">${it.parts > 1 ? `<span class="lab">${'abc'[p]})</span>` : ''}<input type="text" data-id="${id}" autocomplete="off" spellcheck="false" aria-label="Odpowiedź ${n}${it.parts > 1 ? 'abc'[p] : ''}">
+            ${it.parts > 1 ? `<span class="src">${ppl}</span>` : ''}<label class="accept"><input type="checkbox" data-accept="${id}"> uznaj</label></div>`;
+        }
+        html += `<div class="keyline" id="res-${t.id}-${n}"></div></div>`;
+      });
+    }
+    if (t.src) html += `<div class="src">${esc(t.src)}</div>`;
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += transBox(t);
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('[data-id]').forEach(el => {
+    const v = saved[el.dataset.id];
+    if (v != null) {
+      if (el.type === 'radio') el.checked = (el.value === v);
+      else el.value = v;
+    }
+    el.addEventListener('input', onChange);
+    el.addEventListener('change', onChange);
+  });
+  root.querySelectorAll('[data-accept]').forEach(cb => {
+    cb.checked = !!acceptState[cb.dataset.accept];
+    cb.addEventListener('change', () => { acceptState[cb.dataset.accept] = cb.checked; save(); });
+  });
+  root.querySelectorAll('input[data-file]').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const id = inp.dataset.file, f = inp.files && inp.files[0];
+      if (!f) return;
+      if (urls[id]) URL.revokeObjectURL(urls[id]);
+      urls[id] = URL.createObjectURL(f);
+      const a = document.getElementById('audio-' + id);
+      a.src = urls[id]; a.load();
+      document.getElementById('fname-' + id).textContent = f.name;
+    });
+  });
+  onChange(true);
+}
+function onChange(skipSave) { if (skipSave !== true) save(); updateProgress(); }
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('[data-id]').forEach(el => {
+    if (el.type === 'radio') { if (el.checked) o[el.dataset.id] = el.value; }
+    else o[el.dataset.id] = el.value;
+  });
+  o.__accept = acceptState;
+  return o;
+}
+function answered() {
+  const ids = {};
+  document.querySelectorAll('[data-id]').forEach(el => {
+    const id = el.dataset.id;
+    if (!(id in ids)) ids[id] = false;
+    if (el.type === 'radio') { if (el.checked) ids[id] = true; }
+    else if (el.value.trim()) ids[id] = true;
+  });
+  return ids;
+}
+function updateProgress() {
+  const ids = answered();
+  let total = 0, filled = 0;
+  for (const id in ids) { total++; if (ids[id]) filled++; }
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${total}`;
+}
+
+// ---------- sprawdzanie ----------
+function checkAll() {
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const sel = document.querySelector(`input[name="r-${id}"]:checked`);
+        const v = sel ? sel.value : '';
+        const ok = v === it.ans;
+        if (ok) score += 1;
+        document.querySelectorAll(`#q-${id} .opt`).forEach(l => {
+          l.classList.remove('ok', 'bad', 'key');
+          if (l.dataset.k === it.ans) l.classList.add(ok ? 'ok' : 'key');
+          else if (l.dataset.k === v) l.classList.add('bad');
+        });
+        const r = document.getElementById(`res-${id}`);
+        const lab = t.type === 'mc' ? it.ans + ')' : (it.ans === 'T' ? 'TAK' : 'NIE');
+        r.className = 'res ' + (ok ? 'ok' : 'bad');
+        r.textContent = ok ? 'Dobrze' : (v ? 'Źle. Poprawna odpowiedź: ' + lab : 'Brak odpowiedzi. Poprawna odpowiedź: ' + lab);
+      });
+    } else if (t.type === 'match') {
+      t.items.forEach((it) => {
+        const id = `${t.id}-${it.l}`;
+        const v = document.querySelector(`[data-id="${id}"]`).value;
+        const ok = v === it.ans;
+        if (ok) score += 1;
+        const row = document.getElementById(`q-${id}`);
+        row.classList.remove('ok', 'bad'); row.classList.add(ok ? 'ok' : 'bad');
+        const f = document.getElementById(`res-${id}`);
+        f.className = 'fix'; f.style.color = ok ? '' : 'var(--ok)';
+        f.textContent = ok ? '' : '→ ' + it.ans + '. ' + t.names[+it.ans - 1];
+      });
+    } else if (t.type === 'open') {
+      t.items.forEach((it, i) => {
+        const n = i + 1;
+        const ids = it.parts > 1 ? ['a', 'b', 'c'].slice(0, it.parts).map(x => `${t.id}-${n}${x}`) : [`${t.id}-${n}`];
+        const raws = ids.map(id => document.querySelector(`[data-id="${id}"]`).value);
+        let flags;
+        if (it.groups) {
+          // odpowiedzi a, b, c: kolejność dowolna, każda musi dotyczyć innego elementu klucza
+          const sets = raws.map(r => { const s = fold(r); const m = []; if (s) it.groups.forEach((g, gi) => { if (new RegExp(g).test(s)) m.push(gi); }); return m; });
+          const usedG = new Set();
+          flags = sets.map(m => { const h = m.find(g => !usedG.has(g)); if (h === undefined) return false; usedG.add(h); return true; });
+        } else {
+          const s = fold(raws[0]);
+          flags = [s.length > 0 && it.req.every(rx => new RegExp(rx).test(s))];
+        }
+        ids.forEach((id, p) => {
+          let ok = flags[p];
+          if (acceptState[id]) ok = true;
+          if (ok) score += it.pp;
+          const sub = document.getElementById(`sub-${id}`);
+          sub.classList.remove('ok', 'bad', 'almost'); sub.classList.add(ok ? 'ok' : 'bad');
+        });
+        document.getElementById(`res-${t.id}-${n}`).textContent = 'Klucz: ' + (it.parts > 1
+          ? it.keyParts.map((k, p) => 'abc'[p] + ') ' + k).join('; ') + ' (kolejność dowolna)'
+          : it.key);
+      });
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / ${t.max} p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    document.getElementById(`tr-${t.id}`).open = true;
+    per.push({ t, score });
+  }
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: poprawna odpowiedź. Na czerwono: błędna, obok klucz. Transkrypcje pod zadaniami zostały rozwinięte. W zadaniu V możesz zaznaczyć „uznaj”, jeśli twoja odpowiedź jest poprawna, ale inna niż w kluczu, i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+let left = TOTAL, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  acceptState = {};
+  for (const k in urls) { URL.revokeObjectURL(urls[k]); delete urls[k]; }
+  clearInterval(tick); running = false; left = TOTAL; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', checkAll);
+document.getElementById('checkBottom').addEventListener('click', checkAll);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (t.type === 'mc' || t.type === 'tf') {
+      t.items.forEach((it, i) => {
+        const r = document.querySelector(`input[name="r-${t.id}-${i + 1}"][value="${it.ans}"]`);
+        if (r) r.checked = true;
+      });
+    } else if (t.type === 'match') {
+      t.items.forEach(it => {
+        const el = document.querySelector(`[data-id="${t.id}-${it.l}"]`);
+        if (el) el.value = it.ans;
+      });
+    } else if (t.type === 'open') {
+      t.items.forEach((it, i) => {
+        const n = i + 1;
+        for (let p = 0; p < it.parts; p++) {
+          const id = it.parts > 1 ? `${t.id}-${n}${'abc'[p]}` : `${t.id}-${n}`;
+          const el = document.querySelector(`[data-id="${id}"]`);
+          if (el) el.value = it.parts > 1 ? it.keyParts[p] : it.key;
+        }
+      });
+    }
+  }
+  acceptState = {};
+  document.querySelectorAll('[data-accept]').forEach(cb => { cb.checked = false; });
+  save(); updateProgress();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'sluchanie', session: '2020', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

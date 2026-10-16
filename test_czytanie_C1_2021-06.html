@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Czytanie C1 czerwiec 2021</title>
+<script src="assets/c1-common.js"></script>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.opt { display: block; padding: 4px 8px; border-radius: 6px; margin: 2px 0; cursor: pointer; }
+.opt input { margin-right: 8px; }
+.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 600; }
+.opt.bad { background: var(--bad-bg); color: var(--bad); }
+.opt.key { outline: 2px solid var(--ok); }
+.qfix { font: 600 14px/1.3 system-ui, sans-serif; color: var(--ok); margin-top: 4px; }
+.tf { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.tf .opt { margin: 0; border: 1px solid var(--line); padding: 4px 12px; }
+.frag { padding: 6px 10px; margin: 4px 0; background: var(--example); border-radius: 8px; font-size: 15px; }
+.frag b { margin-right: 6px; }
+.frag.used { opacity: .45; }
+.frag.struck { opacity: .6; font-style: italic; }
+.mrow { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.mrow .t { flex: 1 1 240px; font-weight: 600; }
+.mrow select { font: 16px system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; }
+.mrow.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.mrow.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.mrow .fix { flex-basis: 100%; }
+.gap .fix { display: inline; }
+.gap select { width: auto; max-width: 72vw; }
+.gap.cloze select { width: 9em; }
+.gap.letter select { width: 5em; }
+
+.slots { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie tekstów pisanych C1 - czerwiec 2021</span>
+    <span class="timer" id="timer">60:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Rozumienie tekstów pisanych</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja czerwiec 2021. 5 zadań, 60 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji.</p>
+  <div class="notice" id="timeUp">Czas minął (60 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+const TASKS = [
+ {
+  "id": "I",
+  "type": "match",
+  "per": 1,
+  "max": 8,
+  "title": "Zadanie I",
+  "instr": "Proszę - zgodnie z przykładem - połączyć tytuły z kolumny I z fragmentami tekstów z kolumny II. Odpowiedzi proszę wpisać do tabeli (tutaj wybierasz literę fragmentu z listy).",
+  "textTitle": "Sekrety lotu ptaków",
+  "frags": {
+   "A": "W czasie lotu tempo przemiany materii u ptaków rośnie nawet trzydziestokrotnie w porównaniu z parametrami uzyskanymi podczas pomiarów prowadzonych w czasie spoczynku. Dlatego często zdarza się, że ptaki zbierające pokarm czy polujące na bezkręgowce naziemne w czasie żerowania nie latają, ale chodzą.",
+   "B": "Wiele ptaków stosuje dwa typy lotów, aktywny i bierny - szybko machają skrzydłami, następnie przechodzą w lot ślizgowy, składając skrzydła wzdłuż ciała lub rozkładając je jak do szybowania. W drugiej fazie zwykle częściowo wytracają wysokość, by po chwili znów wzbić się w górę, przez co na dłuższym odcinku tor ich lotu przypomina sinusoidę.",
+   "C": "Wszystko, co lata, musi wytworzyć siłę nośną, która przewyższa lub przynajmniej równoważy siłę grawitacji. Siła nośna powstaje dzięki różnicy prędkości przepływu powietrza nad górną i pod dolną powierzchnią skrzydła i żeby była stała, konieczne jest przemieszczanie się do przodu, co ptaki uzyskują w locie aktywnym poprzez rytmiczne uderzenia skrzydeł.",
+   "D": "Przystosowanie do lotu polega na wytworzeniu bardzo silnych mięśni obsługujących skrzydła. U ptaków ogromne znaczenie mają mięśnie piersiowe, odpowiedzialne za ruch skrzydła w dół. Potrzebują one dużej powierzchni, do której mogą być przyczepione - służą temu tzw. grzebienie, które wytworzyły się na kościach klatki piersiowej.",
+   "E": "Ptasi szkielet ma kręgosłup, w którym część kości jest ze sobą pozrastanych, podobne połączenia występują w skrzydłach. Kości długie, do których należą udowa i ramienna, są pneumatyczne, co oznacza, że wypełniają je worki powietrzne, dzięki czemu szkielet jest lżejszy, ale jednocześnie bardziej wytrzymały na obciążenia mechaniczne.",
+   "F": "Migracje jesienne i wiosenne są okresem, w którym ptaki zwykle pokonują znaczne odległości. Niezmiernie ważne jest wówczas zoptymalizowanie wysiłku. Niektóre gatunki radzą sobie z tym, latając w kluczach, w których zawsze część osobników oszczędza siły. Trasy migracji wielu ptaków są tak dobrane, by jak najlepiej wykorzystywać prądy powietrzne oraz by możliwy był odpoczynek.",
+   "G": "Ptaki świetnie przystosowały się do lotu: nie mają uzębienia (funkcję zębów pełni dziób), nie występuje u nich pęcherz moczowy. Gruczoł kuprowy także pośrednio służy zmniejszeniu masy - jego wydzielina impregnuje pióra, przez co nie nasiąkają one wodą. Żołądek u większości gatunków przesunięty jest mocno do tyłu, dzięki czemu odpowiednio ustawia się punkt ciężkości.",
+   "H": "Liczne ptaki przed startem podskakują i odbijają się mocno nogami od gruntu, co daje im dodatkową siłę ciągnącą do góry. Inne dużo chętniej startują ze skał lub z gałęzi, dzięki czemu w czasie energicznych ruchów skrzydłami nie uderzają o ziemię oraz łatwiej nabierają siły nośnej. Ptaki wodne rozpędzają się, wykorzystując taflę wody niczym pas startowy.",
+   "I": "Jednym z niezwykle widowiskowych typów lotów są wykonywane w okresie lęgowym loty godowe ptaków. Do najbardziej spektakularnych należą wyczyny ptaków szponiastych - np. wspólny lot sczepionych szponami orlików krzykliwych czy przekazywanie pokarmu w locie u bielików. Z kolei gołębie uderzają charakterystycznie skrzydłami, wydając przy tym klaszczący dźwięk."
+  },
+  "used": "D",
+  "example": "Wszystko opiera się na mostku",
+  "titles": [
+   "Zaloty w locie",
+   "Lekkość za sprawą ewolucji",
+   "Ażurowa konstrukcja",
+   "Tryb naprzemienny",
+   "Pokonać prawo powszechnego ciążenia",
+   "Jak się poderwać",
+   "Czasem lepiej zejść na ziemię",
+   "W gromadzie siła"
+  ],
+  "src": "Na podstawie: M. Zadrąg, Tajemnice lotu ptaków, „Ptaki. Kwartalnik OTOP” 2/2019, s. 34-36.",
+  "answers": {
+   "1": "I",
+   "2": "G",
+   "3": "E",
+   "4": "B",
+   "5": "C",
+   "6": "H",
+   "7": "A",
+   "8": "F"
+  }
+ },
+ {
+  "id": "II",
+  "type": "gapfrag",
+  "per": 1,
+  "max": 10,
+  "title": "Zadanie II",
+  "instr": "Proszę przeczytać tekst i - zgodnie z przykładem - dopasować usunięte z niego zdania (A-L). Uwaga! Jeden fragment jest zbędny.",
+  "textTitle": "Nowy wyścig kosmiczny",
+  "frags": {
+   "A": "Teraz prowadzą go spółki z prywatnym kapitałem.",
+   "B": "Dla ludzkości ważniejsze od tych drogocennych metali będzie jednak inne bogactwo: woda.",
+   "C": "Naukowcy nieprzerwanie roztaczają wizje sieci kosmicznych punktów zaopatrzenia.",
+   "D": "Chociażby kosmiczne złoża uranu, które zostały już częściowo sprzedane nieznanym odbiorcom.",
+   "E": "Obecnie krąży on po orbicie wokółsłonecznej i ostatecznie ma dotrzeć do pasa asteroidów rozciągającego się pomiędzy Marsem a Jowiszem.",
+   "F": "Wielu chce się podpiąć pod tę nabierającą pędu lokomotywę, mimo że pociąga to za sobą spore koszty.",
+   "G": "Ogromne zapotrzebowanie na źródła energii jest bowiem jednym z głównych problemów lotów kosmicznych.",
+   "H": "Działalność wielkich potentatów z paru zaledwie krajów budzi jednak obawy prawników.",
+   "I": "Specjaliści z różnych dziedzin podkreślają bowiem, że całe przedsięwzięcie jest obarczone pewnym ryzykiem.",
+   "J": "Mimo wszystko wydaje się, że projekty okołokosmiczne leżą w naszym wspólnym interesie.",
+   "K": "Szacowana wartość złóż robi wrażenie nawet na sceptykach.",
+   "L": "Jednak wbrew roztaczanym wizjom nikt nie jest dziś wystarczająco przygotowany do podboju przestrzeni pozaziemskiej."
+  },
+  "used": "A",
+  "paras": [
+   "Pół wieku po lądowaniu na Księżycu rozpoczyna się kolejny kosmiczny wyścig. [[A]] Rządy kilku najpotężniejszych państw świata próbują za nimi nadążyć.",
+   "Nie minęło wiele czasu, odkąd byliśmy świadkami bezprecedensowego wydarzenia: w kosmos wystartowała rakieta z ładunkiem budzącym powszechne zainteresowanie. Był nim pojazd, w którym za kierownicą siedział manekin ubrany w skafander. {1} Dla branży wydobywczej oznacza to kolosalne zyski. Asteroidy są potencjalnym źródłem niezliczonych surowców, chociażby żelaza, tytanu czy kobaltu oraz oczywiście złota i platyny, co najbardziej rozpala umysły inwestorów. {2} Niektórzy nawet z rosnącą uwagą wsłuchują się w sugestie formułowane przez doradców finansowych, by niezwłocznie lokować kapitał w przedsiębiorstwach opracowujących metody „kosmicznego wydobycia”.",
+   "{3} Odzyskiwana z lodu występującego na niektórych planetoidach mogłaby jeszcze w kosmosie być rozbijana na płynny tlen oraz wodór i wraz z amoniakiem posłużyć do produkcji paliwa rakietowego. {4} Możliwość zasilania statków kosmicznych z wykorzystaniem surowców pozaziemskich byłaby osiągnięciem znaczącym. Pomysły nie kończą się jednak na górnictwie. {5} Dzięki takim bazom mogłaby się rozwinąć nowa astrogospodarka. Długo można by wymieniać jej sektory, poczynając od zwykłej turystyki okołoziemskiej, przez tworzenie elektrowni orbitalnych z platformami fotowoltaicznymi stale wystawionymi na światło Słońca i przesyłającymi energię elektryczną w postaci mikrofal do stacji odbiorczych na Ziemi, po usługi pogrzebowe, czyli umieszczanie ludzkich prochów w kosmosie. {6} Tylko w zeszłym roku inwestycje w przedsiębiorstwa działające na rynku kosmicznym przekroczyły 2,8 mld dol. {7} Przypominają oni traktat o przestrzeni kosmicznej z 1967 r., którego stronami są dziś 104 państwa, a który stwierdza, że jej eksploracja i wykorzystywanie powinny służyć dobru wszystkich krajów. Zabrania też obejmowania w posiadanie ciał niebieskich, takich jak planetoidy. {8} Bez względu na to, kto w kosmicznym starciu będzie dzierżył palmę pierwszeństwa. Mają być lekiem na kryzysy, które dotkną ludzkość, nim minie połowa naszego wieku: wyczerpanie surowców energetycznych, niewystarczająca ilość ziemi do produkcji żywności, zanieczyszczenia.",
+   "{9} Dotychczas powstała tylko część niezbędnych technologii, a spośród już istniejących nie wszystkie zostały w wystarczającym stopniu przetestowane. Na drodze do sukcesu mogą pojawić się jednak zupełnie nieoczekiwane przeszkody. {10} Pracownicy NASA ostrzegają, że na przykład kurz powstały przy pracach wydobywczych może uszkodzić satelity w orbicie Ziemi, z kolei politolodzy zastanawiają się, czy nowy wyścig kosmiczny po surowce doprowadzi do militaryzacji przestrzeni pozaziemskiej i prawdziwych gwiezdnych wojen."
+  ],
+  "src": "Na podstawie: https://www.polityka.pl/tygodnikpolityka/nauka/1760436,1,nowy-kosmiczny-wyscig.read",
+  "answers": {
+   "1": "E",
+   "2": "K",
+   "3": "B",
+   "4": "G",
+   "5": "C",
+   "6": "F",
+   "7": "H",
+   "8": "J",
+   "9": "L",
+   "10": "I"
+  },
+  "note": "Zbędny fragment: D."
+ },
+ {
+  "id": "III",
+  "type": "tf",
+  "per": 1,
+  "max": 8,
+  "title": "Zadanie III",
+  "instr": "Proszę przeczytać tekst, a następnie - jak w przykładzie - zaznaczyć: TAK - gdy zdanie jest zgodne z tekstem; NIE - gdy nie jest zgodne z tekstem; BI - gdy w tekście brakuje informacji na dany temat.",
+  "textTitle": "Pejzaż niemożliwy",
+  "paras": [
+   "Pod koniec listopada w pojemniku na makulaturę ustawionym na jednym z europejskich lotnisk znaleziono obraz zapakowany w kartonowe pudełko. Czy oznacza to, że miejsce pewnego francuskiego surrealisty jest dziś na śmietniku historii? Przeciwnie. Paczka zgubiona przez jednego z pasażerów trafiła do kosza przez przypadek, a płótno, choć podniszczone i pozbawione tytułu, eksperci wyceniają na co najmniej 300 tysięcy dolarów. Cała afera przyczyniła się zaś do renesansu zainteresowania artystą, który jak nikt inny wcielił surrealistyczne ideały zarówno w sztukę, jak i w życie.",
+   "Zanim został surrealistą, Yves Tanguy - syn bretońskiego kapitana żeglugi morskiej - próbował kariery marynarza. Życie na morzu nie przypadło mu jednak do gustu. Nie spodobała mu się też służba w armii, ale wyniósł z niej przyjaźń z pewnym poetą, który wprowadził go w krąg artystycznej społeczności. Yves’a początkowo fascynował styl życia cyganerii, ale w 1923 roku przez okno jednej z galerii zobaczył obraz Giorgia de Chirico. Wówczas narodził się jako artysta: zapragnął malować. Był samoukiem, ale - jak się okazało - piekielnie utalentowanym. Reszty dokonało inspirujące otoczenie, bo w kręgu jego znajomych byli najwybitniejsi przedstawiciele awangardy.",
+   "Z nastroszoną „punkową” fryzurą i cokolwiek szalonym spojrzeniem jasnych oczu malarz słynął z ekscentrycznego zachowania. Na przyjęciach zadziwiał gości, zjadając żywe pająki, a kiedy w latach 30. zaczął zarabiać pieniądze na malarstwie, lubił miąć banknoty i jak kulkami rzucać nimi w skonsternowanych mieszczan. Przeżył gorący romans z milionerką i kolekcjonerką sztuki, ale prawdziwą miłością jego życia była amerykańska surrealistka, z którą w 1939 roku wyjechał do Nowego Jorku. Związek, choć burzliwy (oboje nie stronili od używek), przetrwał aż do śmierci malarza w 1955 roku.",
+   "Niezatytułowany obraz, o którym była mowa, pochodzi z 1927 roku, wówczas Yves Tanguy miał swoją debiutancką wystawę. Już wtedy wykreował swój niepowtarzalny styl, któremu pozostał wierny do końca życia. Na pierwszy rzut oka może się wydawać, że praca przedstawia pejzaż. Podobnie jak w wielu innych jego dziełach, i w tej fantasmagorycznej przestrzeni pojawiają się formy, które wymykają się jednoznacznemu określeniu. To twory organiczne? Fenomeny geologiczne? Duchy? Jego obrazy w gruncie rzeczy są abstrakcyjne - tyle że artysta maluje abstrakcyjną wizję z niemal fotograficznym realizmem. Ten paradoks ma decydujące znaczenie dla niezwykłego wrażenia, jakie wywołują te prace."
+  ],
+  "src": "Na podstawie: S. Szabłowski, Pejzaż niemożliwy, „Zwierciadło” 2021, nr 3.",
+  "example": {
+   "stem": "W tekście nie ma informacji, kto zauważył obraz w koszu na śmieci.",
+   "ans": "TAK"
+  },
+  "qs": [
+   {
+    "stem": "Obraz, który trafił przypadkowo na śmietnik, był pozbawiony ramy.",
+    "ans": "BI"
+   },
+   {
+    "stem": "Yves zaniechał zamiaru, by pozostać w armii.",
+    "ans": "TAK"
+   },
+   {
+    "stem": "Przyjaciel malarza wywodził się z kręgu kultury cygańskiej.",
+    "ans": "BI"
+   },
+   {
+    "stem": "Artysta praktykował u najwybitniejszych twórców epoki.",
+    "ans": "NIE"
+   },
+   {
+    "stem": "Wybór drogi życiowej był dość nagłą decyzją Yves’a.",
+    "ans": "TAK"
+   },
+   {
+    "stem": "Świadkowie ekstrawaganckich wybryków artysty odnosili się do nich obojętnie.",
+    "ans": "NIE"
+   },
+   {
+    "stem": "Ostatni związek malarza można określić mianem niespokojnego, lecz trwałego.",
+    "ans": "TAK"
+   },
+   {
+    "stem": "Obrazy malarza nie poddają się oczywistemu zaszeregowaniu.",
+    "ans": "TAK"
+   }
+  ]
+ },
+ {
+  "id": "IV",
+  "type": "multi",
+  "per": 1,
+  "max": 7,
+  "title": "Zadanie IV",
+  "instr": "Proszę - zgodnie z przykładem - wpisać do tabeli, który fragment tekstu (A,B,C,D,E) zawiera wskazane treści. Uwaga! Jeden fragment może pasować do więcej niż jednej informacji podanej w tabeli. (Tutaj wybierasz literę z listy. Gdy są dwa pola, kolejność liter jest dowolna.)",
+  "textTitle": "Ciekawość",
+  "intro": "Czym właściwie jest ciekawość? Względnie stabilną cechą osobowości? Chwilowym stanem umysłu pobudzanym bodźcami zewnętrznymi? A może impulsem uruchamiającym specyficzną motywację? Oto jej właściwości:",
+  "frags": {
+   "A": "Ciekawość sprawia, że przyswajanie wiedzy staje się łatwe i zazwyczaj przyjemne. Badania wykorzystujące rezonans magnetyczny wykazały, że odczuwaniu ciekawości towarzyszy aktywizacja układu mózgowego odpowiedzialnego za przyjemność oraz wytworzenie takich połączeń neuronowych, dzięki którym zaciekawienie działa jak popęd - powodowane nim poszukiwanie informacji jest na tyle silne i naturalnie satysfakcjonujące, że sprzyja trwałemu przyswajaniu danych.",
+   "B": "Warto pamiętać, że ciekawość jest też antidotum na zaburzenia lękowe i może wpłynąć na funkcjonowanie osób z takimi przypadłościami. U cierpiących na ataki paniki wywołuje się stan zainteresowania zachęcający do wejścia w rolę uważnego obserwatora reakcji ludzi zmagających się z podobnym problemem. Z kolei u tych, którzy obawiają się społecznej oceny, można spróbować rozbudzić chęć poznania faktycznych opinii rozpowszechnianych o nich w środowisku prywatnym i zawodowym. Oceny te - po dokładnym rozpoznaniu podbudowanym ciekawością - zaskakują swoją neutralnością.",
+   "C": "Brak pełnej informacji wiąże się z niepokojem doświadczanym aż do czasu wypełnienia luk w posiadanej wiedzy. Silne napięcie emocjonalne wynikające z niepewności i braku satysfakcji z dostępnych informacji mobilizuje do zdobywania kolejnych danych, popycha nas również do analizowania skomplikowanych zagadnień, poszukiwania przyczyn różnych zjawisk, a także dociekania zależności między nimi. Po uzyskaniu określonej wiedzy napięcie ustępuje, co z kolei daje uczucie głębokiej ulgi.",
+   "D": "Swobodna eksploracja, uznawana za fundament ciekawości, jest nieskrępowanym poszukiwaniem różnych informacji i doświadczeń. Dociekanie już samo w sobie jest aktywnością dającą przyjemność, pozwala również doświadczać spełnienia płynącego ze świadomości uczenia się i rozwoju. Badania przeprowadzone na tysiącach osób dowiodły, że ten wymiar ciekawości jest kluczowy dla czerpania z pracy poczucia sensu.",
+   "E": "Poszukiwanie przygody i ekscytacji, które wypływa z nienasyconej ciekawości, może przerodzić się w gotowość do podejmowania fizycznego, społecznego i finansowego ryzyka w celu zdobywania zróżnicowanych i intensywnych doświadczeń. Postawa ta bywa wzmacniana obserwowaniem cudzych sposobów myślenia i działania oraz konfrontowaniem ich ze swoimi. Pod wpływem zdobytych w ten sposób informacji dochodzi do przewartościowania własnych poglądów i modyfikacji sposobu dotychczasowego postępowania."
+  },
+  "src": "Na podstawie: A. Tulikowska, Kolor kota martwego, „Ja, My, Oni. Poradnik Psychologiczny” 3/2019, s. 21-25.",
+  "example": {
+   "stem": "Istnieje potwierdzona zależność między ciekawością a długoterminowym przechowywaniem wiedzy w pamięci.",
+   "ans": "A"
+  },
+  "qs": [
+   {
+    "stem": "Ciekawość jest bodźcem wpływającym na transformację zachowania i zmianę przekonań.",
+    "ans": [
+     "B",
+     "E"
+    ]
+   },
+   {
+    "stem": "Zniwelowanie niedoborów poznawczych skutkuje zanikiem rozdrażnienia.",
+    "ans": [
+     "C"
+    ]
+   },
+   {
+    "stem": "Przyglądanie się sposobom rozładowywania emocji przez innych sprzyja terapii.",
+    "ans": [
+     "B"
+    ]
+   },
+   {
+    "stem": "Przejawem ciekawości bywa podejmowanie brawurowych decyzji.",
+    "ans": [
+     "E"
+    ]
+   },
+   {
+    "stem": "Zaspokajanie ciekawości przyczynia się do wywołania uczucia zadowolenia.",
+    "ans": [
+     "A",
+     "D"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "V",
+  "type": "cloze",
+  "per": 0.5,
+  "max": 7,
+  "title": "Zadanie V",
+  "instr": "Proszę - zgodnie z przykładem - podkreślić najlepszą odpowiedź spośród propozycji podanych w nawiasach (na egzaminie podkreślasz ją, tutaj wybierasz z listy).",
+  "textTitle": "Mikroplastik morski - spojrzenie z bliska",
+  "paras": [
+   "Tworzywa sztuczne w morzu to ogólnoświatowy problem. Odpady wrzucone do morza (pojawiają się, [[stają się]], tworzą się, zaczynają się) częścią wszechoceanu, którego każdy fragment połączony jest z najdalszymi obszarami w jeden wspólny system za sprawą globalnej cyrkulacji wód. Różnice gęstości mas wodnych, wiatry, prądy i {1:popędy|obroty|wiry|skręty} wodne sprawiają, że Heraklitowe panta rhei staje się rzeczywistością.",
+   "Niebezpieczeństwo {2:przepchnięcia się|przedostania się|wsunięcia się|przyłączenia się} cząstki tworzywa sztucznego do tkanek i komórek zwierzęcych jest tym większe, im mniejsza jest jej średnica. Do tej pory {3:przedstawiono|wykazano|zapewniono|uzasadniono} obecność fragmentów polimerowych w przewodach pokarmowych różnorodnych grup zwierząt oraz zaobserwowano wynikające z tego zmiany behawioralne, obniżoną odporność i wzmożoną reakcję hormonalną na stres. {4:Okruchy|Drobiny|Odpryski|Szczątki} mikroplastiku mogą krążyć również w układzie krwionośnym organizmów. Szczególnie narażone na to są grupy filtratorów, m.in. małże hodowane w przybrzeżnych zbiornikach z {5:dostępem|zasięgiem|napływem|dotarciem} do wód rzecznych. Związki chemiczne nagromadzone na powierzchni plastikowego fragmentu ze względu na znaczne {6:wymiary|rozcieńczenie|wielkości|stężenie} mogą wywołać silny efekt toksyczny.",
+   "Materiały pływające w morzu przestają być obojętne i niezauważalne. Może się jednak okazać, że ma to swoje dobre strony. Otóż postuluje się {7:zróżnicowanie|odłączenie|wyodrębnienie|odznaczenie} tzw. plastisfery, nazywanej też czasem kolejnym kontynentem. Całkowita powierzchnia mikroplastiku może się bowiem okazać w przyszłości tak duża, że {8:sprawi|wyrobi|wykona|stworzy} nową i istotną z biologicznego punktu widzenia... niszę ekologiczną. W pustce wszechoceanu każde podłoże staje się bezcenne, a pływające „sztuczne wyspy” wydają się idealne do {9:zasiedlenia|udomowienia|zasadzenia|przybycia}. Taki scenariusz już realizują niektóre organizmy planktonowe i bakterie, których jeden {10:odłam|ród|szczep|klan} okazał się na tyle inteligentny, że z czasem nauczył się nawet {11:przebywać|rozkładać|zaburzać|obrazować} trwałe zanieczyszczenia organiczne.",
+   "Trudno jednoznacznie określić ilość i rozmiary cząstek zanieczyszczających poszczególne akweny, dlatego publikuje się jedynie dane {12:błędne|średnie|szacunkowe|możliwe}. Z tego powodu utrudnione jest prowadzenie laboratoryjnych testów ekotoksykologicznych - główną przeszkodą są {13:rozbieżności|różnorodności|rozdziały|przeciwieństwa} odnośnie do wielkości cząsteczek. Do badań najczęściej wykorzystuje się kulki polistyrenu, ponieważ ich obecność nie pozostaje obojętna dla {14:korzyści|dobrostanu|pobytu|przysposobienia} stworzeń żyjących w wodach naszego globu."
+  ],
+  "src": "Na podstawie: A. Dąbrowska, Mikroplastik morski - spojrzenie z bliska, „Ptaki. Kwartalnik OTOP” 2/2019, s. 29-32.",
+  "answers": {
+   "1": "wiry",
+   "2": "przedostania się",
+   "3": "wykazano",
+   "4": "Drobiny",
+   "5": "dostępem",
+   "6": "stężenie",
+   "7": "wyodrębnienie",
+   "8": "stworzy",
+   "9": "zasiedlenia",
+   "10": "szczep",
+   "11": "rozkładać",
+   "12": "szacunkowe",
+   "13": "rozbieżności",
+   "14": "dobrostanu"
+  }
+ }
+];
+
+const MAX = 40, PASS = 24;
+const TEST_ID = 'czytanie-2021-06';
+const STORE_KEY = 'c1_czyt_2021_06_v1';
+const TOTAL_SEC = 60 * 60;
+
+// ---------- pomocnicze ----------
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {} }
+function slotCount(t) {
+  if (t.type === 'tf') return t.qs.length;
+  if (t.type === 'multi') return t.qs.reduce((s, q) => s + q.ans.length, 0);
+  return Object.keys(t.answers).length;
+}
+
+// ---------- budowanie arkusza ----------
+function textBlock(t, gapFn) {
+  let h = `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>`;
+  h += t.paras.map(p => {
+    let x = esc(p);
+    x = x.replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+    if (gapFn) x = x.replace(/\{(\d+)(?::([^}]*))?\}/g, (m, n, o) => gapFn(n, o));
+    return `<p>${x}</p>`;
+  }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+  return h;
+}
+function letterSelect(t, id, n, letters) {
+  const opts = letters.map(l => `<option value="${l}">${l}</option>`).join('');
+  return `<span class="gap letter" id="g-${id}"><select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select><sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+}
+function fragList(t) {
+  return `<div id="frags-${t.id}">` + Object.keys(t.frags).map(l =>
+    `<div class="frag${l === t.used ? ' struck' : ''}" data-l="${l}"><b>${l}.</b>${esc(t.frags[l])}${l === t.used ? ' <span class="src">(PRZYKŁAD)</span>' : ''}</div>`).join('') + `</div>`;
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    const n = slotCount(t);
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${n} x ${pl(t.per)} p. = ${t.max} p.</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    if (t.type === 'tf') {
+      html += textBlock(t);
+      html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div>${esc(t.example.stem)} <b>- ${t.example.ans}</b></div>`;
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="q" id="q-${id}"><div class="stem">${i + 1}. ${esc(q.stem)}</div><div class="tf">` +
+          ['TAK', 'NIE', 'BI'].map(v => `<label class="opt" data-v="${v}"><input type="radio" name="${id}" value="${v}">${v}</label>`).join('') +
+          `</div><div class="qfix"></div></div>`;
+      });
+    } else if (t.type === 'gapfrag') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="example-box"><div class="lbl">FRAGMENTY (A-L)</div></div>` + fragList(t);
+      html += textBlock(t, (k) => letterSelect(t, `${t.id}-${k}`, k, letters));
+    } else if (t.type === 'match') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p></div>`;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(t.example)} - <b>${t.used}</b></div>`;
+      html += `<div class="example-box"><div class="lbl">KOLUMNA II - FRAGMENTY</div></div>` + fragList(t);
+      html += `<div class="example-box" style="margin-top:12px"><div class="lbl">KOLUMNA I - TYTUŁY: wybierz literę</div></div>`;
+      t.titles.forEach((ti, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="mrow" id="g-${id}"><span class="t">${i + 1}. ${esc(ti)}</span><select data-id="${id}" aria-label="Tytuł ${i + 1}"><option value=""></option>${letters.map(l => `<option value="${l}">${l}</option>`).join('')}</select><span class="fix"></span></div>`;
+      });
+      html += `<div class="src">${esc(t.src)}</div>`;
+    } else if (t.type === 'multi') {
+      const letters = Object.keys(t.frags);
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p><p class="noindent">${esc(t.intro)}</p></div>`;
+      html += fragList(t);
+      html += `<div class="src">${esc(t.src)}</div>`;
+      html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD - O tym mówi się w:</div>${esc(t.example.stem)} <b>- ${t.example.ans}</b></div>`;
+      html += `<div class="example-box" style="margin-top:12px"><div class="lbl">O TYM MÓWI SIĘ W: wybierz literę (A-E)</div></div>`;
+      t.qs.forEach((q, i) => {
+        const k = i + 1;
+        html += `<div class="mrow" id="r-${t.id}-${k}"><span class="t">${k}. ${esc(q.stem)}</span><span class="slots">` +
+          q.ans.map((a, s) => {
+            const id = `${t.id}-${k}-${s + 1}`;
+            return `<span class="gap letter" id="g-${id}"><select data-id="${id}" aria-label="Zdanie ${k}, pole ${s + 1}"><option value=""></option>${letters.map(l => `<option value="${l}">${l}</option>`).join('')}</select></span>`;
+          }).join('') + `</span><span class="fix"></span></div>`;
+      });
+    } else if (t.type === 'cloze') {
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>` + t.paras.map(p => {
+        let x = esc(p).replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+        x = x.replace(/\{(\d+):([^}]*)\}/g, (m, k, o) => {
+          const id = `${t.id}-${k}`;
+          const opts = o.split('|').map(w => `<option value="${w}">${w}</option>`).join('');
+          return `<span class="gap cloze" id="g-${id}"><select data-id="${id}" aria-label="Luka ${k}"><option value=""></option>${opts}</select><sup class="gapno">${k}</sup><span class="fix"></span></span>`;
+        });
+        return `<p>${x}</p>`;
+      }).join('') + `</div><div class="src">${esc(t.src)}</div>`;
+    }
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('select[data-id]').forEach(el => {
+    if (saved[el.dataset.id] != null) el.value = saved[el.dataset.id];
+    el.addEventListener('change', () => { save(); updateProgress(); updateFrags(); });
+  });
+  root.querySelectorAll('input[type=radio]').forEach(el => {
+    if (saved[el.name] === el.value) el.checked = true;
+    el.addEventListener('change', () => { save(); updateProgress(); });
+  });
+  updateProgress(); updateFrags();
+}
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('select[data-id]').forEach(el => { o[el.dataset.id] = el.value; });
+  document.querySelectorAll('input[type=radio]:checked').forEach(el => { o[el.name] = el.value; });
+  return o;
+}
+function totalQuestions() {
+  return document.querySelectorAll('select[data-id]').length + document.querySelectorAll('.q').length;
+}
+function updateProgress() {
+  const o = collect();
+  const filled = Object.values(o).filter(v => v).length;
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${totalQuestions()}`;
+}
+function updateFrags() {
+  for (const t of TASKS) {
+    if (!t.frags || t.type === 'multi') continue;
+    const chosen = [...document.querySelectorAll(`#task-${t.id} select`)].map(s => s.value).filter(Boolean);
+    document.querySelectorAll(`#frags-${t.id} .frag`).forEach(f => {
+      if (f.dataset.l === t.used) return;
+      f.classList.toggle('used', chosen.includes(f.dataset.l));
+    });
+  }
+}
+
+// ---------- sprawdzanie ----------
+function check() {
+  const vals = collect();
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'tf') {
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const got = vals[id] || '';
+        const box = document.getElementById(`q-${id}`);
+        box.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad', 'key');
+          if (l.dataset.v === q.ans) l.classList.add('key');
+          if (l.dataset.v === got) l.classList.add(got === q.ans ? 'ok' : 'bad');
+        });
+        const fx = box.querySelector('.qfix');
+        if (got === q.ans) { score += t.per; fx.textContent = ''; }
+        else fx.textContent = '→ poprawna odpowiedź: ' + q.ans;
+      });
+    } else if (t.type === 'multi') {
+      t.qs.forEach((q, i) => {
+        const k = i + 1;
+        const vs = q.ans.map((_, s) => vals[`${t.id}-${k}-${s + 1}`] || '');
+        let got = 0;
+        vs.forEach((v, s) => {
+          const ok = v !== '' && q.ans.includes(v) && vs.indexOf(v) === s;
+          const gap = document.getElementById(`g-${t.id}-${k}-${s + 1}`);
+          gap.classList.remove('ok', 'bad'); gap.classList.add(ok ? 'ok' : 'bad');
+          if (ok) got++;
+        });
+        score += got * t.per;
+        document.querySelector(`#r-${t.id}-${k} > .fix`).textContent = got === q.ans.length ? '' : '→ ' + q.ans.join(', ') + (q.ans.length > 1 ? ' (kolejność dowolna)' : '');
+      });
+    } else {
+      for (const n in t.answers) {
+        const id = `${t.id}-${n}`;
+        const a = t.answers[n];
+        const raw = vals[id] || '';
+        const ok = raw !== '' && raw === a;
+        const gap = document.getElementById(`g-${id}`);
+        const fix = gap.querySelector('.fix');
+        gap.classList.remove('ok', 'bad', 'almost');
+        if (ok) { score += t.per; gap.classList.add('ok'); fix.textContent = ''; }
+        else {
+          gap.classList.add('bad');
+          fix.textContent = '→ ' + a + (t.frags ? ' (' + t.frags[a].slice(0, 60) + '...)' : '');
+        }
+      }
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / ${t.max} p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    per.push({ t, score });
+  }
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błąd, obok poprawna odpowiedź z klucza. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+let left = TOTAL_SEC, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL_SEC ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  clearInterval(tick); running = false; left = TOTAL_SEC; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', check);
+document.getElementById('checkBottom').addEventListener('click', check);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+// ---------- kontrakt Trenera C1 ----------
+function setSel(id, val) {
+  const el = document.querySelector(`select[data-id="${id}"]`);
+  if (el) el.value = val;
+}
+function setRadio(name, val) {
+  const el = document.querySelector(`input[type=radio][name="${name}"][value="${val}"]`);
+  if (el) el.checked = true;
+}
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (t.type === 'tf') t.qs.forEach((q, i) => setRadio(`${t.id}-${i + 1}`, q.ans));
+    else if (t.type === 'multi') t.qs.forEach((q, i) => q.ans.forEach((a, s) => setSel(`${t.id}-${i + 1}-${s + 1}`, a)));
+    else for (const n in t.answers) setSel(`${t.id}-${n}`, t.answers[n]);
+  }
+  save(); updateProgress(); updateFrags();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'czytanie', session: '2021-06', max: MAX, fillCorrect, check });
+</script>
+</body>
+</html>

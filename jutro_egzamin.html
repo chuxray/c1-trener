@@ -1,0 +1,829 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jutro egzamin C1</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #161615;
+  --card: #20201e;
+  --ink: #ecebe6;
+  --muted: #a3a29c;
+  --line: #34332f;
+  --accent: #7fa7e0;
+  --accent-ink: #10131a;
+  --ok: #6fcf8f;
+  --ok-bg: #173323;
+  --bad: #f08a80;
+  --bad-bg: #3a1c19;
+  --warn: #f0c25a;
+  --warn-bg: #3a2e12;
+  --example: #2c2c29;
+  --input-bg: #1a1a18;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.progress { color: var(--muted); font-size: 14px; font-variant-numeric: tabular-nums; }
+button, .btn {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+  text-decoration: none; display: inline-block;
+}
+button.primary, .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover, .btn:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 14px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0; scroll-margin-top: 64px;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h3 { font-size: 16px; margin: 18px 0 6px; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.chip { padding: 4px 12px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+a { color: var(--accent); }
+
+/* dodatki tej strony */
+h2.sec { font-size: 21px; margin: 34px 0 2px; scroll-margin-top: 64px; }
+p.sub { color: var(--muted); margin: 0 0 4px; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--muted); margin: 0 0 14px; }
+.tag {
+  display: inline-block; font: 700 11px/1 system-ui, sans-serif; letter-spacing: .06em;
+  padding: 4px 8px; border-radius: 999px; vertical-align: 1px; margin-right: 6px; white-space: nowrap;
+}
+.tag.fact { background: var(--accent); color: var(--accent-ink); }
+.tag.tip { background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok); }
+.tag.ask { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn); }
+.jump { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 6px; padding: 0; list-style: none; }
+.jump a.chip { text-decoration: none; color: var(--accent); display: inline-block; }
+.jump a.chip:hover { border-color: var(--accent); }
+.blk { border-left: 4px solid var(--line); padding: 4px 0 4px 14px; margin: 16px 0; }
+.blk.fact { border-color: var(--accent); }
+.blk.tip { border-color: var(--ok); }
+.blk.ask { border-color: var(--warn); }
+.blk.no { border-color: var(--bad); }
+.blk h3 { font-size: 13px; margin: 0 0 6px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.blk ul, .blk ol { margin: 0; padding-left: 20px; }
+.blk li { margin: 6px 0; }
+.blk p { margin: 6px 0; }
+.quick { margin: 0; padding-left: 22px; }
+.quick li { margin: 9px 0; }
+sup.fn { font-size: 11px; line-height: 0; margin-left: 2px; white-space: nowrap; }
+sup.fn a { text-decoration: none; font-weight: 700; }
+sup.fn a::before { content: "["; }
+sup.fn a::after { content: "]"; }
+.scroll { overflow-x: auto; margin: 10px 0; }
+table.t { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.t th {
+  text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: .04em;
+  color: var(--muted); padding: 6px 8px; border-bottom: 2px solid var(--line);
+}
+table.t td { padding: 7px 8px; border-top: 1px solid var(--line); vertical-align: top; }
+table.t .n { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+table.t tr.pause td { background: var(--example); color: var(--muted); font-size: 14px; text-align: center; }
+table.t tr.total td { font-weight: 700; border-top: 2px solid var(--line); }
+.tl { display: flex; gap: 3px; margin: 14px 0 6px; }
+.tl .seg {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-width: 0; height: 48px; border-radius: 6px; background: var(--accent); color: var(--accent-ink);
+  font-size: 12px; line-height: 1.2; text-align: center;
+}
+.tl .seg b { font-size: 16px; }
+.tl .pause { background: var(--example); border: 1px dashed var(--muted); }
+.tl-leg { font-size: 13px; color: var(--muted); margin: 0 0 6px; }
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 22px; }
+.calc {
+  display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center;
+  background: var(--example); padding: 10px 12px; border-radius: 8px; margin: 10px 0;
+}
+.calc input {
+  width: 5.5em; font: inherit; padding: 6px 8px; color: var(--ink);
+  border: 1px solid var(--line); border-radius: 6px; background: var(--input-bg);
+}
+.calc output { font-weight: 700; flex: 1 1 100%; }
+.check { list-style: none; margin: 0; padding: 0; }
+.check li { display: grid; grid-template-columns: 30px 1fr; gap: 10px; padding: 10px 0; border-top: 1px dashed var(--line); align-items: start; }
+.check li:first-child { border-top: 0; }
+.check input { width: 22px; height: 22px; margin: 1px 0 0; accent-color: var(--accent); }
+.check label { cursor: pointer; }
+.check li.done label { color: var(--muted); text-decoration: line-through; }
+.grp { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin: 20px 0 4px; font-weight: 700; }
+.grp:first-of-type { margin-top: 8px; }
+.grp .cnt { color: var(--muted); font-weight: 500; font-size: 14px; font-variant-numeric: tabular-nums; }
+details.more { margin: 10px 0; }
+details.more summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+ol.srcs { padding-left: 26px; margin: 8px 0; }
+ol.srcs li { margin: 10px 0; word-break: break-word; }
+ol.srcs li:target { background: var(--warn-bg); border-radius: 6px; }
+.small { font-size: 14px; color: var(--muted); }
+@media (max-width: 680px) {
+  .cols { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .bar .title { width: 100%; }
+}
+@media print {
+  header.top, .jump, .actions { display: none; }
+  .card { break-inside: avoid; }
+}
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Jutro egzamin C1</span>
+    <span class="progress" id="progress">Lista: 0/21</span>
+    <a class="btn primary" href="#lista">Lista na rano</a>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Jutro egzamin</h1>
+  <p class="lead">Sobota 17.10: część pisemna. Niedziela 18.10: część ustna. Na tej stronie jest to, co mówią oficjalne źródła o przebiegu egzaminu C1, plan czasu na każdą część i lista na wieczór i na rano. Przy faktach są numery przypisów, np. <sup class="fn"><a href="#z1">1</a></sup>, a źródła są na dole strony.</p>
+  <div class="legend">
+    <span><span class="tag fact">FAKT</span> z oficjalnego źródła, z przypisem</span>
+    <span><span class="tag tip">PORADA</span> nasza rada, nie przepis</span>
+    <span><span class="tag ask">SPRAWDŹ</span> nie ma w źródłach, patrz mail z ośrodka egzaminacyjnego</span>
+  </div>
+  <ul class="jump">
+    <li><a class="chip" href="#skrot">Najważniejsze</a></li>
+    <li><a class="chip" href="#przebieg">Przebieg soboty</a></li>
+    <li><a class="chip" href="#zaliczenie">Zaliczenie</a></li>
+    <li><a class="chip" href="#zabierz">Co zabrać</a></li>
+    <li><a class="chip" href="#sluchanie">Słuchanie</a></li>
+    <li><a class="chip" href="#czytanie">Czytanie</a></li>
+    <li><a class="chip" href="#gramatyka">Gramatyka</a></li>
+    <li><a class="chip" href="#pisanie">Pisanie</a></li>
+    <li><a class="chip" href="#ustny">Ustny</a></li>
+    <li><a class="chip" href="#lista">Lista</a></li>
+    <li><a class="chip" href="#mail">Mail z ośrodka</a></li>
+    <li><a class="chip" href="#zrodla">Źródła</a></li>
+  </ul>
+
+  <!-- ========== NAJWAŻNIEJSZE ========== -->
+  <section class="card" id="skrot">
+    <h2><span>Najważniejsze w 30 sekund</span></h2>
+    <ol class="quick">
+      <li><b>Sobota, część pisemna, po kolei:</b> Słuchanie (do 40 min), Czytanie (60 min), Gramatyka (60 min), Pisanie (90 min). To 250 minut pracy, a między częściami są przerwy.<sup class="fn"><a href="#z1">1</a><a href="#z3">3</a><a href="#z7">7</a></sup></li>
+      <li><b>Niedziela, część ustna:</b> do 20 minut. Po wylosowaniu zestawu masz ok. 10 minut na przygotowanie.<sup class="fn"><a href="#z2">2</a><a href="#z5">5</a><a href="#z7">7</a></sup></li>
+      <li><b>Próg:</b> co najmniej 60% w KAŻDEJ z pięciu części, czyli 24 z 40 punktów. W każdej części możesz stracić aż 16 punktów i nadal zdać.<sup class="fn"><a href="#z3">3</a><a href="#z8">8</a></sup></li>
+      <li><b>Weź:</b> dokument tożsamości ze zdjęciem (ośrodki podają: paszport i drugi dokument ze zgłoszenia) i własny długopis. <b>Nie bierz:</b> telefonu, słownika, notatek.<sup class="fn"><a href="#z4">4</a><a href="#z5">5</a><a href="#z6">6</a><a href="#z9">9</a></sup></li>
+      <li><b>Odpowiedzi</b> piszesz bezpośrednio w arkuszu. Po każdej części podpisany arkusz jest zbierany i nie wrócisz już do tej części.<sup class="fn"><a href="#z1">1</a></sup></li>
+      <li><span class="tag ask">SPRAWDŹ</span>Godzina, sala, spóźnienie i dłuższa przerwa na posiłek: sprawdź w mailu z ośrodka egzaminacyjnego.</li>
+    </ol>
+  </section>
+
+  <!-- ========== PRZEBIEG SOBOTY ========== -->
+  <section class="card" id="przebieg">
+    <h2><span>Sobota: przebieg dnia pisemnego</span><span class="pts">17.10</span></h2>
+    <p class="sub">Kolejność, czasy i punkty z oficjalnego arkusza z kwietnia 2024. Liczba zadań i czasy są takie same w arkuszach z lat 2021-2024.<sup class="fn"><a href="#z1">1</a><a href="#z11">11</a></sup></p>
+    <div class="scroll">
+      <table class="t">
+        <thead><tr><th>Część</th><th>Zadania</th><th class="n">Czas</th><th class="n">Punkty</th></tr></thead>
+        <tbody>
+          <tr><td><b>1. Rozumienie ze słuchu</b></td><td>5 zadań</td><td class="n">do 40 min</td><td class="n">40 p., próg 24</td></tr>
+          <tr class="pause"><td colspan="4">przerwa, co najmniej 10 minut</td></tr>
+          <tr><td><b>2. Rozumienie tekstów pisanych</b></td><td>5 zadań</td><td class="n">60 min</td><td class="n">40 p., próg 24</td></tr>
+          <tr class="pause"><td colspan="4">przerwa, co najmniej 10 minut</td></tr>
+          <tr><td><b>3. Poprawność gramatyczna</b></td><td>8 zadań</td><td class="n">60 min</td><td class="n">40 p., próg 24</td></tr>
+          <tr class="pause"><td colspan="4">przerwa, co najmniej 10 minut</td></tr>
+          <tr><td><b>4. Pisanie</b></td><td>1 zestaw do wyboru (zadania a i b albo jedno zadanie)</td><td class="n">90 min</td><td class="n">40 p., próg 24</td></tr>
+          <tr class="total"><td>Razem</td><td></td><td class="n">250 min pracy</td><td class="n">160 p.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="tl" role="img" aria-label="Oś czasu soboty: Słuchanie 40 minut, Czytanie 60, Gramatyka 60, Pisanie 90, między nimi przerwy po co najmniej 10 minut">
+      <span class="seg" style="flex: 40 1 0"><b>1</b>40 min</span>
+      <span class="seg pause" style="flex: 10 1 0" title="przerwa"></span>
+      <span class="seg" style="flex: 60 1 0"><b>2</b>60 min</span>
+      <span class="seg pause" style="flex: 10 1 0" title="przerwa"></span>
+      <span class="seg" style="flex: 60 1 0"><b>3</b>60 min</span>
+      <span class="seg pause" style="flex: 10 1 0" title="przerwa"></span>
+      <span class="seg" style="flex: 90 1 0"><b>4</b>90 min</span>
+    </div>
+    <p class="tl-leg">Niebieskie pola: części (1 Słuchanie, 2 Czytanie, 3 Gramatyka, 4 Pisanie). Szare pola: przerwy po co najmniej 10 minut. Wyliczenie: 250 minut pracy plus trzy przerwy to co najmniej 4 godziny 40 minut od początku Słuchania do końca Pisania. Jeśli przerwy trwają po 15 minut, to 4 godziny 55 minut. Do tego dochodzi wejście na salę i sprawdzenie dokumentów.<sup class="fn"><a href="#z3">3</a><a href="#z7">7</a></sup></p>
+
+    <div class="blk fact">
+      <h3><span class="tag fact">FAKT</span>Przebieg</h3>
+      <ul>
+        <li>Kolejność części: Słuchanie, Czytanie, Gramatyka, Pisanie.<sup class="fn"><a href="#z1">1</a><a href="#z7">7</a></sup></li>
+        <li>Po zakończeniu każdej części podpisane arkusze są zbierane i jest przerwa przed następną częścią.<sup class="fn"><a href="#z1">1</a></sup></li>
+        <li>Przerwa między częściami trwa co najmniej 10 minut.<sup class="fn"><a href="#z3">3</a></sup> Jeden z ośrodków podaje ok. 10-15 minut.<sup class="fn"><a href="#z7">7</a></sup></li>
+        <li>Cała część pisemna na poziomie C1 trwa nie dłużej niż 250 minut. To dokładnie 40 + 60 + 60 + 90 minut.<sup class="fn"><a href="#z3">3</a><a href="#z5">5</a><a href="#z6">6</a></sup></li>
+        <li>Słuchanie w arkuszach z lat 2021-2024 trwa do 40 minut. W starszych arkuszach próbnych (2017, 2019) było 30 minut i tyle podaje jeszcze strona UMCS.<sup class="fn"><a href="#z1">1</a><a href="#z7">7</a><a href="#z11">11</a></sup></li>
+      </ul>
+    </div>
+    <div class="blk ask">
+      <h3><span class="tag ask">SPRAWDŹ</span>W mailu z ośrodka</h3>
+      <ul>
+        <li>Godzinę rozpoczęcia, godziny przerw i to, czy w sobotę jest dłuższa przerwa na posiłek (UMCS wspomina przerwę obiadową).<sup class="fn"><a href="#z7">7</a></sup> Plan dnia z godzinami jest w mailu z ośrodka egzaminacyjnego.</li>
+      </ul>
+    </div>
+    <div class="blk tip">
+      <h3><span class="tag tip">PORADA</span>Jak przeżyć przerwy</h3>
+      <ul>
+        <li>Przerwa służy do odpoczynku. Arkusz jest już oddany, więc nie sprawdzaj w głowie poprzedniej części i nie porównuj odpowiedzi z innymi. Wypij wodę, zjedz coś małego, wyprostuj się, zrób pięć spokojnych oddechów.</li>
+        <li>Nie oddawaj arkusza przed końcem czasu. Do ostatniej minuty sprawdzaj puste miejsca.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========== ZALICZENIE ========== -->
+  <section class="card" id="zaliczenie">
+    <h2><span>Zaliczenie i wyniki</span><span class="pts">próg 24 z 40 w każdej części</span></h2>
+    <div class="blk fact">
+      <h3><span class="tag fact">FAKT</span>Zasady</h3>
+      <ul>
+        <li>Egzamin ma pięć części po 40 punktów: Słuchanie, Czytanie, Gramatyka, Pisanie (sobota) i Mówienie (niedziela). Wynik końcowy to POZYTYWNY albo NEGATYWNY.<sup class="fn"><a href="#z8">8</a></sup></li>
+        <li>Żeby zdać na poziomie C1, trzeba mieć co najmniej 60% punktów z każdego modułu części pisemnej oraz z części ustnej.<sup class="fn"><a href="#z3">3</a><a href="#z5">5</a><a href="#z6">6</a></sup> 60% z 40 punktów to 24 punkty.</li>
+        <li>Próg liczy się osobno dla każdej części. Z tego zapisu wynika, że dużo punktów w jednej części nie zastępuje braków w innej, a wynik poniżej 60% w jednej części oznacza egzamin niezdany.<sup class="fn"><a href="#z3">3</a></sup></li>
+        <li>Wynik: po zatwierdzeniu wyników przez Państwową Komisję ośrodek wysyła mail z informacją o wyniku. Osoby z wynikiem negatywnym dostają szczegółowe oceny z każdego modułu. Tak opisuje to jeden z ośrodków.<sup class="fn"><a href="#z6">6</a></sup></li>
+        <li>Certyfikat wystawia Państwowa Komisja w Warszawie, ok. 30 dni od otrzymania protokołu egzaminu.<sup class="fn"><a href="#z5">5</a><a href="#z6">6</a></sup></li>
+        <li>Wgląd w pracę: w ciągu 21 dni od informacji o wyniku ośrodek może udostępnić skany prac na prośbę zdającego.<sup class="fn"><a href="#z6">6</a></sup></li>
+      </ul>
+    </div>
+    <div class="blk ask">
+      <h3><span class="tag ask">SPRAWDŹ</span>Czego nie ma w źródłach</h3>
+      <ul>
+        <li>Dokładna data wyników. W sprawdzonych źródłach jej nie ma: sprawdź w mailu z ośrodka egzaminacyjnego.</li>
+        <li>Co dalej, gdy jedna część jest poniżej progu: czy można powtórzyć tylko tę część i kiedy. W sprawdzonych źródłach nie ma tej zasady: zapytaj w ośrodku.</li>
+      </ul>
+    </div>
+    <div class="blk tip">
+      <h3><span class="tag tip">PORADA</span>Głowa i stres</h3>
+      <ul>
+        <li>Każda część ma własny arkusz i własny próg. Zła część nie psuje następnej. Po oddaniu arkusza nic już nie zmienisz, więc w przerwie nie rozpamiętuj.</li>
+        <li>Nie licz punktów w trakcie egzaminu. Rób następne zadanie najlepiej, jak umiesz.</li>
+        <li>Gdy poczujesz panikę: wydech dłuższy niż wdech (wdech 4 sekundy, wydech 6, trzy razy), przejdź do następnego zadania i wróć później. Pamiętaj: potrzebujesz 24 z 40, nie 40 z 40.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========== CO ZABRAĆ ========== -->
+  <section class="card" id="zabierz">
+    <h2><span>Co zabrać, czego nie wolno, gdzie pisać</span></h2>
+    <div class="cols">
+      <div class="blk fact">
+        <h3><span class="tag fact">FAKT</span>Zabierz</h3>
+        <ul>
+          <li><b>Dokument tożsamości ze zdjęciem.</b> Pokazujesz go przy wejściu na salę.<sup class="fn"><a href="#z9">9</a></sup> Ośrodki wymagają ważnego paszportu i drugiego dokumentu ze zdjęciem, tego, który wpisano w zgłoszeniu.<sup class="fn"><a href="#z5">5</a><a href="#z6">6</a></sup> Weź oba.</li>
+          <li><b>Własny długopis.</b> Pisz długopisem, nie ołówkiem: odpowiedzi napisane ołówkiem nie są uwzględniane.<sup class="fn"><a href="#z5">5</a></sup> Korektor jest zakazany.<sup class="fn"><a href="#z9">9</a></sup> <span class="tag ask">SPRAWDŹ</span>kolor długopisu. <span class="tag tip">PORADA</span>Weź 2 lub 3 długopisy tego samego koloru, który dobrze widać.</li>
+          <li><b>Woda.</b> Jeden z ośrodków pozwala przynieść własną butelkę z wodą.<sup class="fn"><a href="#z5">5</a></sup> <span class="tag ask">SPRAWDŹ</span>w mailu, czy wolno mieć wodę i jedzenie w sali i na przerwie. <span class="tag tip">PORADA</span>Weź małą przekąskę na przerwy.</li>
+          <li><span class="tag tip">PORADA</span>Telefonu nie wniesiesz na salę,<sup class="fn"><a href="#z5">5</a></sup> więc adres, godzinę wejścia i numer telefonu do ośrodka miej też zapisane na kartce.</li>
+        </ul>
+      </div>
+      <div class="blk no">
+        <h3><span class="tag fact">FAKT</span>Nie wolno</h3>
+        <ul>
+          <li>Telefonów i innych urządzeń elektronicznych na sali.<sup class="fn"><a href="#z5">5</a></sup> Zakazane są urządzenia do przekazywania, odbierania i rejestrowania informacji.<sup class="fn"><a href="#z4">4</a></sup> <span class="tag tip">PORADA</span>Smartwatch też jest urządzeniem elektronicznym: zostaw go w domu.</li>
+          <li>Materiałów pomocniczych.<sup class="fn"><a href="#z4">4</a></sup> Nie bierz słownika, notatek ani ściąg.</li>
+          <li>Rozmawiania z innymi zdającymi. Komisja nie komentuje zadań i ich nie wyjaśnia. Za porozumiewanie się albo użycie urządzenia grozi unieważnienie egzaminu.<sup class="fn"><a href="#z4">4</a><a href="#z5">5</a></sup></li>
+          <li>Używania korektora i pisania ołówkiem.<sup class="fn"><a href="#z5">5</a><a href="#z9">9</a></sup></li>
+          <li>Opuszczania sali lub swojego miejsca bez zgody komisji.<sup class="fn"><a href="#z9">9</a></sup></li>
+          <li>Polecenia komisji trzeba wykonywać.<sup class="fn"><a href="#z5">5</a></sup></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="blk fact">
+      <h3><span class="tag fact">FAKT</span>Gdzie zaznaczać odpowiedzi i czym pisać</h3>
+      <ul>
+        <li>Odpowiedzi zaznaczasz i wpisujesz bezpośrednio w arkuszu. W arkuszu z kwietnia 2024 nie było osobnej karty odpowiedzi.<sup class="fn"><a href="#z1">1</a></sup></li>
+        <li>Każde zadanie ma PRZYKŁAD. Rób dokładnie tak, jak w przykładzie: w zadaniu TAK/NIE stawiasz znak X w kratce, w dopasowaniach wpisujesz numer w nawias albo do tabeli, w czytaniu V podkreślasz słowo w nawiasie, w gramatyce wpisujesz formę w lukę.<sup class="fn"><a href="#z1">1</a></sup></li>
+        <li>Arkusze są zbierane &bdquo;podpisane&rdquo;: wpisz imię i nazwisko na okładce każdej części.<sup class="fn"><a href="#z1">1</a></sup></li>
+        <li>W Pisaniu piszesz na stronach z nagłówkiem &bdquo;ZESTAW NR ... IMIĘ I NAZWISKO ZDAJĄCEGO&rdquo;. W arkuszu z 2024 jest sześć stron na tekst i trzy strony oznaczone BRUDNOPIS.<sup class="fn"><a href="#z1">1</a></sup></li>
+      </ul>
+    </div>
+    <div class="blk ask">
+      <h3><span class="tag ask">SPRAWDŹ</span>Spóźnienie i drobiazgi</h3>
+      <ul>
+        <li>Spóźnienie: w sprawdzonych źródłach nie ma zasad dotyczących spóźnienia. Sprawdź w mailu z ośrodka egzaminacyjnego.</li>
+        <li>Zegarek, kolor długopisu i to, czy możesz mieć wodę w sali: sprawdź w mailu z ośrodka.</li>
+        <li>Czy komisja ocenia strony BRUDNOPIS: w arkuszu nie ma o tym informacji. Tekst końcowy pisz na stronach do pisania.</li>
+      </ul>
+    </div>
+    <div class="blk tip">
+      <h3><span class="tag tip">PORADA</span>Spóźnienie</h3>
+      <ul>
+        <li>Wyjdź z zapasem i bądź na miejscu przed godziną z maila. Jeśli coś cię opóźni, zadzwoń od razu do ośrodka (numer jest w mailu).</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========== PLAN CZASU ========== -->
+  <h2 class="sec" id="plan">Sobota: jak rozłożyć każdą część</h2>
+  <p class="sub"><span class="tag tip">PORADA</span>Plany są nasze. Policzyliśmy je z liczby zadań i punktów w arkuszu z kwietnia 2024.<sup class="fn"><a href="#z1">1</a></sup> Liczba zadań i czasy są takie same w arkuszach z lat 2021-2024,<sup class="fn"><a href="#z11">11</a></sup> ale punkty w zadaniach i tematy mogą być inne: patrz polecenia w arkuszu. Każdy plan ma zapas na sprawdzenie.</p>
+
+  <!-- SŁUCHANIE -->
+  <section class="card" id="sluchanie">
+    <h2><span>1. Słuchanie</span><span class="pts">do 40 min, 40 p.</span></h2>
+    <div class="blk fact">
+      <h3><span class="tag fact">FAKT</span>Format</h3>
+      <ul>
+        <li>5 zadań, razem 40 punktów. Za każdą poprawną odpowiedź jest 1 punkt.<sup class="fn"><a href="#z1">1</a></sup></li>
+        <li>Zadanie I: nagranie jest odtwarzane tylko jeden raz. Zadania II-V: nagranie jest odtwarzane dwukrotnie.<sup class="fn"><a href="#z1">1</a></sup></li>
+      </ul>
+    </div>
+    <div class="scroll">
+      <table class="t">
+        <thead><tr><th>Zad.</th><th class="n">Pkt</th><th>Nagranie</th><th>Typ zadania w arkuszu 2024</th></tr></thead>
+        <tbody>
+          <tr><td><b>I</b></td><td class="n">7</td><td><b>tylko raz</b></td><td>wybór a/b/c</td></tr>
+          <tr><td><b>II</b></td><td class="n">9</td><td>dwa razy</td><td>dopasowanie: numer wpisujesz w nawias</td></tr>
+          <tr><td><b>III</b></td><td class="n">9</td><td>dwa razy</td><td>TAK / NIE (znak X)</td></tr>
+          <tr><td><b>IV</b></td><td class="n">7</td><td>dwa razy</td><td>wybór a/b/c</td></tr>
+          <tr><td><b>V</b></td><td class="n">8</td><td>dwa razy</td><td>łączenie dwóch kolumn, odpowiedzi do tabeli</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="blk tip">
+      <h3><span class="tag tip">PORADA</span>Jak to rozegrać</h3>
+      <ul>
+        <li><b>Kolejność</b> narzuca nagranie: I, II, III, IV, V. Przed każdym nagraniem przeczytaj polecenie, obejrzyj PRZYKŁAD i przejrzyj pytania. Wiesz wtedy, na co zwracać uwagę.</li>
+        <li><b>Zadanie I (tylko raz):</b> zaznaczaj odpowiedź od razu, w trakcie słuchania. Nie wracaj myślami do poprzedniego pytania, bo zgubisz następne.</li>
+        <li><b>Zadania II-V (dwa razy):</b> za pierwszym razem zaznacz to, czego jesteś pewny. Za drugim razem sprawdź tylko niepewne odpowiedzi.</li>
+        <li>Odpowiedź w nagraniu jest zwykle powiedziana innymi słowami niż w pytaniu. Opcja, która powtarza dokładnie słowa z nagrania, bywa pułapką.</li>
+        <li><b>Przenoszenie odpowiedzi:</b> w zadaniach II i V wpisujesz numery do nawiasów i do tabeli w arkuszu. Wpisuj je podczas drugiego słuchania, nie zostawiaj na koniec.</li>
+        <li><b>Nie zostawiaj pustych miejsc.</b> W opisie zadań nie ma punktów ujemnych: liczy się każda poprawna odpowiedź.<sup class="fn"><a href="#z1">1</a></sup></li>
+        <li>Jeśli zgubisz jedno pytanie, odpuść je i słuchaj dalej. Nagranie nie czeka.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CZYTANIE -->
+  <section class="card" id="czytanie">
+    <h2><span>2. Czytanie</span><span class="pts">60 min, 40 p.</span></h2>
+    <div class="blk fact">
+      <h3><span class="tag fact">FAKT</span>Format</h3>
+      <ul>
+        <li>5 zadań, 60 minut, razem 40 punktów. Zadania I, II i III mają po 1 punkcie za odpowiedź, zadania IV i V po 0,5 punktu.<sup class="fn"><a href="#z1">1</a></sup></li>
+      </ul>
+    </div>
+    <div class="scroll">
+      <table class="t">
+        <thead><tr><th>Zad.</th><th class="n">Pkt</th><th>Typ zadania w arkuszu 2024</th><th class="n">Plan</th><th class="n">Razem</th></tr></thead>
+        <tbody>
+          <tr><td><b>I</b></td><td class="n">8</td><td>wybór a/b/c, 8 pytań do tekstu</td><td class="n">10 min</td><td class="n">10</td></tr>
+          <tr><td><b>II</b></td><td class="n">9</td><td>TAK / NIE, 9 zdań</td><td class="n">10 min</td><td class="n">20</td></tr>
+          <tr><td><b>III</b></td><td class="n">10</td><td>dopasuj usunięte fragmenty A-M, dwa są zbędne</td><td class="n">12 min</td><td class="n">32</td></tr>
+          <tr><td><b>IV</b></td><td class="n">5</td><td>połącz tytuły z fragmentami, wpis do tabeli (10 x 0,5 p.)</td><td class="n">8 min</td><td class="n">40</td></tr>
+          <tr><td><b>V</b></td><td class="n">8</td><td>podkreśl najlepsze słowo w nawiasie (16 x 0,5 p.)</td><td class="n">10 min</td><td class="n">50</td></tr>
+          <tr class="total"><td></td><td class="n">40</td><td>sprawdzenie i puste miejsca</td><td class="n">10 min</td><td class="n">60</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="blk tip">
+      <h3><span class="tag tip">PORADA</span>Jak to rozegrać</h3>
+      <ul>
+        <li><b>Kolejność:</b> idź po kolei od I do V i pilnuj minut z tabeli. Jeśli jedno pytanie zabiera więcej niż 2 minuty, zaznacz kółkiem jego numer i wróć do niego na końcu.</li>
+        <li><b>Zadania I i II</b> (pytania do tekstu, TAK/NIE): najpierw przeczytaj pytania, potem tekst. Czytasz wtedy z celem i szukasz konkretnych miejsc.</li>
+        <li><b>Zadanie III</b> (fragmenty): dwa fragmenty są zbędne,<sup class="fn"><a href="#z1">1</a></sup> więc nie dopasowuj na siłę. Zaczynaj od luk, które masz pewne, i skreślaj użyte litery. Szukaj wskazówek: zaimków (to, ten, taki), spójników (jednak, dlatego, ponadto) i powtórzonych słów.</li>
+        <li><b>Zadanie IV</b> (tytuły): dopasuj pewne pary, resztę zrobisz przez eliminację.</li>
+        <li><b>Zadanie V</b> (słowo w nawiasie): czytaj całe zdanie wokół luki i wybierz słowo, które pasuje znaczeniem i połączeniem ze słowami obok.</li>
+        <li><b>Przenoszenie odpowiedzi:</b> tabelę w zadaniu IV wypełniaj od razu, nie na końcu. Jeśli jutro dostaniesz osobną kartę odpowiedzi (w arkuszu z 2024 jej nie było), zostaw na nią 5 minut i przenoś numer po numerze.</li>
+        <li><b>Ostatnie 10 minut:</b> puste pola, tabela w IV, czy w V podkreślono słowo w każdym nawiasie.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- GRAMATYKA -->
+  <section class="card" id="gramatyka">
+    <h2><span>3. Gramatyka</span><span class="pts">60 min, 40 p.</span></h2>
+    <div class="blk fact">
+      <h3><span class="tag fact">FAKT</span>Format</h3>
+      <ul>
+        <li>8 zadań, 60 minut, razem 40 punktów. Każde zadanie to 5 punktów: 10 luk po 0,5 punktu, a w zadaniu II 5 zdań po 1 punkcie.<sup class="fn"><a href="#z1">1</a></sup></li>
+        <li>W zadaniu V każde wyrażenie z ramki można użyć tylko raz, a dwa z nich są zbędne.<sup class="fn"><a href="#z1">1</a></sup></li>
+      </ul>
+    </div>
+    <div class="scroll">
+      <table class="t">
+        <thead><tr><th>Zad.</th><th class="n">Pkt</th><th>Temat w arkuszu 2024</th><th class="n">Plan</th><th class="n">Razem</th></tr></thead>
+        <tbody>
+          <tr><td><b>I</b></td><td class="n">5</td><td>liczebniki i rzeczowniki</td><td class="n">5 min</td><td class="n">5</td></tr>
+          <tr><td><b>II</b></td><td class="n">5</td><td>przekształcanie zdań (5 zdań po 1 p.)</td><td class="n">12 min</td><td class="n">17</td></tr>
+          <tr><td><b>III</b></td><td class="n">5</td><td>rzeczowniki odczasownikowe</td><td class="n">5 min</td><td class="n">22</td></tr>
+          <tr><td><b>IV</b></td><td class="n">5</td><td>przymiotniki</td><td class="n">5 min</td><td class="n">27</td></tr>
+          <tr><td><b>V</b></td><td class="n">5</td><td>wyrażenia z ramki</td><td class="n">6 min</td><td class="n">33</td></tr>
+          <tr><td><b>VI</b></td><td class="n">5</td><td>imiesłowy</td><td class="n">6 min</td><td class="n">39</td></tr>
+          <tr><td><b>VII</b></td><td class="n">5</td><td>aspekt i formy czasowników</td><td class="n">5 min</td><td class="n">44</td></tr>
+          <tr><td><b>VIII</b></td><td class="n">5</td><td>rzeczowniki, przymiotniki, zaimki</td><td class="n">5 min</td><td class="n">49</td></tr>
+          <tr class="total"><td></td><td class="n">40</td><td>sprawdzenie</td><td class="n">11 min</td><td class="n">60</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="blk tip">
+      <h3><span class="tag tip">PORADA</span>Jak to rozegrać</h3>
+      <ul>
+        <li><b>Zadania z 10 lukami:</b> jedna luka to tylko 0,5 punktu. Nie siedź nad jedną dłużej niż 30-40 sekund, zaznacz ją i wróć na końcu.</li>
+        <li><b>Zadanie II</b> (przekształcanie zdań) to 5 zdań po 1 punkcie i najwięcej pisania, dlatego ma w planie 12 minut. Pisz pełne zdania i zrób wszystkie zmiany, o które prosi polecenie (zamiana zdania złożonego na pojedyncze).</li>
+        <li>Czytaj całe zdanie wokół luki: przypadek zależy od czasownika lub przyimka, rodzaj od rzeczownika. Przy imiesłowach ustal, kto wykonuje czynność.</li>
+        <li><b>Zadanie V</b> (ramka): zaczynaj od pewnych luk i skreślaj użyte wyrażenia. Zostaną dwa zbędne.</li>
+        <li><b>Przenoszenie odpowiedzi:</b> formy wpisujesz bezpośrednio w luki w tekście. Pisz wyraźnie i z polskimi znakami (ą, ę, ó, ł, ż, ź, ć, ń, ś): w gramatyce liczy się końcówka.</li>
+        <li>W lukę wpisz jedną formę, nie dwie do wyboru.</li>
+        <li><b>Ostatnie 11 minut:</b> najpierw puste luki, potem sprawdź końcówki i polskie znaki.</li>
+      </ul>
+    </div>
+    <div class="actions"><a class="btn" href="gramatyka_sciaga.html">Ściąga i trening z gramatyki</a></div>
+  </section>
+
+  <!-- PISANIE -->
+  <section class="card" id="pisanie">
+    <h2><span>4. Pisanie</span><span class="pts">90 min, 40 p.</span></h2>
+    <div class="blk fact">
+      <h3><span class="tag fact">FAKT</span>Format i ocena</h3>
+      <ul>
+        <li>W arkuszu są trzy zestawy. Zestawy I i II mają po dwa zadania (a i b), zestaw III ma jedno zadanie. Wybierasz tylko jeden zestaw i robisz wszystkie zadania z niego.<sup class="fn"><a href="#z1">1</a></sup></li>
+        <li>Przy każdym zadaniu jest podana wymagana liczba słów. W arkuszu z 2024: zestaw I to 100 i 300 słów, zestaw II to 180 i 220 słów, zestaw III to 400 słów.<sup class="fn"><a href="#z1">1</a></sup></li>
+        <li>W arkuszach z lat 2021-2024 pojawiały się m.in.: przemówienie, list lub e-mail oficjalny, sprawozdanie, recenzja, reklama (80 słów), opowiadanie, charakterystyka, tekst argumentacyjny, esej. Zestaw III to jedno zadanie na 400 słów: esej albo tekst argumentacyjny.<sup class="fn"><a href="#z1">1</a><a href="#z11">11</a></sup></li>
+        <li>Oceniane są trzy rzeczy: wykonanie zadania (treść, forma, objętość) 10 p., środki językowe (leksyka i frazeologia, składnia, styl) 18 p., poprawność językowa (gramatyka, ortografia i interpunkcja) 12 p. Razem 40 p.<sup class="fn"><a href="#z1">1</a></sup></li>
+        <li>W zestawie z dwoma zadaniami każde zadanie jest oceniane osobno na 20 p.: treść 2,5, forma 1,5, objętość 1, leksyka 3,5, składnia 3,5, styl 2, gramatyka 4, ortografia i interpunkcja 2.<sup class="fn"><a href="#z1">1</a></sup></li>
+        <li>Karta oceny porównuje liczbę słów w pracy z liczbą wymaganych słów, w procentach.<sup class="fn"><a href="#z1">1</a></sup> Objętość jest więc oceniana: celuj w liczbę słów z polecenia.</li>
+        <li>Na stronach do pisania jest nagłówek &bdquo;ZESTAW NR ... IMIĘ I NAZWISKO ZDAJĄCEGO&rdquo;. W arkuszu z 2024 jest sześć stron na tekst i trzy strony oznaczone BRUDNOPIS.<sup class="fn"><a href="#z1">1</a></sup></li>
+      </ul>
+    </div>
+    <div class="blk ask">
+      <h3><span class="tag ask">SPRAWDŹ</span>Brudnopis</h3>
+      <ul>
+        <li>Czy komisja ocenia strony BRUDNOPIS: w arkuszu nie ma o tym informacji. Tekst końcowy pisz na stronach do pisania.</li>
+      </ul>
+    </div>
+
+    <h3>Plan czasu na 90 minut <span class="tag tip">PORADA</span></h3>
+    <div class="scroll">
+      <table class="t">
+        <thead><tr><th class="n">Minuty</th><th>Co robisz</th></tr></thead>
+        <tbody>
+          <tr><td class="n">0-5</td><td><b>Wybór zestawu.</b> Przeczytaj wszystkie trzy zestawy. Wybierz ten, w którym znasz formy i masz pomysły. W zestawie z dwoma zadaniami oba (a i b) muszą być dla ciebie wykonalne.</td></tr>
+          <tr><td class="n">5-15</td><td><b>Plan.</b> Wpisz numer zestawu i imię i nazwisko. W brudnopisie zrób plan każdego zadania: forma i adresat, 3-4 punkty (wszystkie, o które prosi polecenie), początek i zakończenie.</td></tr>
+          <tr><td class="n">15-75</td><td><b>Tekst na czysto, 60 minut.</b> Dziel czas proporcjonalnie do liczby słów (kalkulator niżej). Zaczynaj od zadania a, potem b.</td></tr>
+          <tr><td class="n">75-90</td><td><b>Sprawdzenie, 15 minut:</b> liczba słów, forma, rejestr, błędy.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="calc">
+      <label for="w1">Słowa w zadaniu a:</label>
+      <input id="w1" type="number" inputmode="numeric" min="1" max="500" value="100">
+      <label for="w2">Słowa w zadaniu b (puste przy esejcie):</label>
+      <input id="w2" type="number" inputmode="numeric" min="1" max="500" value="300">
+      <output id="wout" for="w1 w2" aria-live="polite"></output>
+    </div>
+
+    <div class="blk tip">
+      <h3><span class="tag tip">PORADA</span>Sprawdzenie: słowa, forma, rejestr</h3>
+      <ul>
+        <li><b>Liczba słów:</b> policz słowa w trzech linijkach, wylicz średnią na linijkę i pomnóż przez liczbę linijek. Przyimki i spójniki (w, i, z) też są słowami. Cel: liczba z polecenia. Brakuje słów: dopisz 1 lub 2 zdania z przykładem. Za dużo: skróć zdania, nie skreślaj całych akapitów.</li>
+        <li><b>Forma:</b> sprawdź, czy tekst wygląda jak ta forma (lista niżej).</li>
+        <li><b>Rejestr:</b> wybierz jeden i trzymaj go do końca. Formalny (Szanowni Państwo, zwracam się z prośbą, Z poważaniem; bez skrótów i potocznych słów) albo mniej formalny. Rejestr wynika z adresata w poleceniu.</li>
+        <li><b>Błędy:</b> najpierw końcówki (przypadki po przyimkach, rodzaj, liczba), potem czasowniki (aspekt, czas), potem przecinki (przed że, który, ponieważ, aby, żeby, ale), na końcu pisownia (ó/u, rz/ż, ch/h, ą/ę).</li>
+        <li><b>Poprawki:</b> skreśl błąd jedną kreską i wpisz poprawkę. Korektora nie używaj.<sup class="fn"><a href="#z9">9</a></sup></li>
+        <li><b>Brudnopis</b> służy do planu i 2 lub 3 trudnych zdań. Nie przepisuj całego tekstu z brudnopisu, bo stracisz 20 minut. Pisz od razu na czysto, według planu.</li>
+        <li><b>Brakuje czasu?</b> Dokończ krótkim zakończeniem (1 lub 2 zdania). Tekst urwany w pół zdania wygląda gorzej niż krótsze, ale zamknięte zakończenie.</li>
+      </ul>
+    </div>
+    <details class="more">
+      <summary>Co musi być w każdej formie (rozwiń) <span class="tag tip">PORADA</span></summary>
+      <div class="scroll">
+        <table class="t">
+          <thead><tr><th>Forma</th><th>Co musi być</th></tr></thead>
+          <tbody>
+            <tr><td><b>Przemówienie</b></td><td>zwrot do słuchaczy (Szanowni Państwo), okazja i cel, 2 lub 3 myśli, podziękowanie na końcu</td></tr>
+            <tr><td><b>List lub e-mail oficjalny</b></td><td>zwrot (Szanowny Panie, Szanowni Państwo), powód pisania w pierwszym zdaniu, konkretna prośba lub skarga, oczekiwanie na odpowiedź, zakończenie (Z poważaniem)</td></tr>
+            <tr><td><b>Tekst argumentacyjny, esej</b></td><td>teza, 2 lub 3 argumenty z przykładami, kontrargument i odpowiedź na niego, wniosek</td></tr>
+            <tr><td><b>Sprawozdanie</b></td><td>kto, co, gdzie, kiedy, przebieg po kolei (czas przeszły), wnioski lub ocena, styl rzeczowy</td></tr>
+            <tr><td><b>Recenzja</b></td><td>informacje o dziele (tytuł, autor, temat), ocena z uzasadnieniem (plusy i minusy), polecenie albo odradzenie</td></tr>
+            <tr><td><b>Opowiadanie</b></td><td>początek (kto, gdzie, kiedy), rozwinięcie, punkt kulminacyjny, zakończenie, czas przeszły</td></tr>
+            <tr><td><b>Charakterystyka</b></td><td>kim jest osoba lub grupa, cechy z przykładami, twoja ocena</td></tr>
+            <tr><td><b>Reklama</b></td><td>zwrot do odbiorcy, zalety, konkretna oferta, wezwanie do działania, krótko</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </details>
+    <div class="actions"><a class="btn" href="pisanie_C1.html">Trening pisania</a></div>
+  </section>
+
+  <!-- ========== USTNY ========== -->
+  <h2 class="sec" id="niedziela">Niedziela: egzamin ustny</h2>
+  <section class="card" id="ustny">
+    <h2><span>Mówienie</span><span class="pts">do 20 min, 40 p.</span></h2>
+    <div class="blk fact">
+      <h3><span class="tag fact">FAKT</span>Przebieg</h3>
+      <ul>
+        <li>Część ustna trwa do 20 minut i jest warta 40 punktów.<sup class="fn"><a href="#z2">2</a><a href="#z5">5</a><a href="#z6">6</a><a href="#z8">8</a><a href="#z10">10</a></sup> Odbywa się po części pisemnej, w dniu pisemnego albo następnego.<sup class="fn"><a href="#z7">7</a><a href="#z10">10</a></sup></li>
+        <li>Losujesz jeden z trzech zestawów.<sup class="fn"><a href="#z7">7</a><a href="#z10">10</a></sup> Po wylosowaniu zestawu masz ok. 10 minut na przygotowanie.<sup class="fn"><a href="#z2">2</a></sup> UMCS podaje &bdquo;20 min + przygotowanie&rdquo;, czyli przygotowanie jest poza tymi 20 minutami.<sup class="fn"><a href="#z7">7</a></sup></li>
+        <li>Według przykładowego arkusza Komisji: egzamin zaczyna się od bardzo krótkiej rozmowy (rozgrzewki) z członkiem komisji. Potem wykonujesz dwa zadania, w kolejności, którą wybierasz sam. To dwie wypowiedzi monologowe. W trakcie wypowiedzi komisja może zadawać pytania.<sup class="fn"><a href="#z2">2</a></sup></li>
+        <li><b>Zadanie 1:</b> wypowiedź na podstawie materiału stymulującego (obrazek i polecenie z punktami do omówienia). <b>Zadanie 2:</b> przeczytaj tekst, streść go i wyraź opinię.<sup class="fn"><a href="#z2">2</a></sup></li>
+        <li>Strony ośrodków piszą, że zestaw ma dwa lub trzy zadania.<sup class="fn"><a href="#z7">7</a><a href="#z10">10</a></sup> Przykładowy arkusz jest z 2019 roku, więc dokładne polecenia przeczytasz na kartce zestawu.</li>
+      </ul>
+    </div>
+    <h3>Jak są oceniane 40 punktów <span class="tag fact">FAKT</span><sup class="fn"><a href="#z2">2</a></sup></h3>
+    <div class="scroll">
+      <table class="t">
+        <thead><tr><th>Kryterium</th><th class="n">Punkty</th></tr></thead>
+        <tbody>
+          <tr><td><b>Wykonanie zadań</b> (razem 20 p.)</td><td class="n"></td></tr>
+          <tr><td>&nbsp;&nbsp;Zadanie 1: wypowiedź na podstawie materiału</td><td class="n">10</td></tr>
+          <tr><td>&nbsp;&nbsp;Zadanie 2: streszczenie tekstu</td><td class="n">5</td></tr>
+          <tr><td>&nbsp;&nbsp;Zadanie 2: wyrażenie opinii o problemie z tekstu</td><td class="n">5</td></tr>
+          <tr><td><b>Poprawność językowa</b> (razem 20 p.)</td><td class="n"></td></tr>
+          <tr><td>&nbsp;&nbsp;Gramatyka</td><td class="n">8</td></tr>
+          <tr><td>&nbsp;&nbsp;Słownictwo i styl</td><td class="n">8</td></tr>
+          <tr><td>&nbsp;&nbsp;Poprawność fonetyczna i płynność wypowiedzi</td><td class="n">4</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="blk ask">
+      <h3><span class="tag ask">SPRAWDŹ</span>W mailu z ośrodka</h3>
+      <ul>
+        <li>Godzinę swojego wejścia na ustny (lista zdających) i gdzie czekać.</li>
+        <li>Czy podczas przygotowania możesz robić notatki na kartce: w sprawdzonych źródłach nie ma o tym informacji. Zapytaj komisję, zanim zaczniesz się przygotowywać.</li>
+      </ul>
+    </div>
+
+    <div class="blk tip">
+      <h3><span class="tag tip">PORADA</span>Jak zacząć</h3>
+      <ul>
+        <li>Wejdź spokojnie, powiedz &bdquo;Dzień dobry Państwu&rdquo;, uśmiechnij się. Odpowiadaj pełnymi zdaniami, 2 lub 3 zdania na pytanie, nie jednym słowem.</li>
+        <li>Przygotuj trzy zdania o sobie na rozgrzewkę: skąd jesteś, od kiedy jesteś w Polsce i czym się zajmujesz, po co uczysz się polskiego.</li>
+        <li>Zacznij wypowiedź od zapowiedzi planu: &bdquo;Powiem o trzech sprawach: po pierwsze..., po drugie..., po trzecie...&rdquo;. To porządkuje myśli i pokazuje komisji strukturę.</li>
+      </ul>
+    </div>
+    <div class="blk tip">
+      <h3><span class="tag tip">PORADA</span>Plan na ok. 10 minut przygotowania</h3>
+      <div class="scroll">
+        <table class="t">
+          <thead><tr><th class="n">Minuty</th><th>Co robisz</th></tr></thead>
+          <tbody>
+            <tr><td class="n">0-1</td><td>Przeczytaj oba polecenia. Zacznij od zadania, w którym czujesz się pewniej (kolejność jest dowolna).</td></tr>
+            <tr><td class="n">1-5</td><td><b>Zadanie z materiałem:</b> hasła do KAŻDEGO punktu z polecenia, jeden przykład z życia, twoja opinia.</td></tr>
+            <tr><td class="n">5-9</td><td><b>Zadanie z tekstem:</b> podkreśl główną myśl autora i 3 argumenty. Zapisz hasła streszczenia, potem opinię: zgadzam się, nie zgadzam się albo częściowo, 2 powody, przykład.</td></tr>
+            <tr><td class="n">9-10</td><td>Powiedz w myślach pierwsze zdanie obu wypowiedzi.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="blk tip">
+      <h3><span class="tag tip">PORADA</span>W trakcie mówienia</h3>
+      <ul>
+        <li>Omów wszystkie punkty z polecenia. Za wykonanie zadania 1 jest 10 punktów, więc odhaczaj punkty z kartki.<sup class="fn"><a href="#z2">2</a></sup></li>
+        <li>Mów hasłami z notatek, nie czytaj pełnych zdań. Patrz na komisję. Mów wolniej niż zwykle i wyraźnie kończ zdania: płynność i wymowa mają osobne 4 punkty.<sup class="fn"><a href="#z2">2</a></sup></li>
+        <li><b>Streszczenie:</b> 4 do 6 zdań własnymi słowami, bez własnej opinii. Opinia ma osobne 5 punktów.<sup class="fn"><a href="#z2">2</a></sup></li>
+        <li><b>Opinia:</b> teza, 2 argumenty, przykład, wniosek.</li>
+        <li><b>Czas:</b> w źródłach nie ma podziału czasu na zadania. Orientacyjnie przyjmij 5 do 7 minut na jedną wypowiedź. Gdy omówiłeś wszystkie punkty i masz podsumowanie, możesz skończyć.</li>
+        <li><b>Pytania komisji:</b> odpowiedz spokojnie, pełnym zdaniem, potem wróć do planu: &bdquo;Wracając do mojej wypowiedzi...&rdquo;.</li>
+        <li><b>Gdy nie znasz słowa:</b> nie przerywaj i nie przepraszaj długo. Opisz je innymi słowami (&bdquo;to jest coś, co służy do...&rdquo;), użyj słowa ogólniejszego albo synonimu, zmień zdanie tak, żeby słowo nie było potrzebne. Nie przechodź na inny język. Jeśli się pomylisz, popraw jednym słowem i mów dalej.</li>
+        <li><b>Zakończenie:</b> &bdquo;Podsumowując...&rdquo;, jedno zdanie i &bdquo;Dziękuję&rdquo;.</li>
+      </ul>
+    </div>
+    <h3>Gotowe zwroty <span class="tag tip">PORADA</span></h3>
+    <div class="scroll">
+      <table class="t">
+        <thead><tr><th>Sytuacja</th><th>Zwroty</th></tr></thead>
+        <tbody>
+          <tr><td><b>Zapowiedź planu</b></td><td>Powiem o trzech sprawach: po pierwsze..., po drugie..., po trzecie...</td></tr>
+          <tr><td><b>Streszczenie</b></td><td>Tekst dotyczy... Autor zwraca uwagę na to, że... Jako przykład autor podaje... Na zakończenie autor stwierdza, że...</td></tr>
+          <tr><td><b>Opinia</b></td><td>Moim zdaniem... Zgadzam się z autorem, ponieważ... Nie do końca zgadzam się z autorem, bo... Z jednej strony..., z drugiej strony... Dobrym przykładem jest... Podsumowując...</td></tr>
+          <tr><td><b>Czas na namysł</b></td><td>To ciekawe pytanie, proszę pozwolić mi chwilę się zastanowić. Jeśli dobrze rozumiem, pytają Państwo o... Zacznę od tego, że... Chciałbym to dobrze sformułować.</td></tr>
+          <tr><td><b>Brak słowa</b></td><td>Chodzi mi o coś, co służy do... To taka osoba, która... Innymi słowy...</td></tr>
+          <tr><td><b>Pomyłka</b></td><td>Przepraszam, powinno być: ... (i mówisz dalej)</td></tr>
+          <tr><td><b>Pytanie niezrozumiałe</b></td><td>Czy mogliby Państwo powtórzyć pytanie? (użyj raz, nie więcej)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="blk tip">
+      <h3><span class="tag tip">PORADA</span>Sobotni wieczór</h3>
+      <ul>
+        <li>Po części pisemnej nie sprawdzaj odpowiedzi i nie rozmawiaj o wynikach. Przećwicz na głos dwa zestawy (po kilka minut) i idź spać.</li>
+      </ul>
+    </div>
+    <div class="actions"><a class="btn" href="mowienie_C1.html">Trening mówienia</a></div>
+  </section>
+
+  <!-- ========== LISTA ========== -->
+  <section class="card" id="lista">
+    <h2><span>Lista na wieczór i na rano</span><span class="pts" id="listCnt"></span></h2>
+    <p class="sub">Odhaczasz po kolei. Zaznaczenia zapamiętują się w tej przeglądarce.</p>
+
+    <div class="grp"><span>Dziś wieczór</span><span class="cnt" data-for="wieczor"></span></div>
+    <ul class="check" data-name="wieczor" data-main="1">
+      <li><input type="checkbox" id="c-w1"><label for="c-w1">Dokumenty w torbie: paszport i drugi dokument ze zdjęciem, ten, który wpisano w zgłoszeniu.</label></li>
+      <li><input type="checkbox" id="c-w2"><label for="c-w2">Mail z ośrodka przeczytany: godzina, adres, sala. Adres i godzina zapisane też na kartce.</label></li>
+      <li><input type="checkbox" id="c-w3"><label for="c-w3">Numer telefonu do ośrodka zapisany na kartce (gdyby coś cię opóźniło).</label></li>
+      <li><input type="checkbox" id="c-w4"><label for="c-w4">Dwa lub trzy długopisy, każdy sprawdzony. Bez ołówka i bez korektora.</label></li>
+      <li><input type="checkbox" id="c-w5"><label for="c-w5">Woda i mała przekąska na przerwy.</label></li>
+      <li><input type="checkbox" id="c-w6"><label for="c-w6">Dojazd sprawdzony: środek transportu, czas, wyjście z domu z zapasem czasu.</label></li>
+      <li><input type="checkbox" id="c-w7"><label for="c-w7">Budzik ustawiony (najlepiej dwa). Telefon naładowany.</label></li>
+      <li><input type="checkbox" id="c-w8"><label for="c-w8">Ubranie przygotowane. Najlepiej na warstwy: w sali może być zimno albo gorąco.</label></li>
+      <li><input type="checkbox" id="c-w9"><label for="c-w9">Koniec nauki najpóźniej godzinę przed snem.</label></li>
+      <li><input type="checkbox" id="c-w10"><label for="c-w10">Sen: kładę się tak, żeby spać 7 do 8 godzin.</label></li>
+    </ul>
+
+    <div class="grp"><span>Jutro rano (sobota)</span><span class="cnt" data-for="rano"></span></div>
+    <ul class="check" data-name="rano" data-main="1">
+      <li><input type="checkbox" id="c-r1"><label for="c-r1">Śniadanie: coś znanego i lekkiego. Żadnych eksperymentów.</label></li>
+      <li><input type="checkbox" id="c-r2"><label for="c-r2">Sprawdzam jeszcze raz: paszport, drugi dokument, długopisy, woda.</label></li>
+      <li><input type="checkbox" id="c-r3"><label for="c-r3">Wychodzę z domu z zapasem czasu, żeby być na miejscu przed godziną z maila.</label></li>
+      <li><input type="checkbox" id="c-r4"><label for="c-r4">Telefon wyciszony i schowany, zanim wejdę do sali.</label></li>
+      <li><input type="checkbox" id="c-r5"><label for="c-r5">W drodze nie powtarzam gramatyki. Oddycham, słucham muzyki, myślę o czymś innym.</label></li>
+      <li><input type="checkbox" id="c-r6"><label for="c-r6">Plan czasu na każdą część przeczytałem jeszcze raz w domu (w sali telefon jest zakazany).</label></li>
+    </ul>
+
+    <div class="grp"><span>Niedziela rano (ustny)</span><span class="cnt" data-for="niedziela"></span></div>
+    <ul class="check" data-name="niedziela" data-main="1">
+      <li><input type="checkbox" id="c-n1"><label for="c-n1">Dokumenty, długopis i woda w torbie, tak samo jak w sobotę.</label></li>
+      <li><input type="checkbox" id="c-n2"><label for="c-n2">Wiem, o której wchodzę na ustny i gdzie czekać.</label></li>
+      <li><input type="checkbox" id="c-n3"><label for="c-n3">Trzy zdania o sobie na rozgrzewkę powiedziane na głos.</label></li>
+      <li><input type="checkbox" id="c-n4"><label for="c-n4">Zwroty na streszczenie, opinię i czas na namysł powtórzone na głos.</label></li>
+      <li><input type="checkbox" id="c-n5"><label for="c-n5">Śniadanie i woda. Czekając na wejście, oddycham spokojnie.</label></li>
+    </ul>
+    <div class="actions"><button type="button" id="clearList">Wyczyść listę</button></div>
+  </section>
+
+  <!-- ========== MAIL ========== -->
+  <section class="card" id="mail">
+    <h2><span>Co sprawdzić w mailu z ośrodka</span><span class="pts" id="mailCnt"></span></h2>
+    <p class="sub"><span class="tag ask">SPRAWDŹ</span>Tego nie ma w oficjalnych źródłach, które sprawdziliśmy. Nie zgadujemy: odpowiedź jest w mailu z ośrodka egzaminacyjnego albo u komisji na miejscu.</p>
+    <ul class="check" data-name="mail">
+      <li><input type="checkbox" id="c-m1"><label for="c-m1">Godzina rozpoczęcia soboty i godzina, o której trzeba być na miejscu.</label></li>
+      <li><input type="checkbox" id="c-m2"><label for="c-m2">Adres, wejście i sala.</label></li>
+      <li><input type="checkbox" id="c-m3"><label for="c-m3">Plan dnia: godziny części i przerw, i czy jest dłuższa przerwa na posiłek.</label></li>
+      <li><input type="checkbox" id="c-m4"><label for="c-m4">Dokumenty: czy wymagany jest paszport i drugi dokument ze zdjęciem.</label></li>
+      <li><input type="checkbox" id="c-m5"><label for="c-m5">Co wolno mieć w sali: woda, jedzenie, zegarek. Kolor długopisu.</label></li>
+      <li><input type="checkbox" id="c-m6"><label for="c-m6">Co się dzieje przy spóźnieniu.</label></li>
+      <li><input type="checkbox" id="c-m7"><label for="c-m7">Godzina ustnego w niedzielę i gdzie czekać.</label></li>
+      <li><input type="checkbox" id="c-m8"><label for="c-m8">Kiedy i jak będą wyniki oraz zasady powtórki, gdy jedna część jest poniżej progu.</label></li>
+    </ul>
+  </section>
+
+  <!-- ========== ZRODLA ========== -->
+  <section class="card" id="zrodla">
+    <h2><span>Źródła i przypisy</span></h2>
+    <ol class="srcs">
+      <li id="z1">Arkusz egzaminacyjny C1, sesja 20-21 kwietnia 2024, Państwowa Komisja ds. Poświadczania Znajomości Języka Polskiego jako Obcego. Źródło dla: liczby zadań, czasu i punktów każdej części, liczby odtworzeń nagrań, poleceń zadań, zbierania podpisanych arkuszy i przerw, zestawów i kryteriów w Pisaniu, karty oceny. <a href="https://certyfikatpolski.pl/wp-content/uploads/2025/02/20-21.04.2024-C1_arkusz_egzaminacyjny.pdf" rel="noopener">certyfikatpolski.pl, arkusz kwiecień 2024</a></li>
+      <li id="z2">Przykładowy arkusz C1 (TEST PRZYKŁADOWY) z częścią Mówienie: instrukcja, kryteria oceny i zadania części ustnej, Państwowa Komisja, wrzesień 2019. <a href="https://certyfikatpolski.pl/wp-content/uploads/2019/09/C1_test.pdf" rel="noopener">certyfikatpolski.pl, C1_test.pdf</a></li>
+      <li id="z3">Rozporządzenie Ministra Nauki i Szkolnictwa Wyższego z 14 lutego 2025 r. w sprawie egzaminów z języka polskiego jako obcego (Dz.U. 2025 poz. 217), obowiązuje od 22 lutego 2025. Zapisy: część pisemna na poziomie C1 trwa nie dłużej niż 250 minut (§ 14), przerwa między modułami co najmniej 10 minut (§ 16 ust. 1 pkt 3), co najmniej 60% punktów z każdego modułu części pisemnej i z części ustnej (§ 23 ust. 1 pkt 1 lit. c). Numery paragrafów podajemy za fragmentami tekstu z OpenLEX i za poprzednim rozporządzeniem <sup class="fn"><a href="#z4">4</a></sup>. <a href="https://eli.gov.pl/eli/DU/2025/217/ogl" rel="noopener">eli.gov.pl, dane aktu</a>, <a href="https://sip.lex.pl/akty-prawne/dzu-dziennik-ustaw/egzaminy-z-jezyka-polskiego-jako-obcego-22112966" rel="noopener">OpenLEX, tekst</a></li>
+      <li id="z4">Poprzednie rozporządzenie Ministra Nauki i Szkolnictwa Wyższego z 26 lutego 2016 r. (Dz.U. 2016 poz. 405), uznane za uchylone od 2 stycznia 2025. Korzystamy z niego tylko jako uzupełnienia: § 12 (sprawdzenie tożsamości, zakaz materiałów pomocniczych i urządzeń), § 13 (zakaz porozumiewania się, komisja nie komentuje zadań), § 19 (unieważnienie egzaminu). <a href="https://api.sejm.gov.pl/eli/acts/DU/2016/405/text.html" rel="noopener">api.sejm.gov.pl, tekst z 2016</a></li>
+      <li id="z5">Regulamin egzaminów certyfikatowych z języka polskiego jako obcego, Ośrodek Języka Polskiego i Kultury Polskiej, Uniwersytet w Siedlcach, 1 grudnia 2023 (pkt 8 i 13-25: dokumenty, długopis, telefony, woda, czas egzaminu, progi, certyfikat). <a href="https://ojp.uws.edu.pl/images/files/Regulamin_egzamin%C3%B3w_OJP_UwS.pdf" rel="noopener">ojp.uws.edu.pl, regulamin</a></li>
+      <li id="z6">Regulamin egzaminów certyfikatowych z języka polskiego jako obcego, Centrum POLISH LAB, Politechnika Białostocka, aktualizacja 9 września 2024 (pkt 10 i 15-20: dokumenty, czas, progi, informacja o wyniku, certyfikat, wgląd w prace). <a href="https://pb.edu.pl/sjo/wp-content/uploads/sites/9/2025/09/Centrum-POLISH-LAB-PB-Regulamin-egzaminow-certyfikatowych-z-jezyka-polskiego-jako-obcego.pdf" rel="noopener">pb.edu.pl, regulamin</a></li>
+      <li id="z7">Uniwersytet Marii Curie-Skłodowskiej w Lublinie, strona &bdquo;Struktura egzaminu&rdquo;: kolejność modułów, przerwa ok. 10-15 minut po części pisemnej, część ustna dzień po pisemnej, 20 min + przygotowanie, losowanie zestawu. <a href="https://www.umcs.pl/pl/struktura-egzaminu,11929.htm" rel="noopener">umcs.pl, struktura egzaminu</a></li>
+      <li id="z8">Arkusz C1, sesja 8-9 maja 2021, okładka z tabelą punktacji (pięć części po 40 p., wynik pozytywny lub negatywny). <a href="https://certyfikatpolski.pl/wp-content/uploads/2026/07/2021.05.8-9_C1_Arkusz_egzaminacyjny.pdf" rel="noopener">certyfikatpolski.pl, arkusz maj 2021</a></li>
+      <li id="z9">certyfikatpolski.pl, &bdquo;Wskazówki dla zdających&rdquo;: dokument tożsamości ze zdjęciem okazywany przy wejściu na salę, zakaz korektora i pisania ołówkiem, zakaz opuszczania sali lub miejsca bez zgody. Strona nie otworzyła się przy pobieraniu (błąd 403), treść podajemy za fragmentami z wyszukiwarki. <a href="https://certyfikatpolski.pl/o-egzaminie/wskazowki-dla-zdajacych/" rel="noopener">certyfikatpolski.pl, wskazówki</a></li>
+      <li id="z10">certyfikatpolski.pl, &bdquo;Struktura egzaminu&rdquo;: część ustna na poziomie C1 do 20 minut, losowanie jednego z trzech zestawów, część ustna w dniu pisemnej albo następnego, próg 60%. Strona nie otworzyła się przy pobieraniu (błąd 403), treść podajemy za fragmentami z wyszukiwarki. <a href="https://certyfikatpolski.pl/o-egzaminie/struktura-egzaminu/" rel="noopener">certyfikatpolski.pl, struktura</a></li>
+      <li id="z11">Arkusze C1 z sesji 2021-2023 (liczba zadań, czasy, zestawy w Pisaniu): <a href="https://certyfikatpolski.pl/wp-content/uploads/2025/07/2023_11_18_19_C1_arkusz_egzaminacyjny.pdf" rel="noopener">listopad 2023</a>, <a href="https://certyfikatpolski.pl/wp-content/uploads/2025/07/2023_04_15_16_C1_arkusz_egzaminacyjny.pdf" rel="noopener">kwiecień 2023</a>, <a href="https://certyfikatpolski.pl/wp-content/uploads/2026/01/2022.11.5-6_C1_Arkusz_egzaminacyjny.pdf" rel="noopener">listopad 2022</a>, <a href="https://certyfikatpolski.pl/wp-content/uploads/2026/01/2022.03.26-27_C1_Arkusz_egzaminacyjny.pdf" rel="noopener">marzec 2022</a>, maj 2021 <sup class="fn"><a href="#z8">8</a></sup>.</li>
+    </ol>
+    <p class="small">Uwaga o źródłach: arkusze (1, 2, 8, 11) odczytaliśmy z plików Komisji zapisanych w folderze projektu. Rozporządzenie z 2025 roku sprawdziliśmy w danych aktu i we fragmentach tekstu, bez pełnego tekstu. Regulaminy ośrodków (5, 6) i strona UMCS (7) dotyczą konkretnych ośrodków: u twojego mogą być drobne różnice. Wszystko, czego nie potwierdziły te źródła, oznaczyliśmy jako SPRAWDŹ: odpowiedź jest w mailu z ośrodka egzaminacyjnego.</p>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var KEY = 'c1_jutro_v1';
+  var state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { state = {}; }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  var boxes = Array.prototype.slice.call(document.querySelectorAll('.check input[type="checkbox"]'));
+
+  function counts() {
+    var lists = document.querySelectorAll('ul.check');
+    var mainDone = 0, mainAll = 0;
+    Array.prototype.forEach.call(lists, function (ul) {
+      var inputs = ul.querySelectorAll('input[type="checkbox"]');
+      var done = 0;
+      Array.prototype.forEach.call(inputs, function (b) { if (b.checked) done++; });
+      var txt = done + '/' + inputs.length;
+      var name = ul.getAttribute('data-name');
+      var el = document.querySelector('.cnt[data-for="' + name + '"]');
+      if (el) el.textContent = txt;
+      if (name === 'mail') {
+        var m = document.getElementById('mailCnt');
+        if (m) m.textContent = 'sprawdzone: ' + txt;
+      }
+      if (ul.getAttribute('data-main')) { mainDone += done; mainAll += inputs.length; }
+    });
+    var p = document.getElementById('progress');
+    if (p) p.textContent = 'Lista: ' + mainDone + '/' + mainAll;
+    var c = document.getElementById('listCnt');
+    if (c) c.textContent = 'zrobione: ' + mainDone + '/' + mainAll;
+  }
+
+  boxes.forEach(function (b) {
+    if (state[b.id]) b.checked = true;
+    var li = b.parentNode;
+    if (li && li.classList) li.classList.toggle('done', b.checked);
+    b.addEventListener('change', function () {
+      if (b.checked) state[b.id] = 1; else delete state[b.id];
+      if (li && li.classList) li.classList.toggle('done', b.checked);
+      save();
+      counts();
+    });
+  });
+  counts();
+
+  var clr = document.getElementById('clearList');
+  if (clr) {
+    var armed = false, timer = null;
+    clr.addEventListener('click', function () {
+      if (!armed) {
+        armed = true;
+        clr.textContent = 'Na pewno? Kliknij jeszcze raz';
+        timer = setTimeout(function () { armed = false; clr.textContent = 'Wyczyść listę'; }, 4000);
+        return;
+      }
+      clearTimeout(timer);
+      armed = false;
+      clr.textContent = 'Wyczyść listę';
+      boxes.forEach(function (b) {
+        b.checked = false;
+        if (b.parentNode && b.parentNode.classList) b.parentNode.classList.remove('done');
+      });
+      state = {};
+      save();
+      counts();
+    });
+  }
+
+  // kalkulator czasu pisania: 60 minut na tekst na czysto dzielone proporcjonalnie do liczby słów
+  var w1 = document.getElementById('w1'), w2 = document.getElementById('w2'), out = document.getElementById('wout');
+  function calc() {
+    if (!w1 || !w2 || !out) return;
+    var a = parseInt(w1.value, 10), b = parseInt(w2.value, 10), W = 60;
+    if (!(a > 0)) { out.textContent = 'Wpisz liczbę słów z polecenia.'; return; }
+    if (!(b > 0)) { out.textContent = 'Jedno zadanie: ok. ' + W + ' minut pisania na czysto.'; return; }
+    var t1 = Math.round(W * a / (a + b)), t2 = W - t1;
+    out.textContent = 'Zadanie a: ok. ' + t1 + ' min, zadanie b: ok. ' + t2 + ' min (razem ' + W + ' min pisania na czysto).';
+  }
+  if (w1 && w2) {
+    ['input', 'change'].forEach(function (ev) {
+      w1.addEventListener(ev, calc);
+      w2.addEventListener(ev, calc);
+    });
+  }
+  calc();
+})();
+</script>
+</body>
+</html>

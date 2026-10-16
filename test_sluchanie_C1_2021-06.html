@@ -1,0 +1,899 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Słuchanie C1 czerwiec 2021</title>
+<script src="assets/c1-common.js"></script>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.q label.opt { display: flex; gap: 8px; align-items: flex-start; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+.q label.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.q label.opt.bad { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.q.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.q.row .stem { flex: 1 1 320px; margin: 0; font-weight: 400; }
+.q select { font: 16px/1.2 system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; max-width: 72vw; }
+.q .slot.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.q .slot.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.slots { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.q .fix { font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); }
+.audio { background: var(--example); border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; }
+.audio audio { width: 100%; margin-top: 8px; }
+.audio .fname { font-size: 13px; color: var(--muted); margin-left: 6px; }
+details.tr { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--input-bg); }
+details.tr summary { cursor: pointer; font-weight: 700; }
+details.tr .warn { color: var(--warn); font-size: 14px; font-weight: 600; }
+details.tr p { font-family: Georgia, serif; font-size: 16px; margin: 8px 0; }
+.legend { display: grid; gap: 4px; margin: 0 0 12px; padding: 10px 12px; background: var(--example); border-radius: 8px; font-size: 15px; }
+.tf { display: flex; gap: 14px; }
+
+/* zadanie V: odpowiedzi otwarte */
+.sub { display: flex; gap: 8px; align-items: center; margin: 4px 0; flex-wrap: wrap; }
+.sub .lab { font-weight: 700; width: 1.4em; }
+.sub input[type=text] { flex: 1 1 260px; font: 16px/1.2 system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 6px 8px; }
+.sub input[type=text]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.sub.ok input[type=text] { border-color: var(--ok); background: var(--ok-bg); }
+.sub.bad input[type=text] { border-color: var(--bad); background: var(--bad-bg); }
+.keyline { font-size: 14px; color: var(--ok); font-weight: 600; margin-top: 4px; }
+details.tr p.trsrc { font-family: system-ui, sans-serif; font-size: 13px; color: var(--muted); margin-top: -2px; }
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie ze słuchu C1 - czerwiec 2021</span>
+    <span class="timer" id="timer">40:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+<div class="wrap">
+  <h1>Rozumienie ze słuchu</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja czerwiec 2021. 5 zadań, do 40 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji. W każdym zadaniu wczytaj plik z nagraniem. Na egzaminie zadanie I słucha się raz, zadania II-V dwa razy.</p>
+  <div class="notice" id="timeUp">Czas minął (40 minut). Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+<script>
+const TASKS = [
+ {
+  "id": "I",
+  "title": "Zadanie I",
+  "ptsLabel": "7 x 1 p. = 7 p.",
+  "kind": "radio",
+  "plays": "Nagranie zostanie odtworzone tylko jeden raz.",
+  "instr": "Proszę wysłuchać kilku krótkich tekstów informacyjnych i zaznaczyć właściwe odpowiedzi.",
+  "example": {
+   "stem": "Z tego nagrania wynika, że",
+   "opts": [
+    "pokrzywdzony mężczyzna otrzymał już odszkodowanie.",
+    "mężczyzna został niesprawiedliwie pozbawiony wolności.",
+    "dzięki odszkodowaniu mężczyzna zapomni o wyrządzonej mu krzywdzie."
+   ],
+   "ans": "b",
+   "src": "Na podstawie: https://audycje.tokfm.pl/podcast/101760"
+  },
+  "items": [
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "informacja o prawach Szwajcarek współgra z powszechnym postrzeganiem Szwajcarii.",
+     "b": "mówiący krytykuje brak powszechnej wiedzy na temat demokracji w krajach europejskich.",
+     "c": "informacja o prawie wyborczym Szwajcarek budzi zdumienie mówiącego."
+    },
+    "key": "c",
+    "src": "Na podstawie: https://audycje.tokfm.pl/podcast/101699"
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "UNESCO domaga się wprowadzenia obowiązkowej edukacji ekologicznej.",
+     "b": "obecnie rządzący nie planują działań na rzecz edukacji ekologicznej.",
+     "c": "rząd wzywa młode pokolenie do walki ze zmianami klimatycznymi."
+    },
+    "key": "b",
+    "src": "Na podstawie: https://audycje.tokfm.pl/podcast/101746"
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "branża medialna interpretuje nowe obowiązki fiskalne inaczej niż rząd.",
+     "b": "rząd chce ograniczyć publikowanie reklam w prasie.",
+     "c": "nowe podatki dotkną też placówki kulturalne oraz medyczne."
+    },
+    "key": "a",
+    "src": "Na podstawie: https://audycje.tokfm.pl/podcast/101814"
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "hakerzy uzyskali wgląd do danych osobowych.",
+     "b": "przestępcy ujawnili dane firmy.",
+     "c": "firma nie uległa szantażowi hakerów."
+    },
+    "key": "c",
+    "src": "Na podstawie: https://audycje.tokfm.pl/podcast/101821"
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "w książce został poruszony trudny temat.",
+     "b": "w książce nie brakuje niecenzuralnych wyrazów.",
+     "c": "dziennikarz podczas prezentacji posiłkuje się cytatami z książki."
+    },
+    "key": "b",
+    "src": "Na podstawie: https://audycje.tokfm.pl/podcast/101961"
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "żadnemu z polskich zawodników nie udało się stanąć na podium.",
+     "b": "reprezentant Słowenii pokonał Halvora Egnera Graneruda.",
+     "c": "Dawid Kubacki wygrał zawody w skokach narciarskich w Zakopanem."
+    },
+    "key": "a",
+    "src": "Na podstawie: https://audycje.tokfm.pl/podcast/102050"
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "w nadchodzących dniach będzie cieplej.",
+     "b": "nie należy spodziewać się opadów.",
+     "c": "w sobotę i niedzielę zapanuje mróz."
+    },
+    "key": "a",
+    "src": "Na podstawie: https://audycje.tokfm.pl/podcast/102063"
+   }
+  ],
+  "tr": [
+   "Przykład: Tomasz Komenda ma dostać prawie 13 milionów złotych od państwa, które niesłusznie wsadziło go do więzienia na 18 lat. W reakcji na wyrok mówi: „Żadne pieniądze tego nie wynagrodzą”. Pyta, kto jest gotów zamknąć się na 18 lat za 13 milionów.",
+   "Na podstawie: https://audycje.tokfm.pl/podcast/101760",
+   "1. Tak się akurat składa, że nasza rozmowa ma miejsce dokładnie 50 lat po tym, jak Szwajcarki uzyskały prawa wyborcze. Tym samym Szwajcaria jest ostatnim w Europie krajem z równouprawnieniem. Przyznam, że jest to wiadomość zaskakująca z wielu powodów. Po pierwsze, no, Szwajcaria jawi nam się jako jedna z kolebek demokracji. Po drugie, równouprawnienie to coś naturalnego.",
+   "Na podstawie: https://audycje.tokfm.pl/podcast/101699",
+   "2. Na wsparcie rządu w walce o proekologiczne społeczeństwo i realia na razie raczej nie mamy co liczyć. Edukacja ekologiczna jest dziś jednak koniecznością, zwłaszcza w przypadku dzieci i młodzieży. UNESCO apeluje, że to niezwykle ważny element w zabezpieczaniu losów przyszłych pokoleń i zatrzymaniu postępującego kryzysu klimatycznego.",
+   "Na podstawie: https://audycje.tokfm.pl/podcast/101746",
+   "3. Wydawcy medialni ostro protestują przeciwko nowemu podatkowi, który rząd nazywa składką - składką na służbę zdrowia czy na ochronę zabytków. Tak naprawdę to haracz od reklam i zagrożenie dla wolności prasy.",
+   "Na podstawie: https://audycje.tokfm.pl/podcast/101814",
+   "4. Firma „CD Project Red” padła ofiarą hakerów w Dniu Bezpiecznego Internetu. Zdobyli oni albo przynajmniej ogłosili, że zdobyli dostęp do kodów źródłowych do gier. Zażądali pieniędzy, grożąc upublicznieniem tych zdobytych danych. Na to firma odpowiedziała, że nie ma zamiaru negocjować z hakerami i zgłosiła sprawę odpowiednim służbom.",
+   "Na podstawie: https://audycje.tokfm.pl/podcast/101821",
+   "5. Przez kilkadziesiąt najbliższych minut zajmiemy się książką, o której po pierwsze trudno opowiedzieć w radiu, dlatego że zastanawiałem się często, kiedy mamy taką książkę, o której trudno się opowiada, to posługujemy się czy wyręczamy się cytatami. Tutaj próbowałem znaleźć cytat taki dłuższy, gdzie nie byłoby słów uważanych za wulgarne i był to spory problem.",
+   "Na podstawie: https://audycje.tokfm.pl/podcast/101961",
+   "6. W Zakopanem weekend skoków narciarskich. Halvor Egner Granerud zwyciężył w niedzielnym konkursie w Zakopanem. Wyprzedził o dwa i dziewięć dziesiątych punktu Słoweńca Anze Laniska. Najlepszy z Polaków był Dawid Kubacki - szósty, Klemens Murańka - dziewiętnasty, Kamil Stoch - dwudziesty trzeci.",
+   "Na podstawie: https://audycje.tokfm.pl/podcast/102050",
+   "7. Nawet 11 stopni, tak wynika z prognoz, w niektórych miejscach będzie w weekend - 11 plus dodam, bo możemy mieć wrażenie, że na minus, biorąc pod uwagę obecne temperatury. Dziś jeszcze w wielu miejscach pada śnieg. W weekend też będzie padało, ale w związku z dodatnimi temperaturami - deszcz.",
+   "Na podstawie: https://audycje.tokfm.pl/podcast/102063"
+  ]
+ },
+ {
+  "id": "II",
+  "title": "Zadanie II",
+  "ptsLabel": "8 x 1 p. = 8 p.",
+  "kind": "tf",
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać wypowiedzi na temat nowelizacji ustawy o przeciwdziałaniu nielegalnemu obrotowi pieniędzmi i zaznaczyć: TAK - gdy zdanie jest zgodne z tekstem; NIE - gdy nie jest zgodne z tekstem.",
+  "example": {
+   "stem": "Nowelizacja ustawy jest obecnie na etapie akceptacji przez prezydenta.",
+   "ans": "TAK"
+  },
+  "items": [
+   {
+    "stem": "Obecna ustawa weszła w życie przeszło dwa lata temu.",
+    "key": "NIE"
+   },
+   {
+    "stem": "Wprowadzone zmiany są konieczne dla spełnienia norm Unii Europejskiej.",
+    "key": "TAK"
+   },
+   {
+    "stem": "Obie modyfikacje wiążą się z wymogami stawianymi kadrze zarządzającej.",
+    "key": "NIE"
+   },
+   {
+    "stem": "W myśl nowelizacji ustawy brak doświadczenia kadry kierowniczej mogą kompensować odpowiednie kursy.",
+    "key": "TAK"
+   },
+   {
+    "stem": "Roczne doświadczenie nie spełnia wymogu znawstwa tematyki.",
+    "key": "NIE"
+   },
+   {
+    "stem": "Nowe przepisy mają zagwarantować bezpieczeństwo przedsiębiorcom.",
+    "key": "NIE"
+   },
+   {
+    "stem": "Łączna kara finansowa dla zarządu firmy może wynieść milion złotych.",
+    "key": "NIE"
+   },
+   {
+    "stem": "Obecne przepisy wciąż wymagają dopracowania i uściślenia.",
+    "key": "TAK"
+   }
+  ],
+  "src": "Na podstawie: https://www.youtube.com/watch?v=6vjl2ZkA6eA&ab_channel=CEOMAGAZYNPOLSKA-TV",
+  "tr": [
+   "W ostatnim czasie kolejna już nowelizacja ustawy o przeciwdziałaniu praniu pieniędzy oraz finansowaniu terroryzmu trafiła do podpisu prezydenta. Wprowadzenie kolejnych zmian w tej obowiązującej od niespełna dwóch lat ustawie tym razem jest konsekwencją, rezultatem rozpoczęcia przez Komisję Europejską procedury przeciwko Polsce w związku z niepełną implementacją dyrektywy AML-4. Nowelizacja ma więc na celu dostosowanie obowiązującej ustawy do przepisów unijnych, w szczególności poprzez wprowadzenie dwóch zmian. Pierwszą z nich jest wprowadzenie takich przepisów, które będą gwarantowały wymóg spełnienia kompetencji i reputacji przez osoby zajmujące kierownicze stanowiska w przedsiębiorstwach, a drugą zmianą jest rozszerzenie katalogu podmiotów, na które może zostać nałożona kara pieniężna w związku z brakiem realizacji ustawowych obowiązków.",
+   "Nowelizacja zakłada więc wprowadzenie wymogu posiadania doświadczenia lub wiedzy przez osoby zajmujące kierownicze stanowiska w działalnościach. Wymóg ten zostanie uznany za spełniony po pierwsze w przypadku odbycia, ukończenia szkolenia lub kursu obejmującego zagadnienia prawne lub praktyczne związane z daną działalnością lub w razie wykazania prowadzenia takiej działalności czy świadczenia takich usług przez okres co najmniej roku. Te przepisy w intencji ustawodawcy mają zapewnić, zwiększyć bezpieczeństwo obrotu i zapewnić komfort osobom, które dokonują transakcji czy korzystają z usług takich przedsiębiorców.",
+   "Najwięcej emocji budzi jednak rozszerzenie, wprowadzenie możliwości stosowania kar i środków w stosunku do członków organów zarządzających i w stosunku do innych osób fizycznych odpowiedzialnych za realizację ustawowych obowiązków.",
+   "Zgodnie z nowelizacją m.in przedstawiciele kadry kierowniczej będą mogli zostać pociągnięci do osobistej odpowiedzialności finansowej za niedopełnienie ustawowych obowiązków, a kary na nich nałożone mogą wynosić nawet do miliona złotych. Nie sposób nie zauważyć, że ustawodawca, chcąc uszczelnić system gospodarczy, wprowadza coraz więcej środków represyjnych, obciąża obowiązkiem dodatkowe podmioty, nie precyzując i nie ujednolicając jednocześnie obowiązujących przepisów, tak, aby rozwiać ciągle mnożące się wątpliwości w zakresie ich stosowania.",
+   "Na podstawie: https://www.youtube.com/watch?v=6vjl2ZkA6eA&ab_channel=CEOMAGAZYNPOLSKA-TV"
+  ]
+ },
+ {
+  "id": "III",
+  "title": "Zadanie III",
+  "ptsLabel": "8 x 1 p. = 8 p.",
+  "kind": "radio",
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać wywiadu z Maryną Gąsienicą-Daniel, polską narciarką alpejską, i zaznaczyć właściwe odpowiedzi.",
+  "example": {
+   "stem": "Maryna Gąsienica-Daniel",
+   "opts": [
+    "od 10 lat zwycięża w zawodach w narciarstwie alpejskim.",
+    "obecnie jest najlepszą polską zawodniczką w narciarstwie alpejskim.",
+    "w tym sezonie zajmuje dziewiąte miejsce w klasyfikacji ogólnej."
+   ],
+   "ans": "b"
+  },
+  "items": [
+   {
+    "stem": "Obecnie zawodniczka",
+    "opts": {
+     "a": "szczególnie dużo od siebie wymaga.",
+     "b": "jest zmotywowana dzięki swej pozycji w rankingu.",
+     "c": "dąży do znalezienia się w czołówce."
+    },
+    "key": "b"
+   },
+   {
+    "stem": "Maryna jest rozbawiona swoimi wynikami, ponieważ",
+    "opts": {
+     "a": "jest najlepszą zawodniczką, ale nie wygrywa.",
+     "b": "ma problem ze stabilnością formy w tym sezonie.",
+     "c": "często kończy zawody na tej samej pozycji."
+    },
+    "key": "c"
+   },
+   {
+    "stem": "Zawodniczka miała problemy w trakcie zawodów inauguracyjnych z powodu",
+    "opts": {
+     "a": "wielu niezależnych od siebie czynników.",
+     "b": "nabytego w ich trakcie urazu.",
+     "c": "niewystarczającego przygotowania."
+    },
+    "key": "a"
+   },
+   {
+    "stem": "Polskie media",
+    "opts": {
+     "a": "zaczęły interesować się narciarstwem alpejskim dopiero po sukcesie Maryny.",
+     "b": "zdaniem zawodniczki przedstawiają jej dyscyplinę w złym świetle.",
+     "c": "do tej pory koncentrowały się na porażkach polskich zawodników."
+    },
+    "key": "c"
+   },
+   {
+    "stem": "Narciarka szczególnie cieszy się, gdy",
+    "opts": {
+     "a": "przedstawiciele mediów są obecni podczas zawodów narciarskich.",
+     "b": "spotyka się z ciepłymi reakcjami ze strony kibiców.",
+     "c": "podczas zawodów narciarskich kibice gromadzą się licznie pod stokiem."
+    },
+    "key": "b"
+   },
+   {
+    "stem": "Zawodniczka poradziła sobie z kontuzją, ponieważ",
+    "opts": {
+     "a": "już wcześniej zdarzały jej się podobne urazy.",
+     "b": "wspierały ją osoby z podobnym doświadczeniem.",
+     "c": "potraktowała ją jak kolejne wyzwanie."
+    },
+    "key": "c"
+   },
+   {
+    "stem": "W dzieciństwie Maryna Gąsienica-Daniel",
+    "opts": {
+     "a": "zachwycała się techniką innych zawodniczek.",
+     "b": "zwracała szczególną uwagę na wygląd swoich idolek.",
+     "c": "zachęcała do narciarstwa również swoją siostrę."
+    },
+    "key": "b"
+   },
+   {
+    "stem": "Dla narciarki najważniejsze jest",
+    "opts": {
+     "a": "rywalizowanie z najlepszymi.",
+     "b": "pokonanie głównej rywalki.",
+     "c": "stałe zajmowanie miejsc na podium."
+    },
+    "key": "a"
+   }
+  ],
+  "src": "Na podstawie: https://youtu.be/zGWMtogxOyk",
+  "tr": [
+   "Maryna Gąsienica-Daniel w Pucharze Świata startuje już prawie od 10 lat. Ten sezon jest jej życiowym. Już teraz nasza jedynaczka w gronie najlepszych alpejek zdobyła więcej punktów niż wszystkie inne polskie zawodniczki w XXI wieku. Najwyższym miejscem w karierze jak dotąd jest dziewiąte w slalomie równoległym w austriackim Lech.",
+   "- Przed tobą piąte mistrzostwa świata w karierze, ale myślę, że mistrzostwa troszeczkę inne, trochę bardziej szczególne.",
+   "- Myślę, że troszeczkę tak, to znaczy się, nie nakładam na so…, na siebie żadnej presji, ale cieszę się, że z… wmieszałem się w tą czołówkę gigantową i że w końcu będę startować też z lepszym numerem, to daje też dużo więcej motywacji, więc wydaje mi się, że to jest, zwłaszcza to jest szczególne, że po prostu mam tą motywację jeszcze większą niż zawsze, to jest chyba naj… najfajniejsze w tym wszystkim.",
+   "- Poza inauguracyjnym gigantem w Sölden cały czas jesteś w okolicach pierwszej dziesiątki, to jedenaste miejsce to chyba troszeczkę już zaczęło prześladować?",
+   "- No właśnie śmiałam się, że jestem najbardziej stabilną zawodniczką w gigancie w Pucharze Świata w tym sezonie. Nie, no oczywiście to są żarty, ale tak, dokładnie, inauguracja w Sölden nie do końca nam wyszła, to znaczy się, może nie można mówić, że nie wyszła, bo to był pierwszy start po kontuzji, trudny stok, trudna trasa, słaba widoczność, nie złapałam rytmu, źle mi się jechało, ja wiedziałam, że to nie był mój przejazd, ja dużo lepiej jeździłam już na treningach wcześniej.",
+   "- Myślę, że czujesz wzrost zainteresowania medialnego wokół siebie, bo informacji w mediach o tobie, o narciarstwie alpejskim w Polsce jest coraz więcej.",
+   "- Tak, ja bardzo się cieszę, że o narciarstwie mówi się coraz więcej i że coraz więcej pozytywnych wiadomości mamy o narciarstwie, bo zawsze gdzieś tam czytało się: „A…, niepowodzenie, kolejne niepowodzenie, znowu zły przejazd\". A teraz jakoś się to odwróciło i to jest naprawdę super, jak możesz przeczytać nie tylko o sobie, ale po prostu o narciarstwie jakieś dobre informacje i pozytywne…, pozytywny odzew przede wszystkim, bo to nie tylko jeżeli chodzi o media, ale też o ludzi, którzy kibicują i cały czas nas wspierają, gdzieś tam czekają na tych swoich narciarzy przed telewizorami.",
+   "- Gdy był moment, w którym padła informacja o twojej kontuzji, o twoim złamaniu nogi, no to wydawało się, że przez lata takiej okazji mieć nie będziemy.",
+   "- Wzięłam to na klatę i powiedziałam sobie: „Dobra, spróbuj, zrób to, dlaczego nie”. Tyle osób już miało kontuzję i było w stanie wrócić na wysoki poziom. To była moja pierwsza kontuzja, więc ta motywacja też była większa.",
+   "- Kto był twoim pierwszym idolem w narciarstwie alpejskim? Siostra, która zdobywała punkty do Pucharu Świata?",
+   "- Tak... To znaczy się, ja miałam… uwielbiałam oglądać różnych sportowców oczywiście uwielbiałam oglądać Janicę Kostelić, ale to jeszcze nie było dlatego, że ja uwielbiałam ją oglądać przez styl. Ja ją uwielbiałam oglądać przez jej latające warkoczyki po prostu na slalomie.",
+   "- Jak smakuje pokonanie takich zawodniczek jak Petra Vlhová czy ostatnio w Kronplatz byłaś najlepsza wśród Austriaczek, trzecia wśród Włoszek... Jak to opiszesz?",
+   "- Tak jak mówiłam już wcześniej, że nie, nigdy nie biorę tych zwycięstw z kim personalnie. Ja po prostu bardzo się cieszę, że trafiłam do tej czołówki, że mogę się z nimi ścigać i że mogę walczyć po prostu o najlepsze lokaty, a nie do końca zależy mi na tym, że ja po prostu muszę wygrać z Petrą. Więc ja po prostu się cieszę, że mogę się ścigać z najlepszymi dziewczynami, że dorosłam do tego poziomu narciarskiego i to jest dla mnie najważniejsze.",
+   "Na podstawie: https://youtu.be/zGWMtogxOyk"
+  ]
+ },
+ {
+  "id": "IV",
+  "title": "Zadanie IV",
+  "ptsLabel": "10 x 1 p. = 10 p.",
+  "kind": "select",
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać audycji na temat słowiańskich demonów i dopasować ich nazwy (1-5) do opisów (A-J).",
+  "legend": [
+   "1 - SKARBNIK",
+   "2 - DOMOWNIK",
+   "3 - WĄPIERZ (UPIÓR)",
+   "4 - LATAWIEC I LATAWICA",
+   "5 - POŁUDNICA"
+  ],
+  "selOpts": [
+   [
+    "1",
+    "1 - Skarbnik"
+   ],
+   [
+    "2",
+    "2 - Domownik"
+   ],
+   [
+    "3",
+    "3 - Wąpierz (upiór)"
+   ],
+   [
+    "4",
+    "4 - Latawiec i latawica"
+   ],
+   [
+    "5",
+    "5 - Południca"
+   ]
+  ],
+  "example": {
+   "stem": "Który z demonów pił ludzką krew?",
+   "ans": "3"
+  },
+  "items": [
+   {
+    "tag": "A",
+    "stem": "Który z demonów sprzyjał ludziom, jeśli odpowiednio się o niego troszczyli?",
+    "key": "2"
+   },
+   {
+    "tag": "B",
+    "stem": "Który z demonów powstawał z duszy człowieka, który odebrał sobie życie?",
+    "key": "4"
+   },
+   {
+    "tag": "C",
+    "stem": "Który z demonów w złości mógł sprowadzić inne demony?",
+    "key": "2"
+   },
+   {
+    "tag": "D",
+    "stem": "Który z demonów prowadził rozmowy ze śmiertelnikami?",
+    "key": "5"
+   },
+   {
+    "tag": "E",
+    "stem": "Który z demonów karał ludzi stroniących od ciężkiej pracy?",
+    "key": "1"
+   },
+   {
+    "tag": "F",
+    "stem": "Który z demonów nęcił możliwością zdobycia wyjątkowych zdolności?",
+    "key": "4"
+   },
+   {
+    "tag": "G",
+    "stem": "Który z demonów odznaczał się nadprzyrodzoną siłą?",
+    "key": "3"
+   },
+   {
+    "tag": "H",
+    "stem": "Który z demonów nosił szaty zarezerwowane wśród śmiertelników na specjalną okazję?",
+    "key": "5"
+   },
+   {
+    "tag": "I",
+    "stem": "Który z demonów uprzedzał o zbliżającym się niebezpieczeństwie?",
+    "key": "1"
+   },
+   {
+    "tag": "J",
+    "stem": "Który z demonów mścił się za profanację swoich doczesnych powłok?",
+    "key": "3"
+   }
+  ],
+  "src": "Na podstawie: https://www.youtube.com/watch?v=x2CPRBZCpJw&t=29s&ab_channel=Z%C5%82otaPi%C4%85tka",
+  "tr": [
+   "Świat naszych przodków pełny był tajemniczych i mrocznych stworów. Dziś chcielibyśmy przedstawić pięć demonicznych postaci, które powodowały dreszcz przerażenia.",
+   "A zaczynamy od starszego pana, którego królestwem były kopalnie i podziemia. Skarbnik pełnił rolę strażnika, który pilnował zakopanych w ziemi skarbów. W górnictwie ostrzegał przed tąpnięciami oraz zajmował się duszami zmarłych górników. Nie przepuszczał również leserom, którzy unikali pracy pod ziemią.",
+   "Kolejnym demonem pod postacią staruszka był przyjazny domownik, który opiekował się gospodarstwem. Jeśli mieszkańcy dbali o swojego ducha, to mogli liczyć na jego pomoc. Jednak zaniedbywany mścił się okrutnie, tłukąc meble czy zastawę, a nawet przywołując zmory i strzygi. Jego miejsce odpoczynku znajdowało się zazwyczaj na strychu lub za piecem. Domownikom podawano też resztki z obiadów, aby utrzymywać z nimi jak najlepsze relacje.",
+   "Nasi kolejni bohaterowie z pewnością zasłużyli na miano demonów i to tych najgorszych. Wąpierze lub upiory to nic innego jak znane wszystkim wampiry, które żywiły się ludzką krwią. Najczęściej wierzono, że wampirem stawało się na skutek ugryzienia innego wampira, lub gdy o danej osobie zapomniano bądź zbezczeszczono jej zwłoki. Powracała ona wtedy pod upiorną postacią przypominającą człowieka z kłami. Wampiry cechowały się o wiele większą prędkością i dużo większą siłą od zwykłego człowieka.",
+   "Chyba każdy z nas marzył kiedyś, aby o własnych siłach wznieść się w powietrze i szybować ponad otaczającym nas światem. Te i inne obietnice składały naszym przodkom latawce oraz latawice, czyli demony zrodzone z dusz samobójców. Ptakopodobne duchy, które potrafiły upodabniać swoje kształty do ludzkich ciał, skusiły niejednego amatora podniebnych lotów. Możemy się tylko domyślać, ilu śmiałków zapatrzonych w te demoniczne postacie straciło zdrowie, a nawet życie.",
+   "W dawnych czasach dodatkowym problemem były również południce. Jak sama nazwa wskazuje, były to demony pojawiające się w okolicach południa w najcieplejszych miesiącach, które trudniły się uprzykrzaniem życia podczas żniw. Przypominające kobiety w sukniach ślubnych zadawały swoim ofiarom pytania, a ich łaska zależała od poprawności odpowiedzi. Najczęstszym efektem tej śmiertelnej zabawy było uduszenie lub okaleczenie żniwiarza.",
+   "Na podstawie: https://www.youtube.com/watch?v=x2CPRBZCpJw&t=29s&ab_channel=Z%C5%82otaPi%C4%85tka"
+  ]
+ },
+ {
+  "id": "V",
+  "title": "Zadanie V",
+  "ptsLabel": "7 p.",
+  "kind": "open",
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać opowieści przewodniczki o Cmentarzu Powązkowskim w Warszawie i odpowiedzieć na pytania. Uwaga! Forma gramatyczna odpowiedzi powinna być dopasowana do pytania.",
+  "example": {
+   "stem": "Z czym przewodniczka porównuje obszar Starych Powązek?",
+   "ans": "Z terenem Państwa Watykańskiego / Watykanu."
+  },
+  "items": [
+   {
+    "stem": "Co, oprócz kościoła św. Karola Boromeusza, zaprojektował Dominik Merlini?",
+    "parts": 1,
+    "key": "Pałac na Wodzie"
+   },
+   {
+    "stem": "Blisko grobu rodziców Chopina jest pochowana Julia Hauke Battenberg. Z władcami których krajów była ona spokrewniona? Proszę podać dwie odpowiedzi.",
+    "parts": 2,
+    "key": "Szwecji, Hiszpanii, Wielkiej Brytanii (wystarczy podać dwie odpowiedzi)"
+   },
+   {
+    "stem": "Gdzie dokładnie znajdują się groby sportowców Franciszka Żwirki i Stanisława Wigury?",
+    "parts": 1,
+    "key": "W Alei Zasłużonych / na tyłach katakumb"
+   },
+   {
+    "stem": "W jaki sposób zginęli Żwirko i Wigura?",
+    "parts": 1,
+    "key": "W katastrofie lotniczej. / W wypadku lotniczym. / Lecąc na zawody do Pragi."
+   },
+   {
+    "stem": "Kto miał prawo uczestniczyć w pogrzebie Żwirki i Wigury?",
+    "parts": 1,
+    "key": "Osoby posiadające/mające karty wstępu. / Posiadacze kart wstępu."
+   },
+   {
+    "stem": "Jak wygląda nagrobek Krzysztofa Kieślowskiego?",
+    "parts": 1,
+    "key": "Przedstawia dłonie kadrujące obraz."
+   },
+   {
+    "stem": "W jakich okolicznościach zmarł Kieślowski?",
+    "parts": 1,
+    "key": "Podczas operacji będącej konsekwencją ataku serca / operacji po ataku serca"
+   }
+  ],
+  "note": "Klucz Komisji: „Należy uznać też inne odpowiedzi zgodne z transkrypcją.” Sprawdzanie automatyczne szuka słów kluczowych, więc jeśli twoja odpowiedź jest poprawna, ale inna niż w kluczu, zaznacz „uznaj” przy tej odpowiedzi i sprawdź jeszcze raz.",
+  "src": "Na podstawie: https://www.youtube.com/watch?v=BoWjZ5nTrKY&ab_channel=HankaWarszawianka",
+  "tr": [
+   "Dzisiaj zapraszam do panteonu Warszawy - na Stare Powązki. Cmentarz bardzo stary, założony jeszcze w czasach królewskich i cmentarz ogromny - 43 hektary. To tyle, ile ma Państwo Watykańskie.",
+   "Na najbardziej znaną polską nekropolię wchodzimy przez efektowną bramę św. Honoraty. Zanim udamy się w głąb cmentarza, spójrzmy na kościół Świętego Karola Boromeusza. Jego autorem jest architekt królewski Dominik Merlini, autor między innymi Pałacu na Wodzie. Nieopodal, na tyłach kościoła, na wprost grobu rodziców Fryderyka Chopina znajduje się niepozorny nagrobek. Rzadko odwiedzają go warszawiacy, ale europejskie koronowane głowy znają go dobrze. Tu spoczywa prababka króla Hiszpanii Juana Carlosa I oraz szwedzkiego władcy Karola Gustawa - Julia Hauke Battenberg. Jej krew płynie też w żyłach następcy tronu Wielkiej Brytanii - księcia Karola.",
+   "Na tyłach katakumb od 1925 roku biegnie Aleja Zasłużonych. Tu miejsce ostatniego spoczynku znaleźli m.in. najwięksi sportowcy międzywojennej Europy: Franciszek Żwirko i Stanisław Wigura, którzy w 1932 roku na samolocie RWD6 wygrali prestiżowe zawody. Zginęli 11 września tego roku, lecąc na zawody do czeskiej Pragi. Podczas ich pogrzebu na cmentarz wpuszczano tylko szczęśliwych posiadaczy kart wstępu.",
+   "Nieopodal, pod pomnikiem przedstawiającym dłonie kadrujące obraz, pochowany jest Krzysztof Kieślowski, twórca tzw. kina moralnego niepokoju. Jego „Krótki film o zabijaniu” był pierwszym europejskim obrazem uhonorowanym statuetką Felixa, odpowiednika amerykańskich Oscarów. Reżyser zmarł podczas operacji będącej konsekwencją ataku serca. Dziś światowe listy przebojów podbijają filmy jego uczniów.",
+   "Na podstawie: https://www.youtube.com/watch?v=BoWjZ5nTrKY&ab_channel=HankaWarszawianka"
+  ]
+ }
+];
+
+const MAX = 40, PASS = 24;
+const TEST_ID = 'sluchanie-2021-06';
+const STORE_KEY = 'c1_sluch_2021_06_v1';
+const TOTAL_SEC = 40 * 60;
+
+// odpowiedzi otwarte (zadanie V): słowa kluczowe sprawdzane na tekście bez polskich znaków i wielkich liter
+const OPEN = [
+  { fill: ['Pałac na Wodzie'], rx: [/palac\w*\s+na\s+wodzie/] },
+  { fill: ['Szwecji', 'Hiszpanii'], rx: [/szwec|szwed/, /hiszpa/, /brytan|brytyj|angli/] },
+  { fill: ['W Alei Zasłużonych'], rx: [/alei\s+zasluzon|alej\w*\s+zasluzon|katakumb/] },
+  { fill: ['W katastrofie lotniczej'], rx: [/(katastrof|wypad)\w*\s+(lotnicz|samolot|powietrzn)/, /lotnicz\w*\s+(katastrof|wypad)/, /do\s+pragi/] },
+  { fill: ['Osoby posiadające karty wstępu'], rx: [/kart\w*\s+wstepu/] },
+  { fill: ['Przedstawia dłonie kadrujące obraz'], rx: [/dlon|kadruj/] },
+  { fill: ['Podczas operacji będącej konsekwencją ataku serca'], rx: [/operacj/] }
+];
+TASKS.filter(t => t.kind === 'open')[0].items.forEach((it, i) => Object.assign(it, OPEN[i]));
+
+function norm(s) { return String(s || '').toLowerCase().replace(/[„”"'’‘.,!?;:()]/g, ' ').replace(/\s+/g, ' ').trim(); }
+function fold(s) { return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l'); }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {} }
+let acceptState = (load().__accept) || {};
+const urls = {};
+
+function openIds(t, it, i) {
+  const n = i + 1;
+  return it.parts === 2 ? [`${t.id}-${n}a`, `${t.id}-${n}b`] : [`${t.id}-${n}`];
+}
+
+function build() {
+  const root = document.getElementById('tasks'); let html = '';
+  TASKS.forEach(t => {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${t.ptsLabel}</span></h2>`;
+    html += `<p class="src" style="margin:0 0 8px">${esc(t.plays)}</p>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    html += `<div class="audio"><label><b>Wczytaj nagranie:</b> <input type="file" accept="audio/*" data-audio="${t.id}"></label><span class="fname" id="fn-${t.id}"></span><audio controls id="au-${t.id}"></audio></div>`;
+    if (t.legend) html += `<div class="legend">` + t.legend.map(l => `<div>${esc(l)}</div>`).join('') + `</div>`;
+    if (t.lead) html += `<p class="instr" style="margin:6px 0">${esc(t.lead)}</p>`;
+    const e = t.example;
+    let ex = esc(e.stem);
+    if (e.opts) ex += '<br>' + e.opts.map((o, i) => `${'abc'[i]}) ${esc(o)}`).join('<br>');
+    if (e.src) ex += `<br><span class="src">${esc(e.src)}</span>`;
+    html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${ex}<br><b>Odpowiedź: ${esc(e.ans)}</b></div>`;
+    t.items.forEach((it, i) => {
+      const n = i + 1, base = `${t.id}-${n}`;
+      if (t.kind === 'radio') {
+        html += `<div class="q" id="q-${base}"><div class="stem">${n}. ${esc(it.stem)}</div>` +
+          ['a', 'b', 'c'].map(k => `<label class="opt" data-k="${k}"><input type="radio" name="${base}" data-id="${base}" value="${k}"> <span>${k}) ${esc(it.opts[k])}</span></label>`).join('') +
+          (it.src ? `<div class="src" style="text-align:right;margin-top:2px">${esc(it.src)}</div>` : '') +
+          `<span class="fix"></span></div>`;
+      } else if (t.kind === 'tf') {
+        html += `<div class="q row" id="q-${base}"><div class="stem">${n}. ${esc(it.stem)}</div><div class="tf">` +
+          ['TAK', 'NIE'].map(k => `<label class="opt" data-k="${k}"><input type="radio" name="${base}" data-id="${base}" value="${k}"> <span>${k}</span></label>`).join('') +
+          `</div><span class="fix"></span></div>`;
+      } else if (t.kind === 'select') {
+        const sid = `${t.id}-${it.tag}`;
+        const opts = t.selOpts.map(o => `<option value="${o[0]}">${esc(o[1])}</option>`).join('');
+        html += `<div class="q row" id="q-${sid}"><div class="stem">${it.tag}. ${esc(it.stem)}</div><span class="slots"><span class="slot" id="s-${sid}"><select data-id="${sid}" aria-label="${esc(it.tag)}"><option value=""></option>${opts}</select></span></span><span class="fix"></span></div>`;
+      } else {
+        html += `<div class="q" id="q-${base}"><div class="stem">${n}. ${esc(it.stem)}${it.parts === 2 ? ' <span class="src">(po 0,5 p. za odpowiedź)</span>' : ''}</div>`;
+        openIds(t, it, i).forEach((id, p) => {
+          html += `<div class="sub" id="sub-${id}">${it.parts === 2 ? `<span class="lab">${'ab'[p]})</span>` : ''}<input type="text" data-id="${id}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Odpowiedź ${n}${it.parts === 2 ? 'ab'[p] : ''}">` +
+            `<label class="accept"><input type="checkbox" data-accept="${id}"> uznaj</label></div>`;
+        });
+        html += `<div class="keyline" id="key-${base}"></div></div>`;
+      }
+    });
+    html += `<div class="src">${esc(t.src || '')}</div>`;
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `<details class="tr" id="tr-${t.id}"><summary>Transkrypcja</summary><div class="warn">Otwieraj dopiero po sprawdzeniu (po kliknięciu Sprawdź otworzy się sama).</div>` +
+      t.tr.map(p => `<p${/^Na podstawie/.test(p) ? ' class="trsrc"' : ''}>${esc(p)}</p>`).join('') + `</details>`;
+    html += `</section>`;
+  });
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('[data-id]').forEach(el => {
+    const v = saved[el.dataset.id];
+    if (v != null) { if (el.type === 'radio') el.checked = (el.value === v); else el.value = v; }
+    el.addEventListener('input', onChange);
+    el.addEventListener('change', onChange);
+  });
+  root.querySelectorAll('[data-accept]').forEach(cb => {
+    cb.checked = !!acceptState[cb.dataset.accept];
+    cb.addEventListener('change', () => {
+      acceptState[cb.dataset.accept] = cb.checked; save();
+      if (document.getElementById('result').classList.contains('show')) check(true);
+    });
+  });
+  root.querySelectorAll('[data-audio]').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const f = inp.files && inp.files[0]; if (!f) return;
+      const a = document.getElementById('au-' + inp.dataset.audio);
+      if (a.dataset.url) URL.revokeObjectURL(a.dataset.url);
+      const u = URL.createObjectURL(f); a.dataset.url = u; a.src = u;
+      document.getElementById('fn-' + inp.dataset.audio).textContent = f.name;
+    });
+  });
+  updateProgress();
+}
+function onChange() { save(); updateProgress(); }
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('[data-id]').forEach(el => {
+    if (el.type === 'radio') { if (el.checked) o[el.dataset.id] = el.value; }
+    else o[el.dataset.id] = el.value;
+  });
+  o.__accept = acceptState;
+  return o;
+}
+function updateProgress() {
+  const ids = {};
+  document.querySelectorAll('[data-id]').forEach(el => {
+    const id = el.dataset.id;
+    if (!(id in ids)) ids[id] = false;
+    if (el.type === 'radio') { if (el.checked) ids[id] = true; }
+    else if (el.value.trim()) ids[id] = true;
+  });
+  const total = Object.keys(ids).length, filled = Object.values(ids).filter(Boolean).length;
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${total}`;
+}
+
+function check(quiet) {
+  const vals = collect();
+  const per = [];
+  TASKS.forEach(t => {
+    let score = 0;
+    t.items.forEach((it, i) => {
+      const n = i + 1, base = `${t.id}-${n}`;
+      if (t.kind === 'radio' || t.kind === 'tf') {
+        const v = vals[base] || '';
+        const ok = v === it.key;
+        if (ok) score += 1;
+        const q = document.getElementById('q-' + base);
+        q.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad');
+          if (l.dataset.k === it.key) l.classList.add('ok');
+          else if (l.dataset.k === v) l.classList.add('bad');
+        });
+        q.querySelector('.fix').textContent = ok ? '' : '→ ' + (t.kind === 'radio' ? it.key : it.key);
+      } else if (t.kind === 'select') {
+        const sid = `${t.id}-${it.tag}`;
+        const v = vals[sid] || '';
+        const ok = v === it.key;
+        if (ok) score += 1;
+        const slot = document.getElementById('s-' + sid);
+        slot.classList.remove('ok', 'bad'); slot.classList.add(ok ? 'ok' : 'bad');
+        document.getElementById('q-' + sid).querySelector('.fix').textContent = ok ? '' : '→ ' + it.key + ' - ' + t.selOpts[+it.key - 1][1].replace(/^\d - /, '');
+      } else {
+        const per1 = it.parts === 2 ? 0.5 : 1;
+        const ids = openIds(t, it, i);
+        const sets = ids.map(id => {
+          const s = fold(vals[id] || ''); const m = new Set();
+          if (s) it.rx.forEach((rx, j) => { if (rx.test(s)) m.add(j); });
+          return m;
+        });
+        ids.forEach((id, p) => {
+          let ok = sets[p].size > 0;
+          if (ok && p === 1) { const a = sets[0]; ok = [...sets[1]].some(j => !(a.size === 1 && a.has(j))); }
+          if (acceptState[id]) ok = true;
+          if (ok) score += per1;
+          const sub = document.getElementById('sub-' + id);
+          sub.classList.remove('ok', 'bad'); sub.classList.add(ok ? 'ok' : 'bad');
+        });
+        document.getElementById('key-' + base).textContent = 'Klucz: ' + it.key;
+      }
+    });
+    const el = document.getElementById('pts-' + t.id);
+    el.textContent = `${pl(score)} / ${t.id === 'V' ? 7 : t.items.length} p.`; el.classList.add('scored');
+    const note = document.getElementById('note-' + t.id);
+    if (note) note.style.display = 'block';
+    document.getElementById('tr-' + t.id).open = true;
+    per.push({ t, score });
+  });
+  const total = per.reduce((s, x) => s + x.score, 0);
+  const tmax = t => t.id === 'V' ? 7 : t.items.length;
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100), pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / tmax(t) * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${tmax(t)}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `<div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass ? 'Zdane - próg to 60% (24 p.)' : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błędna, obok poprawna z klucza. Transkrypcje pod zadaniami są już rozwinięte. W zadaniu V możesz zaznaczyć „uznaj”, jeśli twoja odpowiedź jest poprawna, ale inna niż w kluczu. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  if (quiet !== true) res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+let left = TOTAL_SEC, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60, el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL_SEC ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) { clearInterval(tick); running = false; document.getElementById('timerBtn').textContent = 'Koniec'; document.getElementById('timeUp').classList.add('show'); }
+    }, 1000);
+  } else clearInterval(tick);
+}
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  acceptState = {};
+  clearInterval(tick); running = false; left = TOTAL_SEC; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', () => check());
+document.getElementById('checkBottom').addEventListener('click', () => check());
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+function setRadio(name, val) {
+  const el = document.querySelector(`input[type=radio][name="${name}"][value="${val}"]`);
+  if (el) el.checked = true;
+}
+function setVal(id, val) {
+  const el = document.querySelector(`[data-id="${id}"]`);
+  if (el) el.value = val;
+}
+function fillCorrect() {
+  TASKS.forEach(t => {
+    t.items.forEach((it, i) => {
+      if (t.kind === 'radio' || t.kind === 'tf') setRadio(`${t.id}-${i + 1}`, it.key);
+      else if (t.kind === 'select') setVal(`${t.id}-${it.tag}`, it.key);
+      else openIds(t, it, i).forEach((id, p) => setVal(id, it.fill[p]));
+    });
+  });
+  acceptState = {};
+  document.querySelectorAll('[data-accept]').forEach(cb => { cb.checked = false; });
+  save(); updateProgress();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'sluchanie', session: '2021-06', max: MAX, fillCorrect, check });
+</script>
+</body>
+</html>

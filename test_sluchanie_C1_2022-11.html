@@ -1,0 +1,1189 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Słuchanie C1 2022-11</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.q label.opt { display: flex; gap: 8px; align-items: flex-start; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+.q label.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.q label.opt.bad { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.q.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.q.row .stem { flex: 1 1 320px; margin: 0; font-weight: 400; }
+.q select { font: 16px/1.2 system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; max-width: 72vw; }
+.q .slot.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.q .slot.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.slots { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.q .fix { font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); }
+.audio { background: var(--example); border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; }
+.audio audio { width: 100%; margin-top: 8px; }
+.audio .fname { font-size: 13px; color: var(--muted); margin-left: 6px; }
+details.tr { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--input-bg); }
+details.tr summary { cursor: pointer; font-weight: 700; }
+details.tr .warn { color: var(--warn); font-size: 14px; font-weight: 600; }
+details.tr p { font-family: Georgia, serif; font-size: 16px; margin: 8px 0; }
+.legend { display: grid; gap: 4px; margin: 0 0 12px; padding: 10px 12px; background: var(--example); border-radius: 8px; font-size: 15px; }
+.tf { display: flex; gap: 14px; }
+
+.multi { margin: 6px 0; }
+.multi label.opt { display: flex; gap: 8px; align-items: flex-start; padding: 7px 8px; border-radius: 6px; cursor: pointer; border-top: 1px solid var(--line); }
+.multi label.opt:first-child { border-top: 0; }
+.multi label.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.multi label.opt.bad { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.multi label.opt.key { outline: 2px solid var(--ok); }
+.multi .fix { font: 600 14px/1.2 system-ui, sans-serif; margin-left: 6px; }
+.open-in { width: 100%; font: 16px/1.4 system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 6px 8px; }
+.open-in:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.slotrow { display: flex; gap: 8px; align-items: center; margin: 5px 0; }
+.slotrow .lab { font-weight: 700; min-width: 1.8em; }
+.slotrow .st { flex: 1 1 auto; }
+.slotrow .spts { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.q .slot.ok .open-in { border-color: var(--ok); background: var(--ok-bg); }
+.q .slot.bad .open-in { border-color: var(--bad); background: var(--bad-bg); }
+.q .slot.almost .open-in { border-color: var(--warn); background: var(--warn-bg); }
+.okey { font: 14px/1.5 system-ui, sans-serif; margin-top: 6px; }
+.okey .k { color: var(--ok); font-weight: 700; }
+.okey .f { color: var(--muted); font-style: italic; font-family: Georgia, serif; margin: 2px 0 4px; }
+.okey .hint { color: var(--warn); font-weight: 600; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 4px; font-size: 14px; color: var(--muted); cursor: pointer; }
+
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie ze słuchu C1 - listopad 2022</span>
+    <span class="timer" id="timer">40:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+<div class="wrap">
+  <h1>Rozumienie ze słuchu</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja listopad 2022. 5 zadań, do 40 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji. W każdym zadaniu wczytaj plik z nagraniem. Na egzaminie zadanie I słucha się raz, zadania II-V dwa razy.</p>
+  <div class="notice" id="timeUp">Czas minął (40 minut). Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+<script>
+const TASKS = [
+ {
+  "id": "I",
+  "title": "Zadanie I",
+  "kind": "radio",
+  "max": 6,
+  "ptsLabel": "6 x 1 p. = 6 p.",
+  "plays": "Nagranie zostanie odtworzone tylko jeden raz.",
+  "instr": "Proszę wysłuchać kilku krótkich nagrań i zaznaczyć właściwe odpowiedzi.",
+  "example": {
+   "stem": "Z tego nagrania wynika, że",
+   "opts": [
+    "a) sąd nakazał mężczyźnie zapłacenie wysokiego odszkodowania.",
+    "b) mężczyzna został niesprawiedliwie pozbawiony wolności.",
+    "c) dzięki odszkodowaniu mężczyzna zapomni o wyrządzonej mu krzywdzie."
+   ],
+   "ans": "b"
+  },
+  "items": [
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "ptaki zachowywały się agresywnie wobec policjantów.",
+     "b": "łabędzie chciały dostać się na drugą stronę ulicy.",
+     "c": "po interwencji utrudnienia w ruchu utrzymały się do końca dnia."
+    },
+    "key": [
+     "b"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "kradzieży koparki dokonał dawny pracownik firmy.",
+     "b": "koparka została sprzedana za kwotę 150 tysięcy złotych.",
+     "c": "sprawca już wcześniej okradał swojego pracodawcę."
+    },
+    "key": [
+     "a"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "dyrektor orkiestry zaoferował najwyższą kwotę podczas licytacji.",
+     "b": "koncert był transmitowany na żywo na portalu społecznościowym.",
+     "c": "koncert przyciągnął rzesze słuchaczy."
+    },
+    "key": [
+     "c"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "projekt został zainicjowany przez prezesów klubów sportowych.",
+     "b": "w konkursie mogą wziąć udział zarówno organizacje, jak i osoby prywatne.",
+     "c": "twarzą projektu jest uznany na świecie polski sportowiec."
+    },
+    "key": [
+     "c"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "całkowite koszty remontu ponosi Unia Europejska.",
+     "b": "instalacja elektryczna w budynku wymagała modernizacji.",
+     "c": "planowana jest budowa nowego obiektu sportowego w pobliżu."
+    },
+    "key": [
+     "b"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "studenci mogą poznać topografię Legnicy bez opuszczania sali lekcyjnej.",
+     "b": "w pracowni są prowadzone specjalne szkolenia dla kierowców.",
+     "c": "w ostatnich latach znacząco wzrosła liczba wypadków drogowych."
+    },
+    "key": [
+     "a"
+    ]
+   }
+  ],
+  "src": "Na podstawie: https://www.youtube.com/watch?v=tKttzXIN5ic; https://www.youtube.com/watch?v=w8GepNo9LGE; https://www.youtube.com/watch?v=A5Qbd2n2y80; https://www.youtube.com/watch?v=BTL53d6R3a4",
+  "tr": [
+   "Przykład: Tomasz Komenda ma dostać prawie 13 milionów złotych od państwa, które niesłusznie wsadziło go do więzienia na 18 lat. W reakcji na wyrok mówi: „Żadne pieniądze tego nie wynagrodzą”. Pyta, kto jest gotów zamknąć się na 18 lat za 13 milionów.",
+   "Na podstawie: https://audycje.tokfm.pl/podcast/101760",
+   "1. Policjanci z Prochowic ruszyli na nietypową interwencję: przy jednej z dróg uczynny mieszkaniec zauważył bowiem dwa dorosłe i siedem młodych łabędzi. Konieczna była pomoc. - Ptaki te stwarzały zagrożenie nie tylko dla samych siebie, ale również dla ruchu drogowego, w związku z czym policjanci chwilowo wstrzymali ruch i pozwolili bezpiecznie przejść łabędziom przez drogę. Jak relacjonują stróże prawa, łabędzie bezpiecznie doszły do pobliskiego zbiornika wodnego, by cieszyć się resztą dnia.",
+   "2. Koparko-ładowarka o wartości około 150 tysięcy złotych zniknęła z jednej z firm na terenie powiatu jaworskiego kilka dni temu. - Jaworscy kryminalni prowadzą intensywne działania wykrywcze. Zabezpieczyli między innymi monitoring przemysłowy. Na monitoringu nagrał się nie tylko moment kradzieży, ale i wizerunek sprawcy. Sprawcą, złodziejem okazał się 31-letni mieszkaniec naszego powiatu. Jak się okazało, był wcześniej zatrudniony na terenie zakładu, z którego dokonał kradzieży koparko-ładowarki.",
+   "3. Ciekawe, często zaskakujące aranżacje, znani artyści i połączenie różnych stylów muzycznych. Hala regionalnego centrum sportowego, w której odbył się drugi Charytatywny Koncert z Narodową, pękała w szwach. Obok muzycznego wymiaru koncertu był również cel charytatywny. Za najwyższą kwotę 11,5 tysiąca wylicytowano kolację z dyrektorem Narodowej Orkiestry Dętej w Lubinie. Wciąż trwają kolejne licytacje na grupie facebookowej Klucze do ludzkich serc.",
+   "4. Sportowa Natura tak nazywa się nowy projekt, który jest skierowany do klubów sportowych oraz stowarzyszeń mających w swoim statucie krzewienie aktywnego stylu życia. Celem akcji jest promowanie lasów i spędzania w nich wolnego czasu. Przedstawiciele klubów sportowych oraz stowarzyszeń, aby wziąć udział w konkursie, muszą zaproponować akcję, która połączy sam las i zdrowy tryb życia. Ambasadorem akcji został Marcin Możdżonek, złoty medalista mistrzostw świata z 2014 roku, który bardzo często sam uprawia sport na świeżym powietrzu.",
+   "5. Starostwo powiatowe w Lubinie podpisało umowę z firmą, która kompleksowo przebuduje i wyremontuje budynek, *dostosując go do potrzeb osób z niepełnosprawnościami. Koszt to siedem i pół miliona złotych. Prawie dwa miliony złotych pochodzą z dofinansowania z Unii Europejskiej. Reszta to środki pochodzące z Rządowego Funduszu Inwestycji Lokalnych. To drugi etap remontu budynku. Wcześniej dokonano przebudowy sieci ciepłowniczych i elektroenergetycznych. Został również zmieniony sposób zasilania budynku prądem. Rozebrany został także stary budynek sali sportowej i basenu.",
+   "6. W obecności licznych oficjeli Witelonka otworzyła Centrum Nowoczesnych Technologii, a w nim między innymi pracownię wirtualnej rzeczywistości. Ćwicząc w pracowni wirtualnej rzeczywistości, studenci przenoszą się do konkretnych miejsc w Legnicy, gdzie kolizje i wypadki zdarzają się najczęściej. Nowoczesne technologie mają oczywiście ułatwić i uatrakcyjnić przyswajanie wiedzy, ale też dać studentom przewagę na rynku pracy. W ostatnich latach zapotrzebowanie na specjalistów z zakresu bezpieczeństwa drastycznie przecież wzrosło.",
+   "Na podstawie: https://www.youtube.com/watch?v=tKttzXIN5ic; https://www.youtube.com/watch?v=w8GepNo9LGE; https://www.youtube.com/watch?v=A5Qbd2n2y80; https://www.youtube.com/watch?v=BTL53d6R3a4"
+  ]
+ },
+ {
+  "id": "II",
+  "title": "Zadanie II",
+  "kind": "tf",
+  "max": 10,
+  "ptsLabel": "10 x 1 p. = 10 p.",
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać felietonu na temat ksiażki o pszczołach i zaznaczyć: TAK - gdy zdanie jest zgodne z nagraniem; NIE - gdy nie jest zgodne z nagraniem.",
+  "example": {
+   "stem": "Arystoteles wskazywał różnice między ludźmi a zwierzętami.",
+   "ans": "TAK"
+  },
+  "items": [
+   {
+    "stem": "Zdaniem narratora pszczoły są bardziej skłonne do poświęceń niż ludzie.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Prace plastyczne Piotra Sochy wyróżnia koncentracja na szczegółach.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Strona graficzna „Pszczół” dostarcza silniejszych doznań intelektualnych niż sam tekst.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Narrator spodziewał się, że książka Sochy będzie bardziej jednoznaczna.",
+    "key": [
+     "NIE"
+    ]
+   },
+   {
+    "stem": "Narratora razi nadmiernie naukowy charakter opisów.",
+    "key": [
+     "NIE"
+    ]
+   },
+   {
+    "stem": "Sukcesem ilustratora jest umiejętność lekkiego ujęcia istotnego tematu.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Książka stanowi kompendium wiedzy na temat pszczół.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Według narratora najlepszym sposobem na przedstawienie uli figuralnych jest ich wizualizacja.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Publikacja zawiera pomysły na wspieranie pszczół w niesprzyjającym im środowisku.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Narratorowi nie podoba się, że „Pszczoły” z taką łatwością są klasyfikowane jako arcydzieło.",
+    "key": [
+     "NIE"
+    ]
+   }
+  ],
+  "src": "Na podstawie: https://www.youtube.com/watch?v=22cDRI_tUA8&ab_channel=Xiegarnia.pl",
+  "tr": [
+   "Arystoteles twierdził, że człowiek to zoon politikon, czyli zwierzę społeczne. Cechy umożliwiające współżycie w grupie, budowanie wspólnoty, obywatelskość miały odróżniać nasz gatunek od pozostałych stworzeń. Wspólnota, altruizm, społeczeństwo obywatelskie... wygląda na to, że to raczej nie o nas. Wygląda na to, że to już raczej o pszczołach. Przypomina o tym książka „Pszczoły”. Piotr Socha, jej autor, to jeden z najbardziej rozpoznawalnych grafików i najpopularniejszych ilustratorów prasowych. Jego ilustracje są bardzo charakterystyczne: epickie, pełne zabawnych detali, których odkrywanie - często ze szkłem powiększającym - bywa większą frajdą intelektualną niż czytanie tekstu, które mają za zadanie ilustrować. Nie miałem więc wątpliwości, że książka jego autorstwa będzie lekturą wielopoziomową. Owszem, mamy w niej tekst, popularnonaukowy, przystępny, opracowany przez Wojciecha Grajkowskiego, dyskretnie błąkający się u dołu każdej strony. Tekst, który jest właściwie tylko ilustracją do oszałamiających ilustracji. Pszczoły to sprawa poważna, ale Socha doskonale wie, że na sprawy poważne należy spoglądać z czułością, ale i okiem lekko przymrużonym, żeby przypadkiem do ich opisu nie wkradł się patos. Bez patosu mamy więc opowiedzianą historię, a nawet prehistorię pszczół, ich typologię, zwyczaje, prospołeczne zachowania, zasady porozumiewania się. Mamy też pszczoły w kulturach, mitologiach i religiach i mamy informacje dotyczące pszczelarstwa na różnych kontynentach. I mamy rysunki uli figuralnych, których nie da się opisać, trzeba je po prostu zobaczyć. Wreszcie mamy mnóstwo ciekawych i ważnych informacji oraz wskazówek, jak można wspólnie pomóc pszczołom w cywilizowanym świecie, który wcale nie jest im przyjazny. Staram się nie nadużywać słowa arcydzieło, ale ta książka o arcydzieło z pewnością się ociera i chyba też przywraca, chociaż na chwilę, wiarę w sensowność definicji Arystotelesa.",
+   "Na podstawie: https://www.youtube.com/watch?v=22cDRI_tUA8&ab_channel=Xiegarnia.pl"
+  ]
+ },
+ {
+  "id": "III",
+  "title": "Zadanie III",
+  "kind": "multi",
+  "max": 5,
+  "ptsLabel": "5 x 1 p. = 5 p.",
+  "pick": 5,
+  "keys": [
+   2,
+   3,
+   6,
+   8,
+   10
+  ],
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać rozmowy na temat gospodarstwa rolnego prowadzonego w Polsce i wybrać z podanych zdań 5 prawdziwych (zgodnych z treścią nagrania). Odpowiedzi proszę wpisać do tabeli.",
+  "hint": "Tutaj zaznacz dokładnie 5 zdań. Więcej niż 5 zaznaczyć się nie da, więc żeby wybrać inne zdanie, odznacz jedno z zaznaczonych.",
+  "example": {
+   "stem": "0. W gospodarstwie prowadzona jest nietypowa hodowla.",
+   "ans": "Zdania prawdziwe: 0."
+  },
+  "items": [
+   {
+    "stem": "Wybór zwierząt przeznaczonych do hodowania w tym gospodarstwie był przypadkowy."
+   },
+   {
+    "stem": "Zawód wykonywany przez pana Zbigniewa nie wiąże się z jego pracą w gospodarstwie."
+   },
+   {
+    "stem": "Ślimaki trafiły do hodowli późną jesienią, co było uzależnione od ich cyklu życiowego."
+   },
+   {
+    "stem": "Ślimaki hodowlane najlepiej rozmnażają się na pastwisku."
+   },
+   {
+    "stem": "Wiosną ślimaki są wypuszczane na pastwisko wraz z innymi zwierzętami z gospodarstwa."
+   },
+   {
+    "stem": "Ślimaki źle znoszą wiosenne spadki temperatury poniżej zera."
+   },
+   {
+    "stem": "Karma dla ślimaków z Pątnowa sprowadzana jest z Afryki."
+   },
+   {
+    "stem": "Właściciel hodowli dostrzega możliwość współpracy z branżami innymi niż spożywcza."
+   },
+   {
+    "stem": "Śluz ślimaka może powodować oparzenia i zmiany alergiczne na skórze."
+   },
+   {
+    "stem": "Kobieta wypowiada się na temat wartości odżywczych mięsa ślimaków."
+   }
+  ],
+  "keynote": "Zdania prawdziwe: 2, 3, 6, 8, 10. Kolejność odpowiedzi dowolna.",
+  "src": "Na podstawie: https://www.youtube.com/watch?v=FPr6sw6-dgg",
+  "tr": [
+   "Gospodarstwo rolne w Pątnowie pod Legnicą. Nic by w nim szczególnego nie było, wszak takich wiele jest w okolicy, gdyby nie fakt, co tutaj się hoduje. Ani owce, ani krowy, a... ślimaki, i to w tonach. - Kupiłem 2 lata temu teren rolny, z którym coś musiałem zrobić i tak po różnych analizach wyszło, że hodowla ślimaka będzie dobrą opcją. I tak pan Zbigniew, który na co dzień jest konserwatorem zabytków, stał się również hodowcą, tymczasem po hodowli oprowadza nas współpracownik jej właściciela. Przyglądać możemy się procesowi segregacji zwierząt, które już niebawem trafią na rynek. To już właściwie finisz, ale nim do niego doszło, trzeba było wykonać szereg innych procedur.",
+   "- Zakup był w listopadzie. W listopadzie ślimaki żeśmy przywieźli. Są w specjalnym pomieszczeniu, to niby chłodnia, coś takiego. Wtedy zwierzęta są w okresie hibernacji. Kilka miesięcy później wybudzone rozmnażają się w innym, specjalnie do tego przygotowanym miejscu, a następnie, gdy pogoda sprzyja, robi się z nimi to, co właściwie ze wszystkimi zwierzętami hodowlanymi znanymi z polskiej wsi - trafiają na pastwisko. - Wtenczas przechodzą na pole pod namiot najpierw. Pod namiot najpierw, bo jest taka pora, która... Nie mogą zmarznąć. A czasami w maju, do 15 maja, są przymrozki. A gdy już pogoda jest satysfakcjonująca, ślimaki pasą się w najlepsze, karmione specjalną, warzywną paszą. W Pątnowie hoduje się konkretny rodzaj ślimaka. To gatunek prosto z Afryki. - Generalnie zawsze ślimaki były pozyskiwane na mięso. Tak jest do tej pory, natomiast gatunek, który my hodujemy, ma jeszcze tą zaletę, że wyciąga się z niego śluz. Śluz jest obecnie bardzo poszukiwanym surowcem w kosmetyce, w branży kosmetycznej, jak również w branży medycznej. Bo okazuje się, że na jego bazie można stworzyć na przykład żel na oparzenia. My jednak ślimaki kojarzymy głównie z francuskich stołów, choć w dobie globalizacji zajadać można się nimi już właściwie wszędzie. Czy mogą być ciekawym dodatkiem do diety? - Z całą pewnością mogę powiedzieć, że można je jeść na diecie, ponieważ są niskokaloryczne, w 100 gramach ślimaka mamy około 90 kalorii, w 100 gramach surowych ślimaków, oraz są wysokobiałkowe, czyli generalnie będą bezpieczne dla osób, które nie mają problemów z metabolizmem białka.",
+   "Na podstawie: https://www.youtube.com/watch?v=FPr6sw6-dgg"
+  ]
+ },
+ {
+  "id": "IV",
+  "title": "Zadanie IV",
+  "kind": "select",
+  "max": 10,
+  "ptsLabel": "10 x 1 p. = 10 p.",
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać reportażu na temat polskiego przemysłu i dopasować nazwy branż (1-5) do ich opisów (A-J). Uwaga! Do każdego stwierdzenia można dopasować tylko jeden opis.",
+  "legend": [
+   "1. PRZEMYSŁ STOCZNIOWY",
+   "2. PRZEMYSŁ TRANSPORTU",
+   "3. PRZEMYSŁ BUDOWLANY",
+   "4. PRZEMYSŁ GÓRNICZY I ENERGETYCZNY",
+   "5. PRZEMYSŁ BUDOWY MASZYN ROLNICZYCH"
+  ],
+  "example": {
+   "stem": "Ta branża współpracuje z europejskimi partnerami.",
+   "ans": "5"
+  },
+  "selOpts": [
+   [
+    "1",
+    "1. PRZEMYSŁ STOCZNIOWY"
+   ],
+   [
+    "2",
+    "2. PRZEMYSŁ TRANSPORTU"
+   ],
+   [
+    "3",
+    "3. PRZEMYSŁ BUDOWLANY"
+   ],
+   [
+    "4",
+    "4. PRZEMYSŁ GÓRNICZY I ENERGETYCZNY"
+   ],
+   [
+    "5",
+    "5. PRZEMYSŁ BUDOWY MASZYN ROLNICZYCH"
+   ]
+  ],
+  "items": [
+   {
+    "tag": "A",
+    "stem": "Technologie dostarczane przez tę branżę podnoszą poziom bezpieczeństwa pracy.",
+    "key": [
+     "4"
+    ],
+    "plain": true
+   },
+   {
+    "tag": "B",
+    "stem": "Urządzenia z tej branży odpowiadają bieżącym koncepcjom inżynierskim.",
+    "key": [
+     "3"
+    ],
+    "plain": true
+   },
+   {
+    "tag": "C",
+    "stem": "W tej branży planowana jest obecnie duża inwestycja.",
+    "key": [
+     "1"
+    ],
+    "plain": true
+   },
+   {
+    "tag": "D",
+    "stem": "Ta gałąź wspiera rozwiązania proekologiczne.",
+    "key": [
+     "4"
+    ],
+    "plain": true
+   },
+   {
+    "tag": "E",
+    "stem": "Niebawem Polska znajdzie się w gronie najlepszych państw w tej branży.",
+    "key": [
+     "1"
+    ],
+    "plain": true
+   },
+   {
+    "tag": "F",
+    "stem": "Polski projekt znajduje się w pierwszej dziesiątce tego rodzaju inwestycji w Europie.",
+    "key": [
+     "4"
+    ],
+    "plain": true
+   },
+   {
+    "tag": "G",
+    "stem": "Przemysł ten rozwija się w Polsce od siedemdziesięciu lat.",
+    "key": [
+     "2"
+    ],
+    "plain": true
+   },
+   {
+    "tag": "H",
+    "stem": "Zasięg terytorialny tej branży stopniowo się poszerza.",
+    "key": [
+     "4"
+    ],
+    "plain": true
+   },
+   {
+    "tag": "I",
+    "stem": "Produkcja w tej gałęzi nie jest masowa, ale bardzo wyspecjalizowana.",
+    "key": [
+     "5"
+    ],
+    "plain": true
+   },
+   {
+    "tag": "J",
+    "stem": "Ta branża wspomaga rozwój sieci infrastrukturalnych w Europie.",
+    "key": [
+     "2"
+    ],
+    "plain": true
+   }
+  ],
+  "src": "Na podstawie https://www.youtube.com/watch?v=cyu0ekqNtMs&ab_channel=OSTRO",
+  "tr": [
+   "Polski przemysł. Branża maszyn i urządzeń.",
+   "1. Przemysł stoczniowy. Polska w przemyśle wysoko wyspecjalizowanym stanowi kluczowy sektor rozwoju gospodarki morskiej. Solidną pozycję w przemyśle OFFSHOR udowadniamy doświadczeniem i mistrzowską produkcją statków oraz platform wiertniczych na morzach i oceanach. Światowi armatorzy stawiają na polskie stocznie, dlatego inwestycja w port zewnętrzny zostanie zwieńczona terminalem dla ogromnych statków pasażerskich, tym samym znajdziemy się w ekstralidze, tworząc port głębokowodny, który obsłuży największe statki świata.",
+   "2. Przemysł transportu. Nadążamy za szybkimi zmianami, opracowując indywidualne rozwiązania w zakresie obsługi wielkogabarytowych platform jezdnych. Z kapitałem siedmiu dekad doświadczeń tworzymy branżę szynowego transportu w myśl ekspansji biznesu. Europa Środkowa i Wschodnia to centrum inwestycji infrastrukturalnych, dlatego polski przemysł kolejowy rozwija rynek transportu szynowego.",
+   "3. Przemysł budowlany. Projektujemy oraz tworzymy maszyny i urządzenia budowlane odpowiadające wizji współczesnych inżynierów. Tutaj, gdzie dźwigi, żurawie i suwnice stanowią element krajobrazu, Polska rośnie w siłę, tworząc międzynarodową myśl techniczną.",
+   "4. Przemysł górniczy, energetyczny. Branża wydobywcza odgrywa kluczową rolę z uwagi na wzrost zapotrzebowania na główne surowce. Nasza strategia wpływa na zwiększenie efektywności i bezpieczeństwa pracy odbiorców naszych rozwiązań. Działamy w coraz bardziej odległych geograficznie regionach. Ze starannością tworzymy wysoko wydajne i niezawodne maszyny oraz urządzenia, przede wszystkim dla górnictwa, ale także transportu, przeładunku i energetyki. „Zielony biznes” pod postacią farm wiatrowych to rozwiązanie, które pozwoli prowadzić zrównoważony i ekonomiczny rozwój. Nasza największa produkcja w Polsce i siódma w Europie składa się z sześćdziesięciu wiatraków o łącznej mocy stu dwudziestu megawatów.",
+   "5. Przemysł budowy maszyn rolniczych. Polska obsługuje partnerów europejskich w zakresie produkcji i dostaw maszyn rolniczych, takich jak kombajny i przenośniki zgrzebłowe. Polska wyróżnia się w produkcji wyrobów w niedużych seriach wymagających ogromnego zaangażowania myśli technicznej."
+  ]
+ },
+ {
+  "id": "V",
+  "title": "Zadanie V",
+  "kind": "open",
+  "max": 9,
+  "ptsLabel": "9 p.",
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać reportażu na temat projektu radiowego „Osada Wirakocza” i odpowiedzieć na pytania. Uwaga! Forma gramatyczna odpowiedzi powinna być dopasowana do pytania.",
+  "hint": "Wpisz krótką odpowiedź. Sprawdzanie porównuje ją z kluczem. Jeśli Twoja odpowiedź jest inna, ale zgodna z nagraniem, po sprawdzeniu możesz ją uznać ręcznie.",
+  "example": {
+   "stem": "Gdzie znajduje się osada Wirakocza?",
+   "ans": "Nad Zalewem Czorsztyńskim."
+  },
+  "items": [
+   {
+    "n": "1",
+    "stem": "Kiedy narrator był ostatni raz w Wirakoczy?",
+    "show": [
+     "kilka tygodni temu",
+     "podczas wiosennego weekendu"
+    ],
+    "variants": [
+     "kilka tygodni temu",
+     "wiosennego weekendu",
+     "wiosennych weekendów"
+    ],
+    "fill": [
+     "kilka tygodni temu"
+    ],
+    "frag": "(…) byłem tam nawiasem mówiąc kilka tygodni temu w czasie któregoś z wiosennych weekendów (…)",
+    "slots": [
+     {
+      "id": "V-1",
+      "pts": 1,
+      "lab": ""
+     }
+    ]
+   },
+   {
+    "n": "2",
+    "stem": "Jaka była rola Staszka Tyczyńskiego w projekcie?",
+    "show": [
+     "był jego pomysłodawcą",
+     "znalazł osadę w internecie",
+     "chciał zrobić program w osadzie"
+    ],
+    "variants": [
+     "pomysłodawc*",
+     "znalazł ~ internecie",
+     "chciał zrobić program"
+    ],
+    "fill": [
+     "był jego pomysłodawcą"
+    ],
+    "frag": "Pomysł, bodaj jak większość chyba naszych pomysłów zrodził się w głowie Staszka Tyczyńskiego.",
+    "slots": [
+     {
+      "id": "V-2",
+      "pts": 1,
+      "lab": ""
+     }
+    ]
+   },
+   {
+    "n": "3",
+    "stem": "Czego dotyczyły lokalne legendy? Proszę podać dwa przykłady.",
+    "show": [
+     "a) Inków",
+     "b) skarbu",
+     "ALBO: zamku niedzickiego / zamku w Niedzicy"
+    ],
+    "cats": [
+     [
+      "inków",
+      "o inkach"
+     ],
+     [
+      "skarbu",
+      "o skarbie"
+     ],
+     [
+      "zamku niedzickiego",
+      "zamku w niedzicy"
+     ]
+    ],
+    "fill": [
+     "Inków",
+     "skarbu"
+    ],
+    "frag": "to jest miejsce, które się wiąże z legendą o Inkach, o skarbie, o czymś tam jeszcze. Zbudowaliśmy oczywiście całą nadbudowę merytoryczną związaną właśnie z tą legendą zamku niedzickiego (…)",
+    "slots": [
+     {
+      "id": "V-3a",
+      "pts": 0.5,
+      "lab": "a)"
+     },
+     {
+      "id": "V-3b",
+      "pts": 0.5,
+      "lab": "b)"
+     }
+    ]
+   },
+   {
+    "n": "4",
+    "stem": "Czym zajmował się Staszek Tyczyński w tym projekcie?",
+    "show": [
+     "organizacją pracy",
+     "planował cały dzień",
+     "robił rozpiskę w Excelu",
+     "wręczał, dawał instrukcje, rozpiski"
+    ],
+    "variants": [
+     "organizacją pracy",
+     "planował cały dzień",
+     "rozpiskę w excelu",
+     "wręczał ~ instrukcje",
+     "wręczał ~ rozpiski",
+     "dawał ~ instrukcje",
+     "dawał ~ rozpiski"
+    ],
+    "fill": [
+     "organizacją pracy"
+    ],
+    "frag": "(…) zaplanować sobie cały dzień, robiąc rozpiskę w Excelu. Staszek Tyczyński nam wręczał rozpisane wszystkie wejścia, gdzie, kto po kim wchodzi (…)",
+    "slots": [
+     {
+      "id": "V-4",
+      "pts": 1,
+      "lab": ""
+     }
+    ]
+   },
+   {
+    "n": "5",
+    "stem": "Co dziennikarze zamontowali w osadzie?",
+    "show": [
+     "antenę do transmisji"
+    ],
+    "variants": [
+     "antenę"
+    ],
+    "fill": [
+     "antenę do transmisji"
+    ],
+    "frag": "(…) postawiliśmy tam jakąś ogromną antenę do transmisji reporterskich w tym miejscu (…)",
+    "slots": [
+     {
+      "id": "V-5",
+      "pts": 1,
+      "lab": ""
+     }
+    ]
+   },
+   {
+    "n": "6",
+    "stem": "W czym uczestniczyli zaproszeni goście?",
+    "show": [
+     "w grze terenowej"
+    ],
+    "variants": [
+     "grze terenowej"
+    ],
+    "fill": [
+     "w grze terenowej"
+    ],
+    "frag": "Ściągaliśmy wtedy ludzi z całej Polski, którzy byli bohaterami gry terenowej, jaka tam się toczyła (…)",
+    "slots": [
+     {
+      "id": "V-6",
+      "pts": 1,
+      "lab": ""
+     }
+    ]
+   },
+   {
+    "n": "7",
+    "stem": "Dlaczego program, który tworzyli radiowcy, był przełomowy?",
+    "show": [
+     "ponieważ jeszcze nie było podobnych programów w telewizji",
+     "ponieważ telewizja robiła podobne programy później",
+     "dał początek innym programom tego typu",
+     "był nowatorski"
+    ],
+    "variants": [
+     "nie było ~ podobnych programów",
+     "telewizja ~ później",
+     "dał początek innym programom",
+     "nowatorski*"
+    ],
+    "fill": [
+     "ponieważ jeszcze nie było podobnych programów w telewizji"
+    ],
+    "frag": "(…) nawet nie zdawaliśmy sobie sprawy, że robimy coś, co dopiero nieco później robiła telewizja w programach typu „Agent” czy jakieś tam „Bezludne wyspy” czy coś w tym stylu (…)",
+    "slots": [
+     {
+      "id": "V-7",
+      "pts": 1,
+      "lab": ""
+     }
+    ]
+   },
+   {
+    "n": "8",
+    "stem": "Jaka była rola narratora w organizacji programu?",
+    "show": [
+     "kwalifikował uczestników",
+     "zajmował się kwalifikacją uczestników",
+     "przyjmował/wybierał osoby do programu"
+    ],
+    "variants": [
+     "kwalifikował uczestników",
+     "kwalifikował osoby",
+     "kwalifikacją uczestników",
+     "przyjmował osoby do programu",
+     "wybierał osoby do programu"
+    ],
+    "fill": [
+     "kwalifikował uczestników"
+    ],
+    "frag": "Jedną z osób, którą wtedy zakwalifikowałem, bo ja kwalifikowałem te osoby, które tam przyjeżdżały (…)",
+    "slots": [
+     {
+      "id": "V-8",
+      "pts": 1,
+      "lab": ""
+     }
+    ]
+   },
+   {
+    "n": "9",
+    "stem": "Co zmieniło się w życiu narratora podczas realizacji programu?",
+    "show": [
+     "rzucił palenie",
+     "zrezygnował z palenia"
+    ],
+    "variants": [
+     "rzucił palenie",
+     "zrezygnował z palenia"
+    ],
+    "fill": [
+     "rzucił palenie"
+    ],
+    "frag": "(…) w ramach obowiązków służbowych załatwiłem sobie rzucenie palenia.",
+    "slots": [
+     {
+      "id": "V-9",
+      "pts": 1,
+      "lab": ""
+     }
+    ]
+   }
+  ],
+  "keynote": "Należy uznać też inne odpowiedzi zgodne z transkrypcją.",
+  "src": "Na podstawie: https://30lat.rmf.fm/rmf/film.php?name=PAWLIK_OSADAWIRAKOCZA-osada_wirakocza&title=Osada%20Wirakocza&podpis=Pawe%C5%82%20Pawlik%3A",
+  "tr": [
+   "Osada Wirakocza. To jest takie niezwykłe miejsce nad zalewem, nad Jeziorem Czorsztyńskim, byłem tam, nawiasem mówiąc, kilka tygodni temu w czasie któregoś z wiosennych weekendów i nic się tam prawie nie zmieniło od czasu, kiedy ten program, ten projekt tam realizowaliśmy. Pomysł, bodaj jak większość chyba naszych pomysłów, zrodził się w głowie Staszka Tyczyńskiego, który tam kliknął, już wtedy był internet, kiedy to wymyśliliśmy, i znalazł stronę osady turystycznej w internecie, i mówi: „No to zrobimy tam fajny program, bo to jest miejsce, które się wiąże z legendą o Inkach, o skarbie, o czymś tam jeszcze”. Zbudowaliśmy oczywiście całą nadbudowę merytoryczną związaną właśnie z tą legendą zamku niedzickiego i też powiem, że niezwykłe to było wyzwanie od strony zarówno logistycznej, jak i dziennikarskiej, bo nie wiedzieliśmy wtedy, że tak można robić radio. Że można na przykład zaplanować sobie cały dzień, robiąc rozpiskę w Excelu. Staszek Tyczyński nam wręczał rozpisane wszystkie wejścia, gdzie, kto po kim wchodzi, rzuciliśmy wtedy wszystkie nasze siły i środki i postawiliśmy tam jakąś ogromną antenę do transmisji reporterskich w tym miejscu, chyba trwało to 4 miesiące, weekend w weekend. Ściągaliśmy wtedy ludzi z całej Polski, którzy byli bohaterami gry terenowej, jaka tam się toczyła i przyznaję, że chyba byliśmy wtedy, nawet nie zdawaliśmy sobie sprawy, że robimy coś, co dopiero nieco później robiła telewizja w programach typu Agent czy jakieś tam Bezludne wyspy czy coś w tym stylu, a myśmy to wtedy robili w radiu i to było niesamowite, do dzisiaj to pamiętam. Mam mnóstwo niezwykłych wspomnień z tamtym czasem związanych. Powiem bardzo osobistą refleksję związaną z tym miejscem. Jedną z osób, którą wtedy zakwalifikowałem, bo ja kwalifikowałem te osoby, które tam przyjeżdżały, była pewna lekarka ze Śląska. Zaciekawiło mnie, dlaczego lekarka chce wziąć udział w takiej zabawie i dlatego ją poprosiłem, żeby przyjechała. I ona przyjechała i zobaczyła któregoś dnia, jak stoję przy wozie reporterskim, naszym wozie satelitarnym, a wokół mnie jest taki stos po prostu petów, przepraszam, że tak powiem brzydko, bo paliłem wtedy trzy paczki dziennie. I ta lekarka powiedziała wtedy: „Wiesz co, Paweł, pomogę ci rzucić palenie”. I to się stało. I ja do dzisiaj tego nie zapomnę i to był taki anioł, który stanął na mojej drodze, w ramach obowiązków służbowych załatwiłem sobie rzucenie palenia. Super historia, jak dla mnie.",
+   "Na podstawie: https://30lat.rmf.fm/rmf/film.php?name=PAWLIK_OSADAWIRAKOCZA- osada_wirakocza&title=Osada%20Wirakocza&podpis=Pawe%C5%82%20Pawlik%3A"
+  ]
+ }
+];
+const MAX = 40, PASS = 24;
+const TEST_ID = 'sluchanie-2022-11';
+const STORE_KEY = 'c1_sluch_2022_11_v1';
+const TOTAL_SEC = 40 * 60;
+const SELFTEST = /[?&]selftest\b/.test(location.search);
+
+function norm(s) { return String(s || '').normalize('NFC').toLowerCase().replace(/[„”"'’‘.,!?;:()]/g, ' ').replace(/\s+/g, ' ').trim(); }
+function fold(s) { return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l'); }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+let state = {};
+function load() { if (SELFTEST) return {}; try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { if (SELFTEST) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+state = load();
+if (!state.__accept) state.__accept = {};
+
+// ---------- dopasowanie odpowiedzi otwartych (zadanie V) ----------
+// fraza = słowa oddzielone spacją; "słowo*" pasuje do początku słowa; "~" pomija od 0 do 4 słów
+function toks(s, folded) { const x = folded ? fold(s) : norm(s); return x ? x.split(' ') : []; }
+function matchAt(tk, i, ph, j) {
+  if (j === ph.length) return true;
+  const p = ph[j];
+  if (p === '~') { for (let k = 0; k <= 4; k++) if (matchAt(tk, i + k, ph, j + 1)) return true; return false; }
+  if (i >= tk.length) return false;
+  const ok = p.endsWith('*') ? tk[i].startsWith(p.slice(0, -1)) : tk[i] === p;
+  return ok && matchAt(tk, i + 1, ph, j + 1);
+}
+function hasPhrase(raw, phrase, folded) {
+  const tk = toks(raw, folded), ph = toks(phrase, folded);
+  if (!ph.length) return false;
+  for (let i = 0; i < tk.length; i++) if (matchAt(tk, i, ph, 0)) return true;
+  return false;
+}
+function anyPhrase(raw, list, folded) { return list.some(v => hasPhrase(raw, v, folded)); }
+function catOf(raw, cats, folded) {
+  for (let c = 0; c < cats.length; c++) if (anyPhrase(raw, cats[c], folded)) return c;
+  return -1;
+}
+// wynik jednego pytania otwartego: tablica {ok, almost} na każdą lukę
+function evalOpen(it) {
+  const res = it.slots.map(() => ({ ok: false, almost: false }));
+  const raws = it.slots.map(s => state[s.id] || '');
+  if (it.cats) {
+    const c1 = raws.map(r => catOf(r, it.cats, false));
+    const c2 = raws.map(r => catOf(r, it.cats, true));
+    raws.forEach((r, k) => {
+      if (!r.trim()) return;
+      if (c1[k] >= 0 && !c1.slice(0, k).includes(c1[k])) res[k].ok = true;
+      else if (c1[k] < 0 && c2[k] >= 0 && !c2.slice(0, k).includes(c2[k])) res[k].almost = true;
+    });
+  } else if (raws[0].trim()) {
+    if (anyPhrase(raws[0], it.variants, false)) res[0].ok = true;
+    else if (anyPhrase(raws[0], it.variants, true)) res[0].almost = true;
+  }
+  return res;
+}
+
+// ---------- identyfikatory pól ----------
+function ids(t, i) { const it = t.items[i]; return [`${t.id}-${i + 1}`]; }
+
+function build() {
+  const root = document.getElementById('tasks'); let html = '';
+  TASKS.forEach(t => {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${esc(t.ptsLabel)}</span></h2>`;
+    html += `<p class="src" style="margin:0 0 8px">${esc(t.plays)}</p>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    if (t.hint) html += `<p class="src" style="margin:-6px 0 12px">${esc(t.hint)}</p>`;
+    html += `<div class="audio"><label><b>Wczytaj nagranie:</b> <input type="file" accept="audio/*" data-audio="${t.id}"></label><span class="fname" id="fn-${t.id}"></span><audio controls id="au-${t.id}"></audio></div>`;
+    if (t.legend) html += `<div class="legend">` + t.legend.map(l => `<div>${esc(l)}</div>`).join('') + `</div>`;
+    const e = t.example;
+    let ex = esc(e.stem);
+    if (e.opts) ex += '<br>' + e.opts.map(esc).join('<br>');
+    html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${ex}<br><b>Odpowiedź: ${esc(e.ans)}</b></div>`;
+    if (t.kind === 'multi') {
+      html += `<div class="multi" id="multi-${t.id}">` + t.items.map((it, i) =>
+        `<label class="opt" data-n="${i + 1}"><input type="checkbox" data-multi="${t.id}" value="${i + 1}"> <span>${i + 1}. ${esc(it.stem)}<span class="fix"></span></span></label>`).join('') + `</div>`;
+      html += `<div class="src" id="cnt-${t.id}" style="margin-top:8px"></div>`;
+      html += `<div class="notice" id="mnote-${t.id}">Masz już zaznaczone ${t.pick} zdań. Odznacz jedno, żeby wybrać inne.</div>`;
+      html += `<div class="src" id="mkey-${t.id}" style="display:none"><b>${esc(t.keynote)}</b></div>`;
+    } else if (t.kind === 'open') {
+      t.items.forEach(it => {
+        html += `<div class="q openq" id="q-${t.id}-${it.n}"><div class="stem">${it.n}. ${esc(it.stem)}</div>`;
+        it.slots.forEach(s => {
+          html += `<div class="slotrow" id="row-${s.id}">${s.lab ? `<span class="lab">${esc(s.lab)}</span>` : ''}<span class="slot st" id="s-${s.id}"><input type="text" class="open-in" data-id="${s.id}" autocomplete="off" spellcheck="false" aria-label="Odpowiedź ${esc(s.id)}"></span><span class="spts">(${pl(s.pts)} p.)</span></div>`;
+        });
+        html += `<div class="okey" id="okey-${t.id}-${it.n}"></div></div>`;
+      });
+      html += `<div class="src" id="mkey-${t.id}" style="display:none"><b>${esc(t.keynote)}</b></div>`;
+    } else {
+      t.items.forEach((it, i) => {
+        const baseId = `${t.id}-${i + 1}`;
+        if (t.kind === 'radio') {
+          html += `<div class="q" id="q-${baseId}"><div class="stem">${i + 1}. ${esc(it.stem)}</div>` +
+            Object.keys(it.opts).map(k => `<label class="opt" data-k="${k}"><input type="radio" name="${baseId}" data-id="${baseId}" value="${k}"> <span>${k}) ${esc(it.opts[k])}</span></label>`).join('') +
+            `<span class="fix"></span></div>`;
+        } else if (t.kind === 'tf') {
+          html += `<div class="q row" id="q-${baseId}"><div class="stem">${i + 1}. ${esc(it.stem)}</div><div class="tf">` +
+            ['TAK', 'NIE'].map(k => `<label class="opt" data-k="${k}"><input type="radio" name="${baseId}" data-id="${baseId}" value="${k}"> <span>${k}</span></label>`).join('') +
+            `</div><span class="fix"></span></div>`;
+        } else {
+          const opts = t.selOpts.map(o => `<option value="${o[0]}">${esc(o[1])}</option>`).join('');
+          html += `<div class="q row" id="q-${baseId}"><div class="stem">${it.tag}. ${esc(it.stem)}</div><span class="slots">` +
+            `<span class="slot" id="s-${baseId}"><select data-id="${baseId}" aria-label="${esc(it.tag)}"><option value=""></option>${opts}</select></span>` +
+            `</span><span class="fix"></span></div>`;
+        }
+      });
+    }
+    html += `<div class="src">${esc(t.src)}</div>`;
+    html += `<details class="tr" id="tr-${t.id}"><summary>Transkrypcja</summary><div class="warn">Otwieraj dopiero po sprawdzeniu (po kliknięciu Sprawdź otworzy się sama).</div>` +
+      t.tr.map(p => `<p>${esc(p)}</p>`).join('') + `</details>`;
+    html += `</section>`;
+  });
+  root.innerHTML = html;
+  syncDom();
+  root.querySelectorAll('[data-id]').forEach(el => {
+    const h = () => { state[el.dataset.id] = el.value; save(); updateProgress(); };
+    el.addEventListener(el.type === 'text' ? 'input' : 'change', h);
+    if (el.type === 'text') el.addEventListener('change', h);
+  });
+  root.querySelectorAll('input[data-multi]').forEach(el => {
+    el.addEventListener('change', () => {
+      const t = TASKS.find(x => x.id === el.dataset.multi);
+      const count = [...root.querySelectorAll(`input[data-multi="${t.id}"]:checked`)].length;
+      const note = document.getElementById('mnote-' + t.id);
+      if (el.checked && count > t.pick) { el.checked = false; note.classList.add('show'); return; }
+      note.classList.remove('show');
+      state[`${t.id}-s${el.value}`] = el.checked ? '1' : '';
+      save(); updateProgress();
+    });
+  });
+  root.querySelectorAll('[data-audio]').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const f = inp.files && inp.files[0]; if (!f) return;
+      const a = document.getElementById('au-' + inp.dataset.audio);
+      if (a.dataset.url) URL.revokeObjectURL(a.dataset.url);
+      const u = URL.createObjectURL(f); a.dataset.url = u; a.src = u;
+      document.getElementById('fn-' + inp.dataset.audio).textContent = f.name;
+    });
+  });
+  updateProgress();
+}
+
+// wpisuje zapisany stan do pól na stronie
+function syncDom() {
+  const root = document.getElementById('tasks');
+  root.querySelectorAll('[data-id]').forEach(el => {
+    const v = state[el.dataset.id];
+    if (el.type === 'radio') el.checked = (v === el.value);
+    else el.value = v != null ? v : '';
+  });
+  root.querySelectorAll('input[data-multi]').forEach(el => {
+    el.checked = state[`${el.dataset.multi}-s${el.value}`] === '1';
+  });
+}
+
+function counts() {
+  let total = 0, filled = 0;
+  TASKS.forEach(t => {
+    if (t.kind === 'multi') {
+      total += t.pick;
+      filled += Math.min(t.pick, t.items.filter((x, i) => state[`${t.id}-s${i + 1}`] === '1').length);
+    } else if (t.kind === 'open') {
+      t.items.forEach(it => it.slots.forEach(s => { total++; if ((state[s.id] || '').trim()) filled++; }));
+    } else {
+      t.items.forEach((it, i) => ids(t, i).forEach(s => { total++; if (state[s]) filled++; }));
+    }
+  });
+  return [filled, total];
+}
+function updateProgress() {
+  const [filled, total] = counts();
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${total}`;
+}
+
+// ---------- sprawdzanie ----------
+function checkChoice(t) {
+  let score = 0;
+  t.items.forEach((it, i) => {
+    const base = `${t.id}-${i + 1}`;
+    const v = state[base] || '';
+    const q = document.getElementById('q-' + base);
+    const fix = q.querySelector('.fix');
+    const ok = v !== '' && v === it.key[0];
+    if (ok) score++;
+    if (t.kind === 'select') {
+      const el = document.getElementById('s-' + base); el.classList.remove('ok', 'bad'); el.classList.add(ok ? 'ok' : 'bad');
+    } else {
+      q.querySelectorAll('.opt').forEach(l => {
+        l.classList.remove('ok', 'bad');
+        if (l.dataset.k === it.key[0]) l.classList.add('ok');
+        else if (l.dataset.k === v) l.classList.add('bad');
+      });
+    }
+    if (ok) fix.textContent = '';
+    else if (t.kind === 'select') fix.textContent = '→ ' + t.selOpts.find(o => o[0] === it.key[0])[1];
+    else if (t.kind === 'radio') fix.textContent = '→ ' + it.key[0] + ') ' + it.opts[it.key[0]];
+    else fix.textContent = '→ ' + it.key[0];
+  });
+  return score;
+}
+function checkMulti(t) {
+  let got = 0;
+  const box = document.getElementById('multi-' + t.id);
+  t.items.forEach((it, i) => {
+    const n = i + 1, sel = state[`${t.id}-s${n}`] === '1', truth = t.keys.includes(n);
+    const l = box.querySelector(`label[data-n="${n}"]`);
+    const fx = l.querySelector('.fix');
+    l.classList.remove('ok', 'bad', 'key');
+    if (sel && truth) { got++; l.classList.add('ok'); fx.textContent = ''; }
+    else if (sel) { l.classList.add('bad'); fx.textContent = ' → to zdanie jest nieprawdziwe'; }
+    else if (truth) { l.classList.add('key'); fx.textContent = ' → to zdanie jest prawdziwe'; }
+    else fx.textContent = '';
+  });
+  document.getElementById('cnt-' + t.id).textContent = '';
+  document.getElementById('mnote-' + t.id).classList.remove('show');
+  document.getElementById('mkey-' + t.id).style.display = 'block';
+  return got;
+}
+function checkOpen(t) {
+  let score = 0;
+  t.items.forEach(it => {
+    const res = evalOpen(it);
+    let allOk = true;
+    it.slots.forEach((s, k) => {
+      const acc = !!state.__accept[s.id];
+      const ok = res[k].ok || acc;
+      if (ok) score += s.pts; else allOk = false;
+      const slot = document.getElementById('s-' + s.id);
+      slot.classList.remove('ok', 'bad', 'almost');
+      slot.classList.add(ok ? 'ok' : res[k].almost ? 'almost' : 'bad');
+    });
+    const box = document.getElementById(`okey-${t.id}-${it.n}`);
+    let h = `<div><span class="k">Klucz:</span> ${it.show.map(esc).join(' / ')}</div>`;
+    h += `<div class="f">Fragment transkrypcji: ${esc(it.frag)}</div>`;
+    it.slots.forEach((s, k) => {
+      const auto = res[k].ok;
+      if (!auto) {
+        const hint = res[k].almost ? ' <span class="hint">(sprawdź polskie znaki)</span>' : '';
+        h += `<div>${hint}<label class="accept"><input type="checkbox" data-accept="${esc(s.id)}" ${state.__accept[s.id] ? 'checked' : ''}> ${s.lab ? esc(s.lab) + ' ' : ''}Moja odpowiedź jest inna, ale zgodna z nagraniem - uznaj ${pl(s.pts)} p.</label></div>`;
+      }
+    });
+    box.innerHTML = h;
+    box.querySelectorAll('[data-accept]').forEach(cb => {
+      cb.addEventListener('change', () => { state.__accept[cb.dataset.accept] = cb.checked; save(); checkAll(true); });
+    });
+  });
+  document.getElementById('mkey-' + t.id).style.display = 'block';
+  return score;
+}
+
+function checkAll(noScroll) {
+  const per = [];
+  TASKS.forEach(t => {
+    let score;
+    if (t.kind === 'multi') score = checkMulti(t);
+    else if (t.kind === 'open') score = checkOpen(t);
+    else score = checkChoice(t);
+    const el = document.getElementById('pts-' + t.id);
+    el.textContent = `${pl(score)} / ${t.max} p.`; el.classList.add('scored');
+    document.getElementById('tr-' + t.id).open = true;
+    per.push({ t, score });
+  });
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100), pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `<div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass ? 'Zdane - próg to 60% (24 p.)' : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błędna, obok poprawna z klucza. W zadaniu V na żółto: prawie dobrze, tylko polskie znaki. Transkrypcje pod zadaniami są już rozwinięte. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  if (noScroll !== true) res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+let left = TOTAL_SEC, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60, el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL_SEC ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) { clearInterval(tick); running = false; document.getElementById('timerBtn').textContent = 'Koniec'; document.getElementById('timeUp').classList.add('show'); }
+    }, 1000);
+  } else clearInterval(tick);
+}
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  state = { __accept: {} };
+  clearInterval(tick); running = false; left = TOTAL_SEC; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', () => checkAll());
+document.getElementById('checkBottom').addEventListener('click', () => checkAll());
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+// ---------- kontrakt z pulpitem ----------
+function fillCorrect() {
+  state = { __accept: {} };
+  TASKS.forEach(t => {
+    if (t.kind === 'multi') {
+      t.keys.forEach(n => { state[`${t.id}-s${n}`] = '1'; });
+    } else if (t.kind === 'open') {
+      t.items.forEach(it => it.slots.forEach((s, k) => { state[s.id] = it.fill[k]; }));
+    } else {
+      t.items.forEach((it, i) => { state[`${t.id}-${i + 1}`] = it.key[0]; });
+    }
+  });
+  syncDom(); save(); updateProgress();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'sluchanie', session: '2022-11', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

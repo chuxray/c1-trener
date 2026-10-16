@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gramatyka C1 2019</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Poprawność gramatyczna C1 - test przykładowy 2019</span>
+    <span class="timer" id="timer">60:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Poprawność gramatyczna</h1>
+  <p class="lead">Oficjalny test przykładowy egzaminu certyfikatowego C1 (Państwowa Komisja ds. Poświadczania Znajomości Języka Polskiego jako Obcego), rok 2019. 8 zadań, 60 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji.</p>
+  <div class="notice" id="timeUp">Czas minął (60 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: oficjalny test przykładowy C1 z 2019 roku, część "Poprawność gramatyczna" + oficjalny klucz ----------
+const TASKS = [
+  {
+    id: "I", type: "gaps", per: 0.5,
+    title: "Zadanie I",
+    instr: "Proszę - zgodnie z przykładami - uzupełnić tekst poprawnymi formami wyrazów utworzonych od słów podanych w nawiasach (tworzenie i odmiana rzeczowników odczasownikowych).",
+    paras: [
+      "Phishing polega na [[próbach]] (próbować) {1} (pozyskać) danych osobowych lub informacji finansowych. Nieuczciwi {2} (nadawać) z reguły podszywają się pod różne firmy, by mieć {3} (dojść) do naszych kont bankowych i maili. Ważne jest zatem, by zapewnić swoim danym {4} (ochronić) i wykazywać się {5} (rozważyć) przy korzystaniu z poczty internetowej.",
+      "Nasza {6} (pomylić) może spowodować nieobliczalne {7} (stracić) materialne. Gromadzone przez lata {8} (oszczędzić) mogą zniknąć w ciągu sekundy. Choć {9} (karać) za phising są wysokie, to zjawisko ciągle przybiera na sile. Bądźmy więc czujni, by nie narazić się na żadną {10} (szkodzić)."
+    ],
+    answers: {
+      "1": ["pozyskania"], "2": ["nadawcy"], "3": ["dojście", "dojścia"], "4": ["ochronę"], "5": ["rozwagą"],
+      "6": ["pomyłka"], "7": ["straty"], "8": ["oszczędności"], "9": ["kary"], "10": ["szkodę"]
+    },
+  },
+  {
+    id: "II", type: "gaps", per: 0.5,
+    title: "Zadanie II",
+    instr: "Proszę - zgodnie z przykładami - uzupełnić tekst poprawnymi słownymi formami liczb oraz wyrazów podanych w nawiasach (odmiana liczebników i rzeczowników).",
+    paras: [
+      "Przed [[czterema]] (4) [[dniami]] (dzień) w poznańskim Instytucie Filologii Polskiej odbył się finał Konkursu Wiedzy o Antyku. Wyniki tegorocznej, [[dziesiątej]] (10.) już {1} (edycja) konkursu świadczą o tym, jak dużą popularnością cieszy się nadal kultura starożytnej Hellady i Rzymu. Na etapie szkolnym w konkursie uczestniczyło ponad {2} (500) {3} (uczeń) reprezentujących niemal {4} (70) {5} (szkoła). Do finału zakwalifikowano {6} (40) {7} (młody) {8} (człowiek) - dziewcząt i chłopców. Choć konkurs nie figuruje na żadnych listach kuratoryjnych, a jego poziom jest prawdziwie uniwersytecki, zainteresowanie nim rośnie z roku na rok: na przykład w {9} (8.) konkursie wzięło udział aż o połowę mniej uczniów niż w tym roku. Dzisiaj gratulować należałoby wszystkim, ale szczególne uznanie należy się {10} (6.) na liście laureatów uczestnikowi konkursu. To licealista Michał Kierc, który uczy się dopiero w pierwszej klasie!"
+    ],
+    answers: {
+      "1": ["edycji"], "2": ["pięciuset"], "3": ["uczniów"], "4": ["siedemdziesiąt"], "5": ["szkół"],
+      "6": ["czterdzieścioro"], "7": ["młodych"], "8": ["ludzi"], "9": ["ósmym"], "10": ["szóstemu"]
+    },
+  },
+  {
+    id: "III", type: "gaps", per: 0.5,
+    title: "Zadanie III",
+    instr: "Proszę - zgodnie z przykładami - uzupełnić tekst poprawnymi formami wyrazów utworzonych od słów podanych w nawiasach (tworzenie i odmiana rzeczowników i przymiotników od wyrażeń przyimkowych).",
+    paras: [
+      "[[Bezstresowe]] (bez/stres) wychowanie dzieci to sformułowanie, które jest dziś źródłem [[nadinterpretacji]] (nad/interpretacja), zwłaszcza wśród rodziców. Niektórzy w sposób {1} (bez/krytyka) patrzą na wszelkie nieodpowiednie zachowania swoich pociech, nie reagując na wybryki w imię {2} (do/cel) wyeliminowania stresu u dziecka. Jednak ci sami rodzice zachęcają swoje latorośle do udziału w licznych zajęciach {3} (ponad/program). Niestety, bywa, że kończy się to przeciążeniem dzieci, którym {4} (nad/miara) obowiązków uniemożliwia zdobywanie {5} (bez/cena) umiejętności społecznych w {6} (poza/szkoła) kontaktach z rówieśnikami. W skrajnych sytuacjach stają się one wręcz {7} (nad/wrażliwość) na krytykę i nie potrafią nawiązać ani utrzymać zdrowych relacji {8} (między/ludzie). Szkoda, że {9} (nad/opieka) rodzice zbytnio chronią swoje dzieci przed światem zewnętrznym, bo tak naprawdę w sposób {10} (mimo/wola) kierują się własnymi obawami i lękami."
+    ],
+    answers: {
+      "1": ["bezkrytyczny"], "2": ["docelowego"], "3": ["ponadprogramowych"], "4": ["nadmiar"], "5": ["bezcennych"],
+      "6": ["pozaszkolnych"], "7": ["nadwrażliwe"], "8": ["międzyludzkich"], "9": ["nadopiekuńczy"], "10": ["mimowolny"]
+    },
+  },
+  {
+    id: "IV", type: "select", per: 0.5,
+    title: "Zadanie IV",
+    instr: "Proszę - zgodnie z przykładem - uzupełnić tekst odpowiednimi wyrazami i wyrażeniami z ramki. Uwaga! Każdego wyrazu można użyć tylko raz, a dwa wyrazy są zbędne.",
+    ramka: ["ani", "z drugiej strony", "po co", "bowiem", "raczej", "jeśli", "ale", "na tyle", "dopóki", "naprawdę", "jednak", "żeby", "chyba że"],
+    used: "jednak",
+    paras: [
+      "Mówi się, że inteligentny człowiek nigdy się nie nudzi, [[jednak]] ciągła produktywność też nie jest dobra. Nuda jest niezbędnym składnikiem kreatywności. Nie musi jej być dużo, może być zaledwie jak sól w potrawie, {1} powinna być obecna w naszym życiu, bo daje szansę odwrócenia uwagi od pospolitych rzeczy. Człowiek, który urodził się, {2} pracować i konsumować, a potem umrzeć, i nigdy się nie zastanawiał, {3} to robi, nie różni się niczym od szaleńca, któremu choroba odebrała możliwość świadomego życia.",
+      "Z jednej strony, pozwalamy na nudę dzieciom, powtarzając, że nie należy im przeładowywać grafiku zajęć {4} kupować zbyt wielu zabawek, tylko pozwolić im się ponudzić, by mogły odkryć urok zabawy kijkiem i sznurkiem. Dopiero dla dorosłych nuda jest zakazana. Nie ma już pozwolenia na zabawę klockami, {5} dorosły bawi się z dzieckiem. A {6}, zastanówmy się, czy zabawa jest zaprzeczeniem nudy. Z pewnością nie! To {7} zabawa bierze się z nudy…",
+      "W tym cały problem, żeby pozwolić sobie na twórczą nudę. Na przykład usiąść na ławce w parku i dać sobie szansę na fascynację kolorem spadających liści, {8} to jest jesień. Kiedy już nas ta sytuacja zmęczy {9}, że będziemy chcieli sięgnąć po smartfon, warto wtedy zapytać siebie, czego tak {10} się boję. I poszukać własnej odpowiedzi."
+    ],
+    answers: {
+      "1": ["ale"], "2": ["żeby"], "3": ["po co"], "4": ["ani"], "5": ["chyba że"],
+      "6": ["z drugiej strony"], "7": ["raczej"], "8": ["jeśli"], "9": ["na tyle"], "10": ["naprawdę"]
+    },
+    note: "Zbędne słowa: bowiem, dopóki."
+  },
+  {
+    id: "V", type: "gaps", per: 0.5,
+    title: "Zadanie V",
+    instr: "Proszę - zgodnie z przykładami - uzupełnić tekst poprawnymi formami wyrazów podanych w nawiasach (tworzenie i odmiana imiesłowów).",
+    paras: [
+      "[[Zostawiwszy]] (zostawić) w pokoju nr 4 teczkę z kompletem [[wymaganych]] (wymagać) dokumentów, Alina szła korytarzem [[prowadzącym]] (prowadzić) do wyjścia. [[Zastanawiając się]] (Zastanawiać się) nad słusznością swego wyboru, jadła batonik {1} (odwinąć) przed chwilą nerwowo z papierka. Czy postąpiła właściwie, {2} (decydować się) na kierunek studiów {3} (polecić) jej przez kuzynkę? Podobne wątpliwości dopadały ją już wcześniej. Przypomniała sobie, jak - {4} (założyć) konto w elektronicznym systemie rekrutacji na studia - długo wahała się, nie {5} (być) pewną, czy wprowadzić w czyn decyzję {6} (podjąć) dość spontanicznie, a {7} (mieć) przecież wpływ na jej przyszłość. Ostatecznie jednak, {8} (utwierdzić się) w przekonaniu, że plusy przeważają nad minusami, wybrała biotechnologię. Alina starała się odsunąć od siebie {9} (niepokoić) ją myśli. Miała właśnie rozpocząć trzymiesięczne {10} (zasłużyć) wakacje i zamierzała z nich w pełni skorzystać."
+    ],
+    answers: {
+      "1": ["odwinięty"], "2": ["decydując się"], "3": ["polecony", "poleconych"], "4": ["założywszy"], "5": ["będąc"],
+      "6": ["podjętą"], "7": ["mającą"], "8": ["utwierdziwszy się"], "9": ["niepokojące"], "10": ["zasłużone"]
+    },
+  },
+  {
+    id: "VI", type: "gaps", per: 0.5,
+    title: "Zadanie VI",
+    instr: "Proszę - zgodnie z przykładami - uzupełnić tekst poprawnymi formami wyrazów podanych w nawiasach (aspekt i różne formy czasowników).",
+    paras: [
+      "W Górach Izerskich surowce mineralne [[wydobywa się]] (wydobywać/wydobyć) nieprzerwanie od kilkuset lat. Na początku XIII wieku [[zaczęto]] (zaczynać/zacząć) tu poszukiwać złota, kiedy [[odkryli]] (odkrywać/odkryć) je Walonowie. Także i dziś w wysokich partiach gór turyści [[znajdują]] (znajdować/znaleźć) nieraz cenne minerały.",
+      "Na terenie Sudetów intensywny rozwój górnictwa {1} (następować/nastąpić) po przypadkowym odkryciu, do którego doszło w XVI wieku. Jan Weise i Mateusz Söhnel długo {2} (kopać/wykopać) studnię, gdy nagle jeden z nich {3} (spostrzegać/spostrzec) dziwny metal. Była to cyna.",
+      "Górnicy wspólnie {4} (podejmować/podjąć) decyzję o uruchomieniu kopalni. Funkcjonowała ona jeszcze w XVII wieku, aż w końcu {5} (nadchodzić/nadejść) dni, gdy jej eksploatacja przestała być opłacalna. Cóż było robić? {6} (Zamykać/Zamknąć) kopalnię z przyczyn ekonomicznych. W pierwszej połowie XX wieku długo {7} (myśleć/pomyśleć) o jej ponownym otwarciu, ale taka decyzja jednak ostatecznie nie {8} (zapadać/zapaść). Także i dziś, od czasu do czasu, {9} (dyskutować/przedyskutować) na temat rewitalizacji starej kopalni cyny, ale z tych rozmów nic nie wynika: lokalne władze ciągle {10} (przedkładać/przedłożyć) sprawy bieżącej polityki nad kwestie kultywowania tradycji regionu."
+    ],
+    answers: {
+      "1": ["nastąpił"], "2": ["kopali"], "3": ["spostrzegł"], "4": ["podjęli"], "5": ["nadeszły"],
+      "6": ["zamknięto"], "7": ["myślano"], "8": ["zapadła"], "9": ["dyskutuje się"], "10": ["przedkładają"]
+    },
+  },
+  {
+    id: "VII", type: "gaps", per: 0.5,
+    title: "Zadanie VII",
+    instr: "Proszę - zgodnie z przykładami - uzupełnić tekst poprawnymi formami wyrazów podanych w nawiasach (odmiana rzeczowników, przymiotników, zaimków).",
+    paras: [
+      "Od dawna myśleliśmy o [[drewnianym]] (drewniany) ogrodzeniu do [[naszego]] (nasz) niewielkiego [[ogródka]] (ogródek). Dzisiaj przez kilka godzin montowaliśmy {1} (ono) razem z synami na {2} (podjazd) przed domem, by potem ustawić w zaplanowanym miejscu - tuż za {3} (rząd) równo przyciętych, niewysokich jeszcze {4} (tuja) rosnących na granicy z posesją, którą niedawno nabyli nowi {5} (sąsiad). Jako nie dość jeszcze {6} (doświadczony) {7} (majsterkowicz) korzystaliśmy z instrukcji dołączonej do zestawu montażowego. Drewniane elementy konstrukcji połączyliśmy przy pomocy {8} (gwóźdź), a metalowe - śrubami. Praca absorbowała nas tak bardzo, że szybko przestaliśmy zauważać {9} (przechodzień) zatrzymujących się przed naszym domem. Szkoda, że {10} (któryś) z nich nie przyszło do głowy, by nam pomóc."
+    ],
+    answers: {
+      "1": ["je"], "2": ["podjeździe"], "3": ["rzędem"], "4": ["tui", "tuj"], "5": ["sąsiedzi"],
+      "6": ["doświadczeni"], "7": ["majsterkowicze"], "8": ["gwoździ"], "9": ["przechodniów"], "10": ["któremuś"]
+    },
+  },
+  {
+    id: "VIII", type: "transform", per: 1,
+    title: "Zadanie VIII",
+    instr: "Proszę - zgodnie z przykładem - użyć odpowiedniej formy wyrazów lub wyrażeń podanych w nawiasach i przekształcić zdania tak, by nie zmieniły sensu (zamiana zdań złożonych na zdania pojedyncze).",
+    example: {
+      orig: "Zanim sekretarka wysłała e-mail, sprawdziła dane adresata.",
+      kw: "przed",
+      ans: "Przed wysłaniem e-maila sekretarka sprawdziła dane adresata."
+    },
+    items: [
+      { orig: "Ministrowie zajęli tak nieprzejednane stanowisko, ponieważ skłonili ich do tego nowi doradcy finansowi.", kw: "pod wpływem",
+        model: ["Ministrowie zajęli ", [0, "takie / tak nieprzejednane stanowisko"], " ", [1, "pod wpływem"], " ", [2, "nowych"], " ", [3, "doradców finansowych"], "."],
+        fill: "Ministrowie zajęli takie nieprzejednane stanowisko pod wpływem nowych doradców finansowych.",
+        els: [/(takie|tak)\s+nieprzejednane\s+stanowisko/, /pod\s+wpływem/, /nowych\s+doradców/, /doradców\s+finansowych/] },
+      { orig: "Prezes fundacji oficjalnie zapowiedział, że sprawozdanie roczne zostanie wkrótce opublikowane na stronie internetowej.", kw: "zgodnie z",
+        model: [[0, "Zgodnie z"], " ", [1, "oficjalną zapowiedzią"], " ", [2, "prezesa fundacji"], " ", [3, "sprawozdanie roczne zostanie wkrótce opublikowane na stronie internetowej"], "."],
+        els: [/zgodnie\s+z/, /oficjalną\s+zapowiedzią/, /prezesa\s+fundacji/, /sprawozdanie\s+roczne\s+zostanie\s+(wkrótce\s+)?opublikowane\s+(wkrótce\s+)?na\s+stronie\s+internetowej/] },
+      { orig: "Zwiększa się zainteresowanie pracodawcami z UE, dlatego że powoli znikają bariery w dostępie do unijnych rynków pracy.", kw: "spowodowane",
+        model: [[2, "Zwiększa się zainteresowanie pracodawcami z UE"], " ", [0, "spowodowane"], " ", [1, "(powoli) znikającymi barierami / powolnym znikaniem barier"], " ", [3, "w dostępie do unijnych rynków pracy"], "."],
+        fill: "Zwiększa się zainteresowanie pracodawcami z UE spowodowane powoli znikającymi barierami w dostępie do unijnych rynków pracy.",
+        alt: ["Zwiększanie się zainteresowania pracodawcami z UE jest spowodowane powoli znikającymi barierami w dostępie do unijnych rynków pracy."],
+        els: [/spowodowane/, /((powoli\s+)?znikającymi\s+barierami|powolnym\s+znikaniem\s+barier|znikającymi\s+powoli\s+barierami)/, /(zwiększa\s+się\s+zainteresowanie|zwiększanie\s+się\s+zainteresowania)\s+pracodawcami\s+z\s+ue/, /w\s+dostępie\s+do\s+unijnych\s+rynków\s+pracy/] },
+      { orig: "Możesz liczyć na to, że otrzymasz pozytywną odpowiedź na swój wniosek wizowy.", kw: "rozpatrzenie",
+        model: ["Możesz liczyć na ", [0, "pozytywne"], " ", [1, "rozpatrzenie"], " ", [2, "swojego"], " ", [3, "wniosku wizowego"], "."],
+        els: [/liczyć\s+na\s+pozytywne/, /rozpatrzeni(e|a|u|em)/, /(swojego|twojego)\s+wniosku/, /wniosku\s+wizowego/] },
+      { orig: "Dzięki temu, że oba państwa zawarły porozumienie o współpracy handlowej, przekazano nam wszystkie dokumenty w tej sprawie.", kw: "na mocy",
+        model: [[0, "Wszystkie dokumenty w tej sprawie przekazano nam"], " ", [1, "na mocy"], " ", [2, "porozumienia"], " (o współpracy handlowej) ", [3, "zawartego między obu (oboma) państwami"], "."],
+        fill: "Wszystkie dokumenty w tej sprawie przekazano nam na mocy porozumienia o współpracy handlowej zawartego między obu państwami.",
+        els: [s => /wszystkie\s+dokumenty/.test(s) && /przekazano\s+nam/.test(s), /na\s+mocy/, /porozumienia/, /zawartego\s+(między|pomiędzy|przez)\s+(obu|oboma|oba)\s+państw/] }
+    ],
+    note: "Każde zdanie: 1 p., po 0,25 p. za każdy przekształcony element. Komisja uznaje też inne poprawne przekształcenia - jeśli twoja wersja jest poprawna, ale inna niż w kluczu, zaznacz „uznaj”."
+  }
+];
+
+const MAX = 40, PASS = 24;
+const STORE_KEY = 'c1_gram_2019_v1';
+
+// ---------- pomocnicze ----------
+function norm(s) {
+  return String(s || '').toLowerCase()
+    .replace(/[„”"'’‘.,!?;:()]/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function fold(s) {
+  return norm(s).normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/ł/g, 'l');
+}
+function esc(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function pl(n) { // 27.5 -> "27,5"
+  return (Math.round(n * 100) / 100).toString().replace('.', ',');
+}
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(collect())); } catch (e) {}
+}
+
+// ---------- budowanie arkusza ----------
+function renderText(task, para) {
+  let indent = true;
+  if (para.startsWith('!')) { para = para.slice(1); indent = false; }
+  let h = esc(para);
+  h = h.replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+  h = h.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  h = h.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  h = h.replace(/\{(\d+[a-z]?)\}/g, (m, n) => {
+    const id = `${task.id}-${n}`;
+    let field;
+    if (task.type === 'select') {
+      const opts = task.ramka.filter(w => w !== task.used)
+        .map(w => `<option value="${esc(w)}">${esc(w)}</option>`).join('');
+      field = `<select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select>`;
+    } else {
+      field = `<input type="text" data-id="${id}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Luka ${n}">`;
+    }
+    return `<span class="gap" id="g-${id}">${field}<sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+  });
+  return `<p class="${indent ? '' : 'noindent'}">${h}</p>`;
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${t.type === 'transform' ? '5 x 1 p.' : '10 x 0,5 p.'} = 5 p.</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    if (t.type === 'transform') {
+      const e = t.example;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${esc(e.orig)} <b>(${esc(e.kw)})</b><br><i>${esc(e.ans)}</i></div>`;
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="tr-item"><div class="tr-orig">${i + 1}. ${esc(it.orig)} <span class="kw">(${esc(it.kw)})</span></div>
+          <textarea data-id="${id}" placeholder="Napisz całe zdanie, używając „${esc(it.kw)}”..." spellcheck="false"></textarea>
+          <div class="tr-res" id="res-${id}"></div></div>`;
+      });
+    } else {
+      if (t.type === 'select') {
+        html += `<div class="ramka" id="ramka-${t.id}">` + t.ramka.map(w =>
+          `<span class="chip${w === t.used ? ' struck' : ''}" data-w="${esc(w)}">${esc(w)}</span>`).join('') + `</div>`;
+      }
+      html += `<div class="text">` + t.paras.map(p => renderText(t, p)).join('') + `</div>`;
+      if (t.src) html += `<div class="src">${esc(t.src)}</div>`;
+    }
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+
+  const saved = load();
+  root.querySelectorAll('[data-id]').forEach(el => {
+    if (saved[el.dataset.id] != null) el.value = saved[el.dataset.id];
+    el.addEventListener('input', () => { save(); updateProgress(); updateRamka(); });
+    el.addEventListener('change', () => { save(); updateProgress(); updateRamka(); });
+  });
+  updateProgress(); updateRamka();
+}
+
+function collect() {
+  const o = {};
+  document.querySelectorAll('[data-id]').forEach(el => { o[el.dataset.id] = el.value; });
+  o.__accept = acceptState;
+  return o;
+}
+let acceptState = (load().__accept) || {};
+
+function updateProgress() {
+  const all = document.querySelectorAll('[data-id]');
+  let filled = 0;
+  all.forEach(el => { if (el.value.trim()) filled++; });
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${all.length}`;
+}
+
+function updateRamka() {
+  const t = TASKS.find(x => x.type === 'select');
+  const chosen = [...document.querySelectorAll(`#task-${t.id} select`)].map(s => s.value).filter(Boolean);
+  document.querySelectorAll(`#ramka-${t.id} .chip`).forEach(c => {
+    if (c.dataset.w === t.used) return;
+    c.classList.toggle('used', chosen.includes(c.dataset.w));
+  });
+}
+
+// ---------- sprawdzanie ----------
+function checkAll() {
+  const vals = {};
+  document.querySelectorAll('[data-id]').forEach(el => { vals[el.dataset.id] = el.value; });
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'transform') {
+      t.items.forEach((it, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const s = norm(vals[id]);
+        const hits = it.els.map(e => s.length > 0 && (typeof e === 'function' ? e(s) : e.test(s)));
+        let pts = hits.filter(Boolean).length * 0.25;
+        const accepted = !!acceptState[id];
+        if (accepted) pts = 1;
+        score += pts;
+        const model = it.model.map(seg => typeof seg === 'string' ? esc(seg)
+          : `<span class="el ${hits[seg[0]] ? 'hit' : 'miss'}">${esc(seg[1])}</span>`).join('');
+        const alts = (it.alt || []).map(a => `<div class="src" style="margin:4px 0 0">Także w kluczu: <span class="model">${esc(a)}</span></div>`).join('');
+        document.getElementById(`res-${id}`).innerHTML =
+          `<span class="tr-score">${pl(pts)} / 1 p.</span> Klucz: <span class="model">${model}</span>${alts}
+           <br><label class="accept"><input type="checkbox" data-accept="${id}" ${accepted ? 'checked' : ''}> Moja wersja jest inna, ale poprawna - uznaj 1 p.</label>`;
+      });
+    } else {
+      const local = {};
+      for (const n in t.answers) local[n] = vals[`${t.id}-${n}`] || '';
+      for (const n in t.answers) {
+        const id = `${t.id}-${n}`;
+        const raw = local[n];
+        const v = norm(raw);
+        const a = t.answers[n];
+        // przy odpowiedziach powiązanych (I.8/I.9) pokazuj tylko formę pasującą do sąsiedniej luki
+        const list = Array.isArray(a) ? a : a.show.filter(x => a.check(norm(x), local));
+        const ok = v !== '' && (Array.isArray(a) ? list.map(norm).includes(v) : a.check(v, local));
+        const gap = document.getElementById(`g-${id}`);
+        const fix = gap.querySelector('.fix');
+        gap.classList.remove('ok', 'bad', 'almost');
+        const pp = t.partial && t.partial[n];
+        const ppHint = pp ? ' <span class="hint">(' + esc(pp.forms.join(' / ')) + ': ' + pl(pp.pts) + ' p.)</span>' : '';
+        if (ok) {
+          score += t.per; gap.classList.add('ok'); fix.innerHTML = '';
+        } else if (pp && v !== '' && pp.forms.map(norm).includes(v)) {
+          score += pp.pts; gap.classList.add('almost');
+          fix.innerHTML = '→ ' + list.map(esc).join(' / ') + ppHint;
+        } else {
+          const almost = v !== '' && !list.map(norm).includes(v) && list.some(x => fold(x) === fold(raw));
+          gap.classList.add(almost ? 'almost' : 'bad');
+          fix.innerHTML = '→ ' + list.map(esc).join(' / ') + ppHint + (almost ? ' <span class="hint">(sprawdź polskie znaki)</span>' : '');
+        }
+      }
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / 5 p.`;
+    el.classList.add('scored');
+    const note = document.getElementById(`note-${t.id}`);
+    if (note) note.style.display = 'block';
+    per.push({ t, score });
+  }
+
+  document.querySelectorAll('[data-accept]').forEach(cb => {
+    cb.addEventListener('change', () => { acceptState[cb.dataset.accept] = cb.checked; save(); checkAll(); });
+  });
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / 5 * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / 5</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na czerwono: błędna odpowiedź, obok poprawna z klucza. Na żółto: prawie dobrze, tylko polskie znaki. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+let left = 60 * 60, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < 3600 ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  acceptState = {};
+  clearInterval(tick); running = false; left = 3600; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', checkAll);
+document.getElementById('checkBottom').addEventListener('click', checkAll);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+const TEST_ID = 'gramatyka-2019';
+function fillCorrect() {
+  for (const t of TASKS) {
+    if (t.type === 'transform') {
+      t.items.forEach((it, i) => {
+        const el = document.querySelector(`[data-id="${t.id}-${i + 1}"]`);
+        if (el) el.value = it.fill || it.model.map(s => typeof s === 'string' ? s : s[1]).join('');
+      });
+    } else {
+      for (const n in t.answers) {
+        const a = t.answers[n];
+        const el = document.querySelector(`[data-id="${t.id}-${n}"]`);
+        if (el) el.value = Array.isArray(a) ? a[0] : a.show[0];
+      }
+    }
+  }
+  acceptState = {};
+  save(); updateProgress(); updateRamka();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'gramatyka', session: '2019', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

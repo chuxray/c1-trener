@@ -1,0 +1,968 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Słuchanie C1 2021-05</title>
+<script src="assets/c1-common.js"></script>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.q label.opt { display: flex; gap: 8px; align-items: flex-start; padding: 4px 8px; border-radius: 6px; cursor: pointer; }
+.q label.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.q label.opt.bad { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.q.row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.q.row .stem { flex: 1 1 320px; margin: 0; font-weight: 400; }
+.q select { font: 16px/1.2 system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; max-width: 72vw; }
+.q .slot.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.q .slot.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.slots { display: inline-flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.q .fix { font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); }
+.audio { background: var(--example); border-radius: 8px; padding: 10px 12px; margin: 0 0 14px; }
+.audio audio { width: 100%; margin-top: 8px; }
+.audio .fname { font-size: 13px; color: var(--muted); margin-left: 6px; }
+details.tr { margin-top: 14px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--input-bg); }
+details.tr summary { cursor: pointer; font-weight: 700; }
+details.tr .warn { color: var(--warn); font-size: 14px; font-weight: 600; }
+details.tr p { font-family: Georgia, serif; font-size: 16px; margin: 8px 0; }
+.legend { display: grid; gap: 4px; margin: 0 0 12px; padding: 10px 12px; background: var(--example); border-radius: 8px; font-size: 15px; }
+.tf { display: flex; gap: 14px; }
+
+.sub { display: flex; gap: 8px; align-items: center; margin: 4px 0; flex-wrap: wrap; }
+.sub .lab { font-weight: 700; width: 1.4em; }
+.sub input[type=text] { flex: 1 1 260px; font: 16px/1.3 system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 6px 8px; }
+.sub input[type=text]:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.sub.ok input[type=text] { border-color: var(--ok); background: var(--ok-bg); }
+.sub.bad input[type=text] { border-color: var(--bad); background: var(--bad-bg); }
+.keyline { font-size: 14px; color: var(--ok); font-weight: 600; margin-top: 4px; }
+.keyline .fr { color: var(--muted); font-weight: 400; }
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie ze słuchu C1 - maj 2021</span>
+    <span class="timer" id="timer">40:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+<div class="wrap">
+  <h1>Rozumienie ze słuchu</h1>
+  <p class="lead">Prawdziwy arkusz egzaminu certyfikatowego C1, sesja maj 2021 (w nagłówku oficjalnego arkusza stoi „marzec 2021”). 5 zadań, do 40 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji. W każdym zadaniu wczytaj plik z nagraniem. Na egzaminie zadanie I słucha się raz, zadania II-V dwa razy.</p>
+  <div class="notice" id="timeUp">Czas minął (40 minut). Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+<script>
+// ---------- dane: arkusz C1 maj 2021, część "Rozumienie ze słuchu" + oficjalny klucz i transkrypcje ----------
+const TASKS = [
+ {
+  "id": "I",
+  "title": "Zadanie I",
+  "max": 6,
+  "plays": "Nagranie zostanie odtworzone tylko jeden raz.",
+  "instr": "Proszę wysłuchać kilku krótkich tekstów i zaznaczyć właściwe odpowiedzi.",
+  "example": {
+   "stem": "Z tego nagrania wynika, że",
+   "opts": [
+    "a) trąby powietrzne w Polsce są zjawiskiem coraz częstszym.",
+    "b) klub żeglarski ucierpiał wskutek przejścia huraganu.",
+    "c) trąba powietrzna została utrwalona dzięki monitoringowi."
+   ],
+   "ans": "c"
+  },
+  "kind": "radio",
+  "items": [
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "władze miejskie przygotowują się do łączenia placówek szkolnych.",
+     "b": "w mieście będzie działało osiem szkół podstawowych.",
+     "c": "2019 to ostatni rok rekrutacji uczniów do gimnazjów."
+    },
+    "key": [
+     "a"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "dyrektor domu kultury został skazany za przestępstwa finansowe.",
+     "b": "księgowy poinformował o licznych absencjach przełożonego.",
+     "c": "dyrektor przekazał podwładnemu część swoich kompetencji."
+    },
+    "key": [
+     "c"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "stadion miejski w Elblągu zostanie odnowiony.",
+     "b": "Unia Europejska nie przyznała miastu dotacji.",
+     "c": "w Elblągu rozpoczyna się budowa nowego stadionu."
+    },
+    "key": [
+     "a"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "turniej gier wideo odbywa się w Ostródzie od 20 lat.",
+     "b": "wydarzenie było organizowane w pośpiechu.",
+     "c": "organizatorzy są niezadowoleni z przebiegu wydarzenia."
+    },
+    "key": [
+     "b"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "wystawa jest prezentowana w nietypowej aranżacji.",
+     "b": "miasto gości ekspozycję po raz pierwszy.",
+     "c": "wystawa jest poświęcona różnym ciastom i wypiekom."
+    },
+    "key": [
+     "a"
+    ]
+   },
+   {
+    "stem": "Z tego nagrania wynika, że",
+    "opts": {
+     "a": "repertuar chóru stanowi wyłącznie muzyka dawna.",
+     "b": "w zespole są śpiewacy pochodzący z zagranicy.",
+     "c": "w repertuarze chóru jest także muzyka ludowa."
+    },
+    "key": [
+     "c"
+    ]
+   }
+  ],
+  "src": "Na podstawie: Telewizja Mazury, https://youtu.be/H9v1lCWPvjw",
+  "tr": [
+   "Przykład: Monitoring klubu żeglarskiego w Ostródzie zarejestrował trąbę powietrzną. Zobaczmy, drugiego sierpnia około godziny 14.30 na jeziorze Drwęckim pojawiła się gwałtownie wirująca kolumna powietrza. W Polsce takie zjawisko występuje rzadko i na małą skalę.",
+   "1. W trakcie posiedzenia Rady Miasta uchwalono decyzję w sprawie łączenia szkół spowodowaną wygaszaniem gimnazjów. Na terenie miasta Ostródy będzie funkcjonowało 6 szkół podstawowych i wiadomo, że do tych szkół podstawowych włączyliśmy gimnazja, i w roku 2019 już nie będzie naboru do żadnej klasy, już nie będzie żadnej klasy gimnazjalnej, i powstanie tylko ośmioletnia szkoła podstawowa.",
+   "2. Burmistrz Działdowa odwołał z funkcji dyrektora Miejskiego Domu Kultury Dariusza Maćkowiaka. W uzasadnieniu jako powód odwołania podano upoważnienie głównego księgowego Miejskiego Domu Kultury w Działdowie do zastępowania dyrektora jednostki w przypadku jego nieobecności w pracy. Doprowadziło to do niezgodnego z przepisami prawa przyznania głównemu księgowemu uprawnień do zaciągania zobowiązań w imieniu Miejskiego Domu Kultury w Działdowie.",
+   "3. Przypomnijmy, że władze miasta zrezygnowały z projektu budowy nowego stadionu oraz dotacji unijnej w kwocie siedemnastu i pół miliona złotych, która została przyznana Elblągowi. Władze miasta nie wycofują się jednak z pomysłu modernizacji obiektu przy Agrykola 8. Stadion ma być modernizowany etapami. Pierwszy ruszy jeszcze w tym roku.",
+   "4. Na zakończenie tegorocznych ferii przygotowano nie lada rozrywkę w ostródzkim amfiteatrze, którego galeria stała się na trzy dni areną wirtualnego boju. Po niemal dwudziestu latach do Ostródy powróciła bowiem idea turnieju gier wideo. Centrum Kultury zgłosiło się do nas z prośbą o pomoc, na co się zgodziliśmy. Problemy? (Znaczy) problemem był tylko i wyłącznie czas, tak? Co prawda, jak tutaj widać, nie… no, kable na wierzchu, nie… nie wszystko jest zrobione do końca tak, jakbyśmy chcieli. No ale (sądzę że na) tak na krótki czas ładnie nam to wyszło…",
+   "5. Myśląc o polskich piernikach, przede wszystkim przychodzą nam na myśl sławne wypieki toruńskie - i słusznie. Wystawa „Świat toruńskiego piernika” została bowiem przygotowana przez Muzeum Okręgowe w Toruniu, które o piernikarstwie wie wszystko. Jest to wystawa wpisana w niezwykłą scenografię, scenografię żaglowca typu koga, który tutaj przypłynął, zawitał do Ostródy, gościnnej Ostródy, już po raz trzydziesty pierwszy.",
+   "6. Chór Bel Canto występuje na koncertach w kraju i za granicą. Repertuar stanowi muzyka chóralna od średniowiecznego chorału gregoriańskiego, przez pieśni i utwory renesansowe, epoki baroku, klasycyzmu i romantyzmu, aż po kompozycje współczesne. Ostatnie ze spotkań nosiło nazwę „Folklorem malowane”.",
+   "Na podstawie: Telewizja Mazury, https://youtu.be/H9v1lCWPvjw"
+  ]
+ },
+ {
+  "id": "II",
+  "title": "Zadanie II",
+  "max": 8,
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać reportażu na temat najnowszych odkryć archeologicznych w starożytnych Pompejach i zaznaczyć: TAK - gdy zdanie jest zgodne z tekstem; NIE - gdy nie jest zgodne z tekstem.",
+  "example": {
+   "stem": "Ostatnie odkrycie archeologów zmieniło sposób myślenia o życiu starożytnych.",
+   "ans": "TAK"
+  },
+  "kind": "tf",
+  "items": [
+   {
+    "stem": "Amerykańscy naukowcy odkryli w centrum Pompejów wysypisko śmieci.",
+    "key": [
+     "NIE"
+    ]
+   },
+   {
+    "stem": "Materiały ceramiczne i zaprawa murarska były używane do wzmacniania murów miejskich.",
+    "key": [
+     "NIE"
+    ]
+   },
+   {
+    "stem": "Starożytne Pompeje były nawiedzane przez różnego rodzaju kataklizmy.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Mieszkańcy Pompejów część śmieci wykorzystywali ponownie w pracach konstrukcyjnych.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Odkrycia w Pompejach zainspirowały Mirę Stanisławską-Meysztowicz do działań proekologicznych.",
+    "key": [
+     "NIE"
+    ]
+   },
+   {
+    "stem": "Działaczka Fundacji Nasza Ziemia przytacza przykład odpadów przetwarzanych przez starożytnych.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Początki akcji „Sprzątanie świata” w Polsce sięgają lat dziewięćdziesiątych ubiegłego stulecia.",
+    "key": [
+     "TAK"
+    ]
+   },
+   {
+    "stem": "Sprawy związane z przetwarzaniem odpadów są tematem cyklu audycji.",
+    "key": [
+     "TAK"
+    ]
+   }
+  ],
+  "src": "Na podstawie: https://www.polskieradio.pl/10/5566/Artykul/2510404,Recykling-w-starozytnosci-Segreguj-smieci-jak-Rzymianie",
+  "tr": [
+   "Kilkanaście wieków po upadku Cesarstwa Rzymskiego starożytni Rzymianie wciąż zaskakują naukowców. Zespół amerykańskich archeologów pracujących w Pompejach niedawno odkrył, że ich dawni mieszkańcy sortowali śmieci. Badacze wzdłuż północnych murów miasta odkryli wielkie hałdy odpadów złożone między innymi z resztek ceramiki i zaprawy murarskiej, niektóre wysokie na kilkanaście metrów. Dotychczas sądzono, że są to pozostałości po trzęsieniu ziemi, które nawiedziło miasto siedemnaście lat przed erupcją Wezuwiusza. Po ostatniej analizie naukowcy doszli jednak do wniosku, że był to punkt recyklingu. Prawdopodobnie zgromadzone tam fragmenty potłuczonych naczyń czy kafelków były potem wykorzystywane na przykład do budowy dróg i ścian.",
+   "Jak mówi Mira Stanisławska-Meysztowicz, mieszkająca na stałe w Australii fundatorka i wieloletnia prezes Fundacji Nasza Ziemia, która w 1997 roku z powodzeniem zaszczepiła na polskim gruncie ogólnoświatową ideę „Clean up the World” - ostatnie odkrycie amerykańskich archeologów pokazuje, że starożytni mieli bardzo postępowe podejście do odpadów, bo były dla nich cennym surowcem. - Jestem bardzo zadowolona, że ludzie tak dawno, dawno pomyśleli o tym, że szkoda marnować wspaniałych surowców wtórnych. Jeżeli coś się pobiło, a było z gliny, dlaczego tego znów nie użyć. Tak że bierzmy przykład ze starożytności. Od samego początku, kiedy rozpoczęłam akcję „Sprzątanie Świata” w Polsce w dziewięćdziesiątym czwartym roku zawsze mówiłam: śmieci nie podrzucają nam Marsjanie, to my je produkujemy, ale proszę, segregujcie, bo tam są surowce wtórne. Musimy je odzyskać. Tak że to jest bardzo, bardzo, bardzo ważne.",
+   "A więcej o recyklingu usłyszycie w każdy wtorek po godzinie czternastej w audycji Kasi Dydo „Ratujemy świat”.",
+   "Na podstawie: https://www.polskieradio.pl/10/5566/Artykul/2510404,Recykling-w-starozytnosci-Segreguj-smieci-jak-Rzymianie"
+  ]
+ },
+ {
+  "id": "III",
+  "title": "Zadanie III",
+  "max": 10,
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać informacji o sześciu instytucjach nominowanych do nagrody Państwowego Instytutu Sztuki Filmowej i dopasować je do opisów (A-G). Uwaga! Informacje mogą pasować do więcej niż jednego opisu.",
+  "legend": [
+   "1 - DKF MEGARON",
+   "2 - AGAINST GRAVITY",
+   "3 - STARA POWOZOWNIA Z POZNANIA",
+   "4 - FESTIWAL W PŁOCKU",
+   "5 - STOWARZYSZENIE ROTUNDA",
+   "6 - ŁÓDZKIE MUZEUM KINEMATOGRAFII"
+  ],
+  "lead": "Która z instytucji",
+  "example": {
+   "stem": "organizuje seanse raz w tygodniu.",
+   "ans": "1 - DKF MEGARON"
+  },
+  "kind": "select",
+  "selOpts": [
+   [
+    "1",
+    "1 - DKF Megaron"
+   ],
+   [
+    "2",
+    "2 - Against Gravity"
+   ],
+   [
+    "3",
+    "3 - Stara Powozownia z Poznania"
+   ],
+   [
+    "4",
+    "4 - Festiwal w Płocku"
+   ],
+   [
+    "5",
+    "5 - Stowarzyszenie Rotunda"
+   ],
+   [
+    "6",
+    "6 - Łódzkie Muzeum Kinematografii"
+   ]
+  ],
+  "items": [
+   {
+    "tag": "A",
+    "stem": "prowadzi działalność kulturalną od kilkudziesięciu lat.",
+    "key": [
+     "3"
+    ]
+   },
+   {
+    "tag": "B",
+    "stem": "promuje dokonania polskiej kinematografii poza granicami kraju.",
+    "key": [
+     "5",
+     "6"
+    ]
+   },
+   {
+    "tag": "C",
+    "stem": "zajmuje się organizacją spotkań dyskusyjnych poświęconych filmom.",
+    "key": [
+     "1",
+     "4"
+    ]
+   },
+   {
+    "tag": "D",
+    "stem": "umożliwia uczestnictwo w warsztatach teatralnych.",
+    "key": [
+     "4"
+    ]
+   },
+   {
+    "tag": "E",
+    "stem": "łączy tradycję z nowoczesną technologią.",
+    "key": [
+     "3"
+    ]
+   },
+   {
+    "tag": "F",
+    "stem": "promuje przede wszystkim wybrane gatunki filmowe.",
+    "key": [
+     "2",
+     "5"
+    ]
+   },
+   {
+    "tag": "G",
+    "stem": "koncentruje się na dokonaniach jednej osoby.",
+    "key": [
+     "6"
+    ]
+   }
+  ],
+  "src": "Na podstawie: Państwowy Instytut Sztuki Filmowej, https://youtu.be/ioUlfeGsEbg",
+  "note": "Kolejność podawania rozwiązań w obrębie jednego punktu jest dowolna.",
+  "tr": [
+   "1. DKF „Megaron” w Gorzowie Wielkopolskim. Są ludzie, którzy kochają snop światła za głową, gdy na ekranie pojawiają się trudno dostępne filmy - te z patyną i te z nowo odkrytą tajemnicą. I tak co tydzień od siedmiu lat. Prezes „Megarona” Iwona Bartnicka musi pozostawać niestrudzona, gdyż dyskusje w sali kina pod nazwą „60 krzeseł” potrafią przeciągać się w nieskończoność.",
+   "2. „Against Gravity” powstało w 2004 roku. Zajmuje się wprowadzaniem do kin filmów dokumentalnych i ambitnej fabuły. Od dziesięciu lat „Against Gravity” organizuje największy polski festiwal filmów dokumentalnych.",
+   "3. Oto kino w Poznaniu. Kino, które ma historię. Kino, które ma duszę. „Stara Powozownia” 70 lat temu zaczęła przenosić widzów w magiczny świat. W klasycznych wnętrzach kryje się zmodernizowane zaplecze, przez co to kino jest jednym z najnowocześniejszych w kraju.",
+   "4. Oto Płock. Odbyła się tu już trzecia edycja Festiwalu Kultury i Sztuki dla Osób Niewidomych. Pokazy filmowe odbywają się z audiodeskrypcją. Uczestnicy festiwalu korzystają z licznych festiwalowych aktywności: poznają najciekawsze filmy polskie, prowadzą rozmowy z twórcami, dyskutują o kinie światowym, biorą udział w warsztatach teatralnych.",
+   "5. Co roku twórcy polskiej animacji prezentują swoje filmy podczas festiwali kina animowanego i filmów krótkometrażowych. Stowarzyszenie Rotunda przedsięwzięło akcję promocji i upowszechniania dokonań rodzimej animacji za granicą. Od 3 lat trwa międzynarodowy projekt „Polska Szkoła Animacji - następne pokolenia”.",
+   "6. Wystawa „Polska. Europa. Świat - twarze Agnieszki Holland”. Łódzkie Muzeum Kinematografii - tu powstała wystawa, która po raz pierwszy była wystawiana w Pradze, potem w Budapeszcie, Reykjaviku, a także w Gdyni. To multimedialna opowieść o kimś, kto na stałe wpisał się w światowe kino.",
+   "Na podstawie: Państwowy Instytut Sztuki Filmowej, https://youtu.be/ioUlfeGsEbg"
+  ]
+ },
+ {
+  "id": "IV",
+  "title": "Zadanie IV",
+  "max": 6,
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "instr": "Proszę wysłuchać fragmentu wywiadu radiowego i zaznaczyć właściwe odpowiedzi.",
+  "example": {
+   "stem": "Michał Rusinek jest",
+   "opts": [
+    "a) pierwszym gościem audycji.",
+    "b) pracownikiem Uniwersytetu Jagiellońskiego.",
+    "c) przewodniczącym Rady Języka Polskiego."
+   ],
+   "ans": "b"
+  },
+  "kind": "radio",
+  "items": [
+   {
+    "stem": "Punktem wyjścia do rozmowy jest",
+    "opts": {
+     "a": "zmiana w kanonie lektur szkolnych.",
+     "b": "brak ograniczeń we współczesnej literaturze.",
+     "c": "jedna z publikacji książkowych."
+    },
+    "key": [
+     "c"
+    ]
+   },
+   {
+    "stem": "Wiosenny lockdown był dla Michała Rusinka",
+    "opts": {
+     "a": "okazją do realizacji planów twórczych.",
+     "b": "pretekstem do zaszycia się w domu.",
+     "c": "powodem długotrwałego rozdrażnienia."
+    },
+    "key": [
+     "a"
+    ]
+   },
+   {
+    "stem": "Gość programu przyznaje, że",
+    "opts": {
+     "a": "czasem trudno jest nadążyć za wszystkim, co widzimy i słyszymy.",
+     "b": "wypracował umiejętność ignorowania rzeczy nieistotnych.",
+     "c": "ma tendencję do obserwowania otaczającego go świata."
+    },
+    "key": [
+     "c"
+    ]
+   },
+   {
+    "stem": "Podczas korzystania z wyciągu narciarskiego można było usłyszeć",
+    "opts": {
+     "a": "utwory muzyczne oparte na tekstach literackich.",
+     "b": "informacje o wstrząsających wydarzeniach.",
+     "c": "piosenki należące do jednego gatunku muzycznego."
+    },
+    "key": [
+     "c"
+    ]
+   },
+   {
+    "stem": "To, co usłyszał gość programu,",
+    "opts": {
+     "a": "było inspiracją do pisania tekstów disco polo.",
+     "b": "wzbudziło w nim skrajne emocje.",
+     "c": "przekonało go do tzw. muzyki popularnej."
+    },
+    "key": [
+     "b"
+    ]
+   },
+   {
+    "stem": "Podczas pracy Michał Rusinek",
+    "opts": {
+     "a": "korzystał z tekstów dostępnych w internecie.",
+     "b": "stale słuchał muzyki przez słuchawki.",
+     "c": "miał problemy z dostępem do materiałów."
+    },
+    "key": [
+     "a"
+    ]
+   }
+  ],
+  "src": "Na podstawie: https://audycje.tokfm.pl/podcast/97871,-Zero-zahamowan-Michal-Rusinek",
+  "tr": [
+   "Przemysław Iwańczyk: Niedzielny Magazyn Radia TOK FM. Kłaniam się Państwu ponownie. W naszym programie chciałbym przywitać naszego kolejnego gościa. Jest nim Michał Rusinek - tłumacz, literaturoznawca z Wydziału Polonistyki Uniwersytetu Jagiellońskiego, członek Rady Języka Polskiego. Dzień dobry!",
+   "Michał Rusinek: Dzień dobry. Dzień dobry Państwu.",
+   "PI: Tak się składa, że po godzinie 13.00 chciałbym porozmawiać o kanonie literatury na opak, jeśli, jeśli, jeśli możemy, jeśli możemy to zrobić. Oczywiście wszystko na, na kanwie książki Zero zahamowań, za którą pan stoi, jako autor.",
+   "MR: Tak, tak to prawda. Stoję ja oraz stoi pandemia, dlatego że ta książka powstała w czasie tego wiosennego lockdownu. Kiedy zastanawiałem się, czym bym mógł się zająć tak właściwie bez wychodzenia z domu i co mógłbym napisać. I wtedy sobie wymyśliłem taką właśnie, taką właśnie książkę. I to jest książka, która w ogóle za mną chodziła już od dłuższego czasu. Może niekoniecznie w formie książki na początku, ale w formie jakiegoś takiego, takiej irytacji, której chciałem jakiś wyraz dać. A irytacja wzięła się stąd, że ja ja mam taką skłonność, ale myślę, że też nie tylko ja, wiele osób ją ma, że czytam i słucham, wszystkiego, co wokół mnie jest. To znaczy trudno mi jest zamknąć oczy, jak przechodzę obok jakichś bilboardów. I trudno mi jest zamknąć uszy, w ogóle chyba się nie da zamknąć uszu, jak na przykład rozbrzmiewa gdzieś jakaś, jakaś muzyka. I pamiętam, że, i ta, ta muzyka jeszcze ma słowa. I pamiętam, że właściwie zupełnie nowe obszary literackie, że tak powiem, otworzyły się kiedyś przede mną, kiedy byłem w Polsce gdzieś tam na wyciągu narciarskim. I tak na na wyciągu były umieszczone takie, no, właściwie trzeba by nazwać „szczekaczki”. Takie głośniki, które rozprowadzały bardzo dziwną muzykę. To było głównie disco polo. No a ponieważ to na tym polega, że się jednak dosyć często na tym wyciągu jest, więc też wysłuchałem bardzo wielu wstrząsających literacko utworów. I postanowiłem temu wstrząsowi poznawczemu dać, dać jakiś wyraz. To…, zresztą to nie jest tak, że ja, pisząc tę książkę, wyłącznie siedziałem ze słuchawkami na uszach, jak sugeruje jej okładka. Ilustrował ją cudownie Jacek Gawłowski. Ale, ale na szczęście to jakieś dobre dusze spisały teksty tych piosenek, również straszliwych piosenek niektórych, i one są dostępne w sieci, więc mogłem po prostu czytać je tak jak… bez słuchania.",
+   "Na podstawie: https://audycje.tokfm.pl/podcast/97871,-Zero-zahamowan-Michal-Rusinek-o-tekstach-utworow-disco-polo"
+  ]
+ },
+ {
+  "id": "V",
+  "title": "Zadanie V",
+  "max": 10,
+  "plays": "Nagranie zostanie odtworzone dwukrotnie.",
+  "ptsLabel": "10 p. (część odpowiedzi po 0,5 p.)",
+  "instr": "Proszę wysłuchać nagrania na temat historii rodzinnego biznesu, następnie odpowiedzieć na pytania. Uwaga! Forma gramatyczna odpowiedzi powinna być dopasowana do pytania.",
+  "example": {
+   "q": "W którym roku tygodnik „Wprost” opublikował pierwszą listę najbogatszych Polaków?",
+   "a": "W 1990."
+  },
+  "kind": "open",
+  "items": [
+   {
+    "q": "Które miejsce na liście najbogatszych Polaków zajmował Wojciech Kruk w 1997 roku?",
+    "parts": 1,
+    "key": "Był poza pierwszą setką. ALBO: Wypadł poza pierwszą setkę.",
+    "g": [
+     "set(k|c)|100|\\bsto\\b"
+    ],
+    "fill": [
+     "Był poza pierwszą setką."
+    ],
+    "frag": "Już w 1997 wypadł jednak poza pierwszą setkę."
+   },
+   {
+    "q": "Czym teraz zajmuje się Wojciech Kruk?",
+    "parts": 1,
+    "key": "Buduje/otwiera nowy biznes/interes/nową firmę. ALBO: Ma nowy biznes.",
+    "g": [
+     "now[^\\s]*\\s+(biznes|interes|firm)|buduj|otwier|zak[łl]ada"
+    ],
+    "fill": [
+     "Buduje nowy biznes."
+    ],
+    "frag": "Dziś jego firmą z niemal sto siedemdziesięciopięcioletnią tradycją rządzi ktoś inny, a on buduje nowy biznes od podstaw."
+   },
+   {
+    "q": "Jakie produkty opuszczały pracownię Leona Skrzetuskiego?",
+    "parts": 2,
+    "key": "a) sprzęt liturgiczny b) biżuteria dla kościoła",
+    "g": [
+     "liturgi|sprz[eę]t",
+     "bi[żz]ut"
+    ],
+    "fill": [
+     "sprzęt liturgiczny",
+     "biżuteria dla kościoła"
+    ],
+    "frag": "Leon Skrzetuski otworzył przy ulicy Wodnej w Poznaniu pracownię, w której fabrykował sprzęt liturgiczny i biżuterię dla kościoła."
+   },
+   {
+    "q": "Co otworzył siostrzeniec Leona Skrzetuskiego - Władysław Kruk?",
+    "parts": 1,
+    "key": "(Pierwszy) salon jubilerski (pod marką/o nazwie W. Kruk).",
+    "g": [
+     "salon|sklep|jubiler"
+    ],
+    "fill": [
+     "Salon jubilerski."
+    ],
+    "frag": "To właśnie on otworzył pierwszy salon jubilerski pod marką „W. Kruk”."
+   },
+   {
+    "q": "Jakie były losy firmy podczas okupacji niemieckiej?",
+    "parts": 1,
+    "key": "Firmę przejęli Niemcy/okupanci. ALBO: Przejęli ją Niemcy/okupanci. ALBO: (Firma) została przejęta przez Niemców/okupantów.",
+    "g": [
+     "niemc|okupant|przej[eę]"
+    ],
+    "fill": [
+     "Firmę przejęli Niemcy."
+    ],
+    "frag": "W czasie okupacji odmówił on podpisania Volkslisty, przez to firmę przejęli Niemcy."
+   },
+   {
+    "q": "Co Wojciech Kruk zrobił po przejęciu rodzinnego biznesu? (Proszę podać dwie odpowiedzi.)",
+    "parts": 2,
+    "key": "a) zmodernizował warsztat b) rozszerzył działalność c) sprowadził (z Zachodu) pistolet/sprzęt do przekłuwania/przebijania uszu. UWAGA: wystarczy podać dwie z wymienionych odpowiedzi.",
+    "g": [
+     "modernizo|warsztat",
+     "rozszerz|poszerz|dzia[łl]alno",
+     "sprowadz|pistolet|przek[łl]uw|przebij|uszu"
+    ],
+    "fill": [
+     "zmodernizował warsztat",
+     "rozszerzył działalność"
+    ],
+    "frag": "W 1974 roku rodzinny biznes przejął syn Henryka, Wojciech. Zmodernizował on warsztat, rozszerzył działalność, a nawet sprowadził z Zachodu pistolet do przekłuwania uszu."
+   },
+   {
+    "q": "Co Amerykanie uzyskali w zamian za pomoc finansową udzieloną firmie W. Kruk?",
+    "parts": 1,
+    "key": "(Duży) pakiet akcji.",
+    "g": [
+     "pakiet|akcj|udzia[łl]"
+    ],
+    "fill": [
+     "Duży pakiet akcji."
+    ],
+    "frag": "Dał mu je Amerykański Fundusz Inwestycyjny, który w zamian przejął duży pakiet akcji w firmie."
+   },
+   {
+    "q": "Czego Wojciech Kruk nie chciał sprzedawać w swoich salonach?",
+    "parts": 1,
+    "key": "Marnej/niskiej jakości łańcuszków (na metry).",
+    "g": [
+     "[łl]a[ńn]cusz|[łl]a[ńn]cuch|marn|nisk"
+    ],
+    "fill": [
+     "Marnej jakości łańcuszków."
+    ],
+    "frag": "…gdy odmawiał bardzo zyskownej sprzedaży marnej jakości łańcuszków na metry."
+   },
+   {
+    "q": "Jakie plany miał Rafał Bauer względem firmy W. Kruk po przejęciu większości udziałów?",
+    "parts": 1,
+    "key": "Chciał stworzyć imperium dóbr/towarów luksusowych.",
+    "g": [
+     "imperium|luksus|d[óo]br|towar"
+    ],
+    "fill": [
+     "Chciał stworzyć imperium dóbr luksusowych."
+    ],
+    "frag": "Wtedy to prezes spółki Vistula i Wólczanka - Rafał Bauer - ogłosił, że chce przejąć firmę „Kruk”, ażeby stworzyć imperium dóbr luksusowych."
+   },
+   {
+    "q": "Co skłoniło Wojciecha Kruka do szybkiej sprzedaży swoich akcji firmie Vistula?",
+    "parts": 2,
+    "key": "a) nadchodzący kryzys na giełdzie b) perspektywa/prawdopodobieństwo spadku wartości/cen akcji ALBO: spadek wartości/ceny akcji W. Kruk po przejęciu przez Bauera",
+    "g": [
+     "kryzys|gie[łl]d",
+     "spad|obni[żz]|ni[żz]sz|traci|warto[śs]"
+    ],
+    "fill": [
+     "nadchodzący kryzys na giełdzie",
+     "spadek wartości akcji"
+    ],
+    "frag": "Wiadomym było, że tuż po tym wrogim przejęciu wysoka cena akcji mocno spadnie, szczególnie że na giełdę zaglądał kryzys. Kruk przestraszył się i w porę pozbył się niemal wszystkich swoich udziałów, drogo odsprzedając je Vistuli."
+   }
+  ],
+  "src": "Na podstawie: https://www.youtube.com/watch?v=nJMDl7V3JtU&ab_channel=Nabogato",
+  "note": "Klucz Komisji: „Należy uznać też inne odpowiedzi zgodne z transkrypcją.” Sprawdzanie automatyczne szuka słów kluczowych, więc jeśli twoja odpowiedź jest poprawna, ale inna niż w kluczu, zaznacz „uznaj” i sprawdź jeszcze raz. W punkcie 6 wystarczy podać dwie z trzech odpowiedzi.",
+  "tr": [
+   "Rodzina Kruków. Jak najsłynniejsi polscy jubilerzy stracili rodzinny biznes",
+   "W 1990 roku na pierwszej liście najbogatszych Polaków tygodnika „Wprost” właściciel firmy jubilerskiej Wojciech Kruk zajmował czterdzieste pierwsze miejsce. Już w 1997 wypadł jednak poza pierwszą setkę, a nieco ponad dekadę później utracił swoje rodzinne imperium. Dziś jego firmą z niemal sto siedemdziesięciopięcioletnią tradycją rządzi ktoś inny, a on buduje nowy biznes od podstaw. Co się stało?",
+   "Historia marki W. Kruk sięga 1840 roku, kiedy to złotnik, Leon Skrzetuski, otworzył przy ulicy Wodnej w Poznaniu pracownię, w której fabrykował sprzęt liturgiczny i biżuterię dla kościoła. Gdy umarł, biznes przejął jego siostrzeniec, Władysław Kruk. To właśnie on otworzył pierwszy salon jubilerski pod marką „W. Kruk”. W międzywojniu na czele interesu stanął jego syn Henryk. W czasie okupacji odmówił on podpisania Volkslisty, przez to firmę przejęli Niemcy. To nie przeszkodziło jej jednak odrodzić się po wojnie i to mimo wrogości PRL-owskich urzędników. W 1974 roku rodzinny biznes przejął syn Henryka - Wojciech. Zmodernizował on warsztat, rozszerzył działalność, a nawet sprowadził z Zachodu pistolet do przekłuwania uszu. Po upadku PRL-u Kruk chciał zalać swoimi salonami Polskę, ale potrzebował do tego pieniędzy. Dał mu je Amerykański Fundusz Inwestycyjny, który w zamian przejął duży pakiet akcji w firmie. Amerykanie nie wchodzili jednak Krukowi w paradę i nie protestowali, gdy odmawiał bardzo zyskownej sprzedaży marnej jakości łańcuszków na metry. Firma pęczniała, aż w końcu weszła na giełdę. Gdy Amerykanie się wycofali, Kruk ze swoją 1/3 wszystkich akcji stał się największym udziałowcem. Nie martwił się niczym, zaczesywał wąsa i do znudzenia opowiadał swoim pracownikom historie rodzinne. Aż do 2008 roku. Wtedy to prezes spółki Vistula i Wólczanka - Rafał Bauer - ogłosił, że chce przejąć firmę „Kruk”, ażeby stworzyć imperium dóbr luksusowych. Wszystkim akcjonariuszom, którzy zgodzili się odsprzedać swoje udziały, Bauer zaproponował wysoką cenę. Wiadomym było, że tuż po tym wrogim przejęciu wysoka cena akcji mocno spadnie, szczególnie że na giełdę zaglądał kryzys. Kruk przestraszył się i w porę pozbył się niemal wszystkich swoich udziałów, drogo odsprzedając je Vistuli. Plan Bauera wypalił, ale to nie był koniec.",
+   "Na podstawie: https://www.youtube.com/watch?v=nJMDl7V3JtU&ab_channel=Nabogato"
+  ]
+ }
+];
+const MAX = 40, PASS = 24;
+const TEST_ID = 'sluchanie-2021-05';
+const STORE_KEY = 'c1_sluch_2021_05_v1';
+const TOTAL_SEC = 40 * 60;
+
+// ---------- pomocnicze ----------
+function norm(s) { return String(s || '').toLowerCase().replace(/[„”"'’‘.,!?;:()]/g, ' ').replace(/\s+/g, ' ').trim(); }
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+let state = {};
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+state = load();
+if (!state.__acc) state.__acc = {};
+
+function ids(t, i) {
+  const it = t.items[i], base = `${t.id}-${i + 1}`;
+  if (t.kind === 'open') return it.parts === 2 ? [base + 'a', base + 'b'] : [base];
+  const n = it.key.length;
+  return Array.from({ length: n }, (_, k) => base + (n > 1 ? `-${k + 1}` : ''));
+}
+
+// ---------- budowanie arkusza ----------
+function build() {
+  const root = document.getElementById('tasks'); let html = '';
+  TASKS.forEach(t => {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${esc(t.ptsLabel || (t.max + ' x 1 p. = ' + t.max + ' p.'))}</span></h2>`;
+    html += `<p class="src" style="margin:0 0 8px">${esc(t.plays)}</p>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    html += `<div class="audio"><label><b>Wczytaj nagranie:</b> <input type="file" accept="audio/*" data-audio="${t.id}"></label><span class="fname" id="fn-${t.id}"></span><audio controls id="au-${t.id}"></audio></div>`;
+    if (t.legend) html += `<div class="legend">` + t.legend.map(l => `<div>${esc(l)}</div>`).join('') + `</div>`;
+    if (t.lead) html += `<p class="instr" style="margin-bottom:8px">${esc(t.lead)}</p>`;
+    const e = t.example;
+    let ex;
+    if (t.kind === 'open') ex = esc(e.q) + `<br><b>Odpowiedź: ${esc(e.a)}</b>`;
+    else {
+      ex = esc(e.stem);
+      if (e.opts) ex += '<br>' + e.opts.map(esc).join('<br>');
+      ex += `<br><b>Odpowiedź: ${esc(e.ans)}</b>`;
+    }
+    html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>${ex}</div>`;
+    t.items.forEach((it, i) => {
+      const sid = ids(t, i);
+      const baseId = `${t.id}-${i + 1}`;
+      if (t.kind === 'radio') {
+        html += `<div class="q" id="q-${baseId}"><div class="stem">${i + 1}. ${esc(it.stem)}</div>` +
+          Object.keys(it.opts).map(k => `<label class="opt" data-k="${k}"><input type="radio" name="${baseId}" data-id="${baseId}" value="${k}"> <span>${k}) ${esc(it.opts[k])}</span></label>`).join('') +
+          `<span class="fix"></span></div>`;
+      } else if (t.kind === 'tf') {
+        html += `<div class="q row" id="q-${baseId}"><div class="stem">${i + 1}. ${esc(it.stem)}</div><div class="tf">` +
+          ['TAK', 'NIE'].map(k => `<label class="opt" data-k="${k}"><input type="radio" name="${baseId}" data-id="${baseId}" value="${k}"> <span>${k}</span></label>`).join('') +
+          `</div><span class="fix"></span></div>`;
+      } else if (t.kind === 'select') {
+        const opts = t.selOpts.map(o => `<option value="${o[0]}">${esc(o[1])}</option>`).join('');
+        html += `<div class="q row" id="q-${baseId}"><div class="stem">${esc(it.tag)}. ${esc(it.stem)}${it.key.length > 1 ? ' <span style="font-weight:400;color:var(--muted)">(dwie odpowiedzi, kolejność dowolna)</span>' : ''}</div><span class="slots">` +
+          sid.map(s => `<span class="slot" id="s-${s}"><select data-id="${s}" aria-label="${esc(it.tag)}"><option value=""></option>${opts}</select></span>`).join('') +
+          `</span><span class="fix"></span></div>`;
+      } else {
+        html += `<div class="q" id="q-${baseId}"><div class="stem">${i + 1}. ${esc(it.q)}</div>` +
+          sid.map((s, p) => `<div class="sub" id="sub-${s}">${it.parts === 2 ? `<span class="lab">${'ab'[p]})</span>` : ''}<input type="text" data-id="${s}" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Odpowiedź ${i + 1}${it.parts === 2 ? 'ab'[p] : ''}"><label class="accept"><input type="checkbox" data-accept="${s}"> uznaj</label></div>`).join('') +
+          `<div class="keyline" id="kl-${baseId}"></div></div>`;
+      }
+    });
+    html += `<div class="src">${esc(t.src)}</div>`;
+    if (t.note) html += `<div class="src" id="note-${t.id}" style="display:none"><b>${esc(t.note)}</b></div>`;
+    html += `<details class="tr" id="tr-${t.id}"><summary>Transkrypcja</summary><div class="warn">Otwieraj dopiero po sprawdzeniu (po kliknięciu Sprawdź otworzy się sama).</div>` +
+      t.tr.map(p => `<p>${esc(p)}</p>`).join('') + `</details>`;
+    html += `</section>`;
+  });
+  root.innerHTML = html;
+  root.querySelectorAll('[data-id]').forEach(el => {
+    if (el.type === 'radio') { if (state[el.dataset.id] === el.value) el.checked = true; }
+    else if (state[el.dataset.id] != null) el.value = state[el.dataset.id];
+    const h = () => { state[el.dataset.id] = el.value; save(); updateProgress(); };
+    el.addEventListener('change', h);
+    if (el.type === 'text') el.addEventListener('input', h);
+  });
+  root.querySelectorAll('[data-accept]').forEach(cb => {
+    cb.checked = !!state.__acc[cb.dataset.accept];
+    cb.addEventListener('change', () => { state.__acc[cb.dataset.accept] = cb.checked; save(); });
+  });
+  root.querySelectorAll('[data-audio]').forEach(inp => {
+    inp.addEventListener('change', () => {
+      const f = inp.files && inp.files[0]; if (!f) return;
+      const a = document.getElementById('au-' + inp.dataset.audio);
+      if (a.dataset.url) URL.revokeObjectURL(a.dataset.url);
+      const u = URL.createObjectURL(f); a.dataset.url = u; a.src = u;
+      document.getElementById('fn-' + inp.dataset.audio).textContent = f.name;
+    });
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  let total = 0, filled = 0;
+  TASKS.forEach(t => t.items.forEach((it, i) => ids(t, i).forEach(s => { total++; if (String(state[s] || '').trim()) filled++; })));
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${total}`;
+}
+
+// ---------- sprawdzanie ----------
+function openHits(it, raw) {
+  const s = norm(raw), m = new Set();
+  if (s) it.g.forEach((rx, gi) => { if (new RegExp(rx).test(s)) m.add(gi); });
+  return m;
+}
+function checkOpen(t, it, i) {
+  const sid = ids(t, i), base = `${t.id}-${i + 1}`;
+  const vals = sid.map(s => state[s] || '');
+  const per1 = it.parts === 2 ? 0.5 : 1;
+  const sets = vals.map(v => openHits(it, v));
+  let got = 0;
+  sid.forEach((s, p) => {
+    let ok = false;
+    if (vals[p].trim() !== '') {
+      if (state.__acc[s]) ok = true;
+      else if (p === 0) ok = sets[0].size > 0;
+      else ok = [...sets[1]].some(j => !(sets[0].size === 1 && sets[0].has(j)));
+    }
+    if (ok) got += per1;
+    const sub = document.getElementById('sub-' + s);
+    sub.classList.remove('ok', 'bad'); sub.classList.add(ok ? 'ok' : 'bad');
+  });
+  document.getElementById('kl-' + base).innerHTML = 'Klucz: ' + esc(it.key) + (it.frag ? `<br><span class="fr">Fragment transkrypcji: ${esc(it.frag)}</span>` : '');
+  return got;
+}
+
+function checkAll() {
+  const per = [];
+  TASKS.forEach(t => {
+    let score = 0;
+    t.items.forEach((it, i) => {
+      if (t.kind === 'open') { score += checkOpen(t, it, i); return; }
+      const sid = ids(t, i), base = `${t.id}-${i + 1}`;
+      const vals = sid.map(s => state[s] || '');
+      const q = document.getElementById('q-' + base);
+      const fix = q.querySelector('.fix');
+      const any = it.key.length > 1;
+      let got = 0;
+      vals.forEach((v, k) => {
+        let ok = false;
+        if (v) ok = any ? (it.key.includes(v) && vals.indexOf(v) === k) : v === it.key[k];
+        if (ok) got++;
+        if (t.kind === 'select') { const el = document.getElementById('s-' + sid[k]); el.classList.remove('ok', 'bad'); el.classList.add(ok ? 'ok' : 'bad'); }
+      });
+      score += got;
+      if (t.kind !== 'select') {
+        q.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad');
+          if (l.dataset.k === it.key[0]) l.classList.add('ok');
+          else if (l.dataset.k === vals[0]) l.classList.add('bad');
+        });
+      }
+      const allOk = got === sid.length;
+      if (allOk) fix.textContent = '';
+      else if (t.kind === 'select') fix.textContent = '→ ' + it.key.join(', ') + (any ? ' (kolejność dowolna)' : '');
+      else fix.textContent = '→ ' + it.key[0].toUpperCase();
+    });
+    const el = document.getElementById('pts-' + t.id);
+    el.textContent = `${pl(score)} / ${t.max} p.`; el.classList.add('scored');
+    const note = document.getElementById('note-' + t.id);
+    if (note) note.style.display = 'block';
+    document.getElementById('tr-' + t.id).open = true;
+    per.push({ t, score });
+  });
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100), pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `<div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass ? 'Zdane - próg to 60% (24 p.)' : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błędna, obok poprawna z klucza. Transkrypcje pod zadaniami są już rozwinięte. W zadaniu V możesz zaznaczyć „uznaj”, jeśli twoja odpowiedź jest poprawna, ale inna niż w kluczu, i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+let left = TOTAL_SEC, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60, el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL_SEC ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) { clearInterval(tick); running = false; document.getElementById('timerBtn').textContent = 'Koniec'; document.getElementById('timeUp').classList.add('show'); }
+    }, 1000);
+  } else clearInterval(tick);
+}
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  state = { __acc: {} };
+  clearInterval(tick); running = false; left = TOTAL_SEC; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', checkAll);
+document.getElementById('checkBottom').addEventListener('click', checkAll);
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+// ---------- kontrakt z modułem c1-common.js ----------
+function fillCorrect() {
+  state = { __acc: {} };
+  TASKS.forEach(t => t.items.forEach((it, i) => {
+    ids(t, i).forEach((s, k) => { state[s] = t.kind === 'open' ? it.fill[k] : it.key[k]; });
+  }));
+  save();
+  document.querySelectorAll('#tasks [data-id]').forEach(el => {
+    const v = state[el.dataset.id] || '';
+    if (el.type === 'radio') el.checked = (el.value === v); else el.value = v;
+  });
+  document.querySelectorAll('#tasks [data-accept]').forEach(cb => { cb.checked = false; });
+  updateProgress();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'sluchanie', session: '2021-05', max: MAX, fillCorrect, check: checkAll });
+</script>
+</body>
+</html>

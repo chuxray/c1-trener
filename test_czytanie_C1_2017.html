@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta name="robots" content="noindex, nofollow">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Czytanie C1 2017</title>
+<style>
+:root {
+  --bg: #f6f4ef;
+  --card: #ffffff;
+  --ink: #1d1d1b;
+  --muted: #6b6a66;
+  --line: #e2dfd7;
+  --accent: #1f4e8c;
+  --accent-ink: #ffffff;
+  --ok: #1e7a3c;
+  --ok-bg: #e5f4ea;
+  --bad: #b3261e;
+  --bad-bg: #fbe9e7;
+  --warn: #8a5a00;
+  --warn-bg: #fff3d6;
+  --example: #ececec;
+  --input-bg: #fbfaf7;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #161615;
+    --card: #20201e;
+    --ink: #ecebe6;
+    --muted: #a3a29c;
+    --line: #34332f;
+    --accent: #7fa7e0;
+    --accent-ink: #10131a;
+    --ok: #6fcf8f;
+    --ok-bg: #173323;
+    --bad: #f08a80;
+    --bad-bg: #3a1c19;
+    --warn: #f0c25a;
+    --warn-bg: #3a2e12;
+    --example: #2c2c29;
+    --input-bg: #1a1a18;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+.wrap { max-width: 860px; margin: 0 auto; padding: 0 16px 80px; }
+header.top {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+.bar {
+  max-width: 860px; margin: 0 auto; padding: 10px 16px;
+  display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+}
+.bar .title { font-weight: 700; margin-right: auto; }
+.timer {
+  font-variant-numeric: tabular-nums; font-weight: 700;
+  padding: 4px 10px; border: 1px solid var(--line); border-radius: 999px; background: var(--card);
+}
+.timer.low { color: var(--bad); border-color: var(--bad); }
+.progress { color: var(--muted); font-size: 14px; }
+button {
+  font: inherit; cursor: pointer; border-radius: 8px; padding: 7px 14px;
+  border: 1px solid var(--line); background: var(--card); color: var(--ink);
+}
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+button:hover { filter: brightness(0.97); }
+h1 { font-size: 26px; margin: 28px 0 6px; }
+.lead { color: var(--muted); margin: 0 0 18px; }
+.card {
+  background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  padding: 20px 22px; margin: 18px 0;
+}
+.card h2 { font-size: 19px; margin: 0 0 6px; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.card h2 .pts { font-size: 15px; color: var(--muted); font-weight: 500; }
+.card h2 .pts.scored { color: var(--ink); font-weight: 700; }
+.instr { font-weight: 600; margin: 0 0 14px; }
+.text { font-family: Georgia, "Times New Roman", serif; font-size: 17px; line-height: 2.1; }
+.text p { margin: 0 0 10px; text-indent: 1.5em; }
+.text p.noindent { text-indent: 0; }
+.src { font-size: 13px; color: var(--muted); margin-top: 8px; font-family: system-ui, sans-serif; }
+.ex {
+  background: var(--example); font-weight: 700; text-decoration: underline dotted; padding: 0 3px; border-radius: 3px;
+}
+.ex sup, .gapno { font-size: 10px; font-weight: 700; font-family: system-ui, sans-serif; }
+.ex sup { margin-left: 2px; color: var(--muted); }
+.gap { white-space: nowrap; }
+.gap input, .gap select {
+  font: 16px/1.2 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted);
+  border-radius: 4px; padding: 3px 6px; width: 10.5em; max-width: 72vw;
+}
+.gap select { width: 11.5em; }
+.gap input:focus, .gap select:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.gap.ok input, .gap.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.gap.bad input, .gap.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.gap.almost input { border-color: var(--warn); background: var(--warn-bg); }
+.fix {
+  font: 600 14px/1.2 system-ui, sans-serif; color: var(--ok); margin-left: 4px; white-space: normal;
+}
+.fix .hint { color: var(--warn); font-weight: 600; }
+.ramka {
+  display: flex; flex-wrap: wrap; gap: 8px; padding: 12px; margin: 0 0 16px;
+  background: var(--example); border-radius: 8px;
+}
+.chip { padding: 3px 10px; border-radius: 999px; background: var(--card); border: 1px solid var(--line); font-size: 15px; }
+.chip.used { opacity: 0.45; text-decoration: line-through; }
+.chip.struck { text-decoration: line-through; font-style: italic; opacity: 0.6; }
+.tr-item { padding: 14px 0; border-top: 1px solid var(--line); }
+.tr-item:first-of-type { border-top: 0; }
+.tr-orig { font-family: Georgia, serif; font-size: 17px; margin-bottom: 8px; }
+.tr-orig .kw { font-weight: 700; color: var(--accent); }
+textarea {
+  width: 100%; min-height: 64px; resize: vertical; font: 16px/1.5 system-ui, sans-serif; color: var(--ink);
+  background: var(--input-bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px;
+}
+.tr-res { margin-top: 8px; font-size: 15px; }
+.tr-res .model { font-family: Georgia, serif; font-size: 16px; }
+.el { padding: 0 2px; border-radius: 3px; }
+.el.hit { background: var(--ok-bg); color: var(--ok); font-weight: 700; }
+.el.miss { background: var(--bad-bg); color: var(--bad); font-weight: 700; }
+.tr-score { font-weight: 700; }
+.accept { display: inline-flex; gap: 6px; align-items: center; margin-top: 6px; font-size: 14px; color: var(--muted); }
+.example-box { background: var(--example); border-radius: 8px; padding: 10px 12px; margin-bottom: 6px; font-size: 15px; }
+.example-box .lbl { font-weight: 700; font-size: 12px; letter-spacing: .04em; color: var(--muted); }
+#result { display: none; }
+#result.show { display: block; border: 2px solid var(--accent); }
+.big { font-size: 34px; font-weight: 800; margin: 2px 0; }
+.verdict { font-weight: 700; padding: 6px 10px; border-radius: 8px; display: inline-block; margin: 6px 0 12px; }
+.verdict.pass { background: var(--ok-bg); color: var(--ok); }
+.verdict.fail { background: var(--bad-bg); color: var(--bad); }
+table.brk { width: 100%; border-collapse: collapse; font-size: 15px; }
+table.brk td { padding: 6px 4px; border-top: 1px solid var(--line); vertical-align: middle; }
+table.brk td.n { white-space: nowrap; font-variant-numeric: tabular-nums; text-align: right; width: 70px; }
+.meter { height: 8px; background: var(--line); border-radius: 99px; overflow: hidden; min-width: 80px; }
+.meter i { display: block; height: 100%; background: var(--accent); }
+.meter i.lowp { background: var(--bad); }
+.actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 18px; }
+.notice { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 8px 12px; margin: 8px 0; font-weight: 600; display: none; }
+.notice.show { display: block; }
+@media (max-width: 600px) {
+  .card { padding: 16px 14px; }
+  .text { font-size: 16px; line-height: 2.2; }
+  .bar .title { width: 100%; }
+}
+.q { padding: 12px 0; border-top: 1px solid var(--line); }
+.q:first-of-type { border-top: 0; }
+.q .stem { font-weight: 600; margin-bottom: 6px; }
+.opt { display: block; padding: 4px 8px; border-radius: 6px; margin: 2px 0; cursor: pointer; }
+.opt input { margin-right: 8px; }
+.opt.ok { background: var(--ok-bg); color: var(--ok); font-weight: 600; }
+.opt.bad { background: var(--bad-bg); color: var(--bad); }
+.opt.key { outline: 2px solid var(--ok); }
+.qfix { font: 600 14px/1.3 system-ui, sans-serif; color: var(--ok); margin-top: 4px; }
+.tf { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; }
+.tf .opt { margin: 0; border: 1px solid var(--line); padding: 4px 12px; }
+.frag { padding: 6px 10px; margin: 4px 0; background: var(--example); border-radius: 8px; font-size: 15px; }
+.frag b { margin-right: 6px; }
+.frag.used { opacity: .45; }
+.frag.struck { opacity: .6; font-style: italic; }
+.mrow { display: flex; gap: 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); flex-wrap: wrap; }
+.mrow .t { flex: 1 1 240px; font-weight: 600; }
+.mrow select { font: 16px system-ui, sans-serif; color: var(--ink); background: var(--input-bg); border: 1px solid var(--line); border-bottom: 2px solid var(--muted); border-radius: 4px; padding: 4px 6px; }
+.mrow.ok select { border-color: var(--ok); background: var(--ok-bg); }
+.mrow.bad select { border-color: var(--bad); background: var(--bad-bg); }
+.mrow .fix { flex-basis: 100%; }
+.gap .fix { display: inline; }
+.gap select { width: auto; max-width: 72vw; }
+.gap.cloze select { width: 9em; }
+.gap.letter select { width: 5em; }
+.snip { font-family: Georgia, "Times New Roman", serif; font-size: 16px; line-height: 1.6; padding: 10px 14px; margin: 0 0 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--input-bg); }
+.snip b { font-family: system-ui, sans-serif; margin-right: 6px; }
+.text p.sub { font: 700 16px/1.5 system-ui, sans-serif; text-indent: 0; margin: 16px 0 2px; }
+.keybox { background: var(--ok-bg); color: var(--ink); border-radius: 8px; padding: 8px 12px; margin-top: 6px; font-size: 15px; }
+.keybox.none { background: var(--example); color: var(--muted); }
+.selfscore { margin-top: 8px; font-size: 15px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.selfscore .t { font-weight: 700; }
+.selfscore label { display: inline-flex; gap: 4px; align-items: center; cursor: pointer; }
+.qnote { font-size: 14px; color: var(--warn); font-weight: 600; margin: 2px 0 6px; }
+</style>
+<script src="assets/c1-common.js"></script>
+</head>
+<body>
+<header class="top">
+  <div class="bar">
+    <span class="title">Rozumienie tekstów pisanych C1 - test przykładowy 2017</span>
+    <span class="timer" id="timer">60:00</span>
+    <button id="timerBtn">Start</button>
+    <span class="progress" id="progress"></span>
+    <button class="primary" id="checkTop">Sprawdź</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <h1>Rozumienie tekstów pisanych</h1>
+  <p class="lead">Oficjalny test przykładowy egzaminu certyfikatowego C1 (Państwowa Komisja, 2017). 5 zadań, 60 minut, 40 punktów. Żeby zdać tę część, trzeba mieć co najmniej 60%, czyli 24 punkty. Sprawdzanie według oficjalnego klucza Państwowej Komisji. Zadanie IV ma odpowiedzi otwarte: po sprawdzeniu porównaj swoją odpowiedź z kluczem i sam oceń się (0, 1 lub 2 p. za pytanie).</p>
+  <div class="notice" id="timeUp">Czas minął (60 minut). Na egzaminie musiałbyś teraz oddać arkusz. Możesz dokończyć, ale zapamiętaj, ile brakło.</div>
+
+  <div class="card" id="result"></div>
+  <div id="tasks"></div>
+
+  <div class="actions">
+    <button class="primary" id="checkBottom">Sprawdź odpowiedzi</button>
+    <button id="resetBtn">Zacznij od nowa</button>
+  </div>
+</div>
+
+<script>
+// ---------- dane: test przykładowy C1 (2017), część "Rozumienie tekstów pisanych" + oficjalny klucz ----------
+const TASKS = [
+  { id: 'I', type: 'mc', per: 1, max: 8, title: 'Zadanie I', pts: '8 x 1 p. = 8 p.',
+    instr: 'Po przeczytaniu fragmentów tekstów, proszę zaznaczyć właściwą odpowiedź.',
+    example: { text: 'Potrawy kuchni węgierskiej mają w Poznaniu wielu zwolenników. Będzie ich jeszcze więcej, bo w marcu sześć restauracji serwowało takie dania. Była to jedna z atrakcji Dni Przyjaźni Polsko-Węgierskiej.', stem: 'Ten tekst informuje o tym, że', opts: ['w Poznaniu otwarto sześć restauracji węgierskich.', 'poznaniacy nie lubią kuchni węgierskiej.', 'Dni Przyjaźni Polsko-Węgierskiej miały miejsce w Poznaniu.'], ans: 2 },
+    qs: [
+      { text: 'To jedna z największych i najdroższych inwestycji w mieście. Wpłynie na obsługę komunikacyjną podczas przyszłorocznych piłkarskich mistrzostw. Jeszcze w tym roku zostanie zbudowana nowa trasa tramwajowa o długości 2,5 km, z czego prawie połowa będzie przebiegać w tunelu. Miasto otrzyma w ten sposób namiastkę metra.',
+        stem: 'Ten tekst informuje o tym, że', opts: ['w mieście powstanie pierwsza nitka metra.', 'nowa linia zostanie ukończona przed mistrzostwami.', 'to najdroższa budowa w mieście.'], ans: 'b' },
+      { text: 'Okolicznościowy kryształ z wygrawerowanym orzełkiem i zarysem województwa wielkopolskiego w eleganckim etui jest przedmiotem aukcji charytatywnej na rzecz poznańskiego Hospicjum Palium. Kryształ przekazał wicewojewoda wielkopolski. Dodatkową nagrodą jest prywatne spotkanie z wicewojewodą. Licytację wygrała pani Magdalena.',
+        stem: 'Ten tekst informuje o tym, że', opts: ['pani Magdalena zaoferowała największą sumę za kryształ.', 'wicewojewoda ofiarował kryształ Hospicjum Palium.', 'kryształ ma kształt orzełka.'], ans: 'a' },
+      { text: 'W niedzielę 3 kwietnia odbędzie się czwarta edycja miejskiego półmaratonu. Uczestnicy imprezy pobiegną tradycyjną trasą maratonu, z tą różnicą, że wykonają tylko jedno okrążenie. Zawodników na trasie oprócz zespołów muzycznych wspierać będą kibice. Wszyscy zawodnicy, którzy pokonają dystans 21,097 km otrzymają medal, a na najlepszych czekają nagrody.',
+        stem: 'Ten tekst informuje o tym, że', opts: ['w czasie poznańskiego maratonu zawodnicy robią dwa okrążenia.', 'zawodnicy nie mogą liczyć na doping kibiców.', 'każdy, kto ukończy bieg, otrzyma medal.'], ans: 'c' },
+      { text: 'Universitas Cantat to nie konkurs, ale forum dla śpiewających studentów. Chóry prezentują muzykę własnych krajów, celem festiwalu jest też promocja muzyki polskiej wśród nich. Kolejna edycja rozpocznie się w Poznaniu w najbliższą środę. Tradycją jest finałowe wykonanie utworu specjalnie skomponowanego na ten festiwal. W tym roku będzie to utwór Miłosza Bembinowa. Chóry wszystkich zaproszonych krajów wykonają go 25.06 w Auli Uniwersyteckiej. Dyrygować będzie kompozytor.',
+        stem: 'Ten tekst informuje o tym, że', opts: ['zaproszone chóry będą wykonywać tylko polskie utwory.', 'finał konkursu będzie w środę.', 'Miłosz Bembinow przyjedzie do Poznania.'], ans: 'c' },
+      { text: 'Wskazania medyczne mówią, że od drugiego roku życia dziecko może spędzać przed ekranem pół godziny dziennie - nie tylko przed komputerem, ale w ogóle monitorem, także przed telewizorem. Taką granicę wyznaczają lekarze. Wiadomo, że częste oglądanie telewizji nie wpływa korzystnie na rozwój mowy, bo żeby dwulatek mógł przyswajać nowe słowa, potrzebuje wielu interakcji z dorosłymi.',
+        stem: 'Ten tekst informuje o tym, że', opts: ['dziecko przed ukończeniem dwóch lat może pół godziny oglądać telewizję.', 'rozmowa z rodzicami jest ważna w rozwoju mowy.', 'dwulatek może po pół godziny spędzić przed komputerem i telewizorem.'], ans: 'b' },
+      { text: 'Hinduski mają gęste, piękne włosy, co przypisuje się znanym od starożytności zabiegom pielęgnacyjnym, takim jak olejowe masaże głowy. Używa się do nich ciepłego olejku tymiankowo-rozmarynowego. Dostarczają one cebulkom włosowym niezbędnych składników odżywczych, a masaż poprawia krążenie krwi w obrębie głowy i przynosi ukojenie nerwom.',
+        stem: 'Ten tekst informuje o tym, że', opts: ['w starożytności kobiety miały piękniejsze włosy.', 'dobry efekt zapewnia dodanie do mikstury nieco cebulki.', 'dodatkiem do olejku są zioła.'], ans: 'c' },
+      { text: 'Wyglądają zupełnie tak samo jak tradycyjne, nie różnią się od nich wielkością ani kształtem, mają mikroprocesor i pasek magnetyczny. Jedynie niewielki symbol rozchodzących się fal radiowych zwraca uwagę na ich dodatkową funkcję. To karty zbliżeniowe, które powoli przestają być na naszym rynku ciekawostką, a stają się standardowym wyposażeniem portfeli.',
+        stem: 'Ten tekst informuje o tym, że', opts: ['tylko karty zbliżeniowe mają paski magnetyczne.', 'tylko jeden detal wyróżnia karty zbliżeniowe.', 'karty zbliżeniowe są ciągle rzadkością.'], ans: 'b' },
+      { text: 'Najstarsza zachowana pieczęć herbowa Warszawy pochodzi z około 1400 r. Przetrwała na dokumencie przesłanym do władz Torunia przez Radę Miejską Starej Warszawy. Na woskowej pieczęci widać postać do połowy ludzką (trzyma miecz i tarczę), a od pasa w dół mającą łuski, skrzydła, łapy i ogon. Problem w tym, że ludzka połówka przypomina raczej… mężczyznę. Dopiero na kolejnych herbach kobieca sylwetka staje się bardziej wyrazista.',
+        stem: 'Tekst ten informuje o tym, że', opts: ['najstarsza pieczęć przechowywana była w Starej Warszawie.', 'herb Warszawy zmieniał swój wygląd.', 'stary herb przedstawia pół-kobietę i pół-mężczyznę.'], ans: 'b' }
+    ]
+  },
+  { id: 'II', type: 'cloze', per: 0.5, max: 4, title: 'Zadanie II', pts: '8 x 0,5 p. = 4 p.',
+    instr: 'Proszę - zgodnie z przykładem - wybrać najlepszą spośród podanych możliwości (na egzaminie podkreślasz ją, tutaj wybierasz z listy).',
+    textTitle: 'Ładniejsi w pracy',
+    paras: [
+'Zaklinamy się, że najważniejsze jest ludzkie wnętrze. A jednak pracownika oceniamy na podstawie jego wyglądu. Temu, który [[ex]] lepiej, chętniej dajemy awans i podwyżkę. „Brzydal”, choćby był w swej profesji geniuszem, ma mniejsze {1:szanse|atuty|zapotrzebowanie|nadzieje} na sukces. Kolega z biura otrzymał nagrodę kwartalną, a ty nie, chociaż masz większe zasługi, lepsze wyniki, wyższe {2:wymagania|zarobki|przygotowanie|kwalifikacje} i nieporównywalnie szerszy zakres obowiązków. Zanim jednak pójdziesz do szefa, by zrobić mu karczemną awanturę, stań przed lustrem i rzetelnie oceń swoją {3:pozycję|podobiznę|potwarz|fotografię}. Jakkolwiek niedorzecznie - i brutalnie - to zabrzmi, wygląd w pracy odgrywa większą rolę niż tzw. czynniki merytoryczne.',
+'Badania pokazały, że nie istnieje żaden związek między pięknem (lub jego przeciwieństwem) a cechami osobowości. Mimo to {4:wróżbici|programiści|synoptycy|socjolodzy} są zgodni: z przeprowadzonych ankiet wynika, że ładnym z reguły przypisujemy pozytywne cechy, a brzydcy wydają się nam niesympatyczni i nie mamy do nich zaufania. Nancy Etcoff, autorka głośnej książki „Przetrwają najpiękniejsi”, odkryła nawet nową formę {5:przemocy|dyskryminacji|upośledzenia|ułomności}. Jest nią atrakcjonizm, który powoduje, że osobom mniej urodziwym wiedzie się w życiu - i w pracy - o wiele gorzej.',
+'Od tej reguły są jednak wyjątki. Gdy jesteśmy krezusami, możemy śmiało zrezygnować ze wszystkich {6:zabiegów|wybiegów|napraw|renowacji} upiększających a świat i tak będzie się nami zachwycał.',
+'Jest jeszcze inny sposób odwrócenia uwagi od swych {7:minusów|mankamentów|błędów|porażek} fizycznych - równie skuteczny, a zupełnie nic nie kosztuje! Wystarczy uśmiechnąć się i być miłym dla otoczenia. Wtedy w {8:cenie|wycenie|ocenie|ocenianiu} innych staniemy się na pewno o wiele bardziej atrakcyjni. Tym samym potwierdzi się znane powiedzenie, że „piękno jest w oczach patrzącego”.'
+    ],
+    exampleHtml: '[myśli, pracuje, <span class="ex">prezentuje się<sup>PRZYKŁAD</sup></span>, mówi]',
+    answers: { 1: 'szanse', 2: 'kwalifikacje', 3: 'podobiznę', 4: 'socjolodzy', 5: 'dyskryminacji', 6: 'zabiegów', 7: 'mankamentów', 8: 'ocenie' }
+  },
+  { id: 'III', type: 'match', per: 1, max: 8, title: 'Zadanie III', pts: '8 x 1 p. = 8 p.',
+    instr: 'Proszę połączyć tytuły z pierwszej kolumny z fragmentami tekstów z kolumny drugiej - zgodnie z podanym przykładem. Wybierz literę fragmentu przy każdym tytule.',
+    frags: {
+      A: 'W przeciwieństwie do cierpliwego papieru, który, jak wiadomo, zniesie wszystko, taśma filmowa wydaje się zdecydowanie bardziej oporna. Bezlitośnie obnaża sztywność intelektualnych konstrukcji, demaskuje papierową psychologię, czyni dosłownym to wszystko, co na kartach książki miało być wyrafinowaną retoryczną figurą.',
+      B: 'Kryzys sprawia, że rodzi się nowy układ na rynku medialnym. Asy trafiają w ręce tego, kto ma pieniądze, a nie długi. Tradycyjny, paternalistyczny sposób zarządzania biznesem dziś bardziej podoba się rynkowi niż nowoczesna korporacja. Ale walka będzie się toczyć do ostatniego widza.',
+      C: 'U wielu gatunków zwierząt grymas pyska, który u ludzi uchodziłby za zupełnie przyjazny, jest wyrazem niezbyt ciepłych uczuć. Triumfalny chichot u naszych przodków oznaczał szczęście z powodu pognębienia przeciwnika. Służył rozładowaniu napięcia i negatywnych emocji.',
+      D: 'Obecnie żyjemy w otoczeniu nasyconym wytworami techniki, a w szczególności wśród „braci-komputerów” i „braci-robotów”, bez których nie sposób już pracować, uczyć się ani wypoczywać. Mimowolnie uzależniliśmy swój byt od artefaktów technicznych.',
+      E: 'Małe podmioty gospodarcze obawiają się, że składanie odwołań zamknie im drogę do skutecznego udziału w rywalizacji o zlecenia. Walczą więc tylko giganci, bo ich na to stać. Ta walka dotyczy potężnych, idących w miliony złotych zamówień.',
+      F: 'Samorządowcy wolą nazwy nawiązujące do świata roślin, na przykład do kwiatów. Osoby zawsze budzą kontrowersje i po jakimś czasie w gorącej atmosferze nazwy trzeba zmieniać.',
+      G: 'Świat mężczyzn to rzeczywistość ściśle zhierarchizowana, w której każda jednostka ma przypisane miejsce. Świat kobiet natomiast to sieć powiązań równoległych, w których ludzie próbują budować wspólnotę. Tak rozbieżne perspektywy sprawiają, że rozmowa ma zupełnie inne cele i pełni odmienne funkcje dla kobiet niż dla mężczyzn.',
+      H: 'Nasze ciało powinno mieć na sobie pewną ilość bakterii, gdyż mają one do wykonania określone funkcje.',
+      I: 'Bywa, że ktoś od pierwszej chwili wydaje się uczciwy albo nie. Skąd takie wrażenie? Mówimy: intuicja mi to podpowiada. Lecz skąd ta intuicja? Wynika ona z wiedzy, z której nie zdajemy sobie sprawy. Ta sama utajona wiedza pozwala nam chodzić, płynnie się wypowiadać, rozwiązywać problemy i posprzątać po sobie.'
+    },
+    used: 'F',
+    example: 'Bój o ulicę',
+    titles: ['Brat brud', 'Targi o przetargi', 'Wojna na wizje', 'Bez ciebie nie mogę żyć', 'Inne światy, inne języki', 'Ze śmiechem nie ma żartów', 'Prawda ukryta', 'Naga prawda'],
+    answers: { 1: 'H', 2: 'E', 3: 'B', 4: 'D', 5: 'G', 6: 'C', 7: 'I', 8: 'A' }
+  },
+  { id: 'IV', type: 'open', per: 2, max: 12, title: 'Zadanie IV', pts: '6 x 2 p. = 12 p.',
+    instr: 'Proszę przeczytać pytania i odpowiedzieć na pytania zgodnie z podanym przykładem. W odpowiedziach proszę nie używać sformułowań z tekstu.',
+    textTitle: 'Jak Polacy widzą patriotyzm',
+    paras: [
+'Czym jest patriotyzm, zastanawiają się w DZIENNIKU ludzie kultury, politycy i sportowcy.',
+'#Michał Głowiński, teoretyk literatury, historyk',
+'Patriotyzm to dla mnie przede wszystkim stosunek do języka polskiego, polskich tradycji i polskiej historii. Patriotyzm nie jest na pewno zespołem frazesów wypowiadanych w takich czy innych okolicznościach, często w celach doraźnych. Człowiek, który tylko wygłasza najróżniejsze pięknie brzmiące, wzniosłe slogany niezależnie od tego, czy jest działaczem nacjonalistycznej organizacji młodzieżowej, czy premierem rządu polskiego, nie jest jeszcze patriotą. Patriota dziś powinien dbać o polski język i naszą tradycję kulturalną, o to, żeby dzieła polskiej literatury były powszechnie dostępne, o to, żeby nie niszczono przyrody, która jest częścią polskiego dziedzictwa narodowego.',
+'#Krystian Lupa, reżyser teatralny',
+'Patriotyzm to zapomnienie o nienawiści. Łatwo jest powiedzieć „jestem patriotą, bo nienawidzę...” - tak często mieliśmy do czynienia z ciasnym i agresywnym rozumieniem patriotyzmu wówczas, gdy przynależność do państwa była prowadzeniem wojny albo przygotowywaniem się do niej. Posiadanie wspólnego wroga cementowało wspólnotę i pozwalało krystalizować się poczuciu przynależności. Ale to przecież nie jest patriotyzm dnia dzisiejszego. Dziś jesteśmy ludźmi Europy, ludźmi świata, a patriotyzm staje się pojęciem nieco tajemniczym. To coś, co powoduje, że mówimy sobie: nie widzę możliwości, żeby gdzie indziej żyć i pracować. Dla mnie to praca jest tworzeniem wartości kulturowej czy ludzkiej, którą możemy się z kimś później dzielić. To wartość, która powstaje „tutaj” i to nasze codzienne „tutaj” staje się miejscem, do którego my możemy tęsknić, a inni później pielgrzymować. Dziś patriota powinien dbać o to, co może tu stworzyć. Być może nie jest najważniejsze zdefiniowanie patriotyzmu, tylko odkrycie go w sobie. Zamiast nazywać, działajmy. Mieszkajmy tu, cieszmy się swoim życiem, twórzmy i radujmy się, że mamy coś, czym możemy się podzielić.',
+'#Wiesław Chrzanowski, były marszałek Sejmu',
+'Patriotyzm to pojęcie moralne. Niektórzy uważają, że od patriotyzmu krok tylko dzieli nas od nacjonalizmu. To uczucia, emocje i jedno w drugie łatwo przechodzi. Stąd koncepcja patriotyzmu krytycznego, który przede wszystkim podnosi nasze przewiny historyczne i ma prowadzić do oczyszczenia. Inni znów mówią o patriotyzmie dnia codziennego, o płaceniu podatków i wypełnianiu tym podobnych zobowiązań. Tymczasem patriotyzm to nasze poczucie długu i zobowiązania w stosunku do wspólnoty, która nas kształtowała, w której znajdujemy warunki życia. Dlatego powinniśmy poczuwać się do odpowiedzialności za nią. Dziś patriota powinien podjąć pewne zobowiązanie, nie tylko odkurzać przeszłość. Istnieje pewien projekt, zadanie, jakie stoi przed nami. To właśnie mobilizuje ludzi młodych, którzy poszukują tego, w czym będą się mogli realizować. Myślę, że jeśli niekiedy czujemy się nieco zagubieni, to właśnie dlatego, że ograniczamy się do postawy konsumpcyjnej. Patriotyzm to nie postawa roszczeń, ale służby, nie kalkulacji a bezinteresowności.',
+'#Irena Szewińska, mistrzyni olimpijska',
+'Patriotyzm to uczucia, które łączą nas z ojczyzną. Na najważniejszych imprezach, kiedy Polacy wygrywają, stają na podium i słyszymy Mazurka Dąbrowskiego, a biało-czerwona flaga wciągana jest na maszt - przeżywamy najpiękniejsze momenty. W tych chwilach czujemy się patriotami - my, sportowcy, ale również kibice. Te chwile chwały są ważne nie tylko dla zawodnika, który wygrywa, ale i dla innych, bo dzięki niemu imię Polski staje się głośne. To niezwykle istotne również dla Polonii, ludzi, którzy od lat mieszkają za granicą kraju, ale czują z nim głęboką więź. Dziś patriota powinien - jeśli jest sportowcem - godnie reprezentować swój kraj: odpowiedzialnie się zachowywać, pracować nad sobą i przestrzegać zasady fair play.'
+    ],
+    example: { stem: 'Jakie cechy patriotyzmu występują we wszystkich wypowiedziach?', ans: 'Wszyscy ankietowani zwracają uwagę na przywiązanie do swego narodu i kraju.' },
+    qs: [
+      { stem: 'Zdaniem Michała Głowińskiego patriotyzm nie może być „zespołem frazesów”. Jak należy rozumieć to sformułowanie?',
+        key: 'Patriotyzm nie oznacza deklaracji, lecz działanie, mające na celu utrwalanie tradycji, kultury, literatury, ochronę przyrody polskiej. Celem takiej postawy powinno być umacnianie wartości narodowych, nie zaś dążenie do osiągnięcia partykularnych, prywatnych korzyści.' },
+      { stem: 'Na czym polega tajemniczość współczesnego patriotyzmu?',
+        key: 'Tajemniczość współczesnego patriotyzmu polega na trudności w jego zdefiniowaniu. W czasach zagrożenia narodowego łatwiej jest zademonstrować swoją patriotyczną postawę - poprzez walkę. W czasach pokoju nie wiadomo, co praktycznie oznacza patriotyzm. Każdy realizuje go na swój sposób - żyjąc i tworząc w swoim kraju. Nie ma jednej definicji patriotyzmu dla wszystkich.' },
+      { stem: 'Czy jest patriotyzm dla Wiesława Chrzanowskiego?',
+        note: 'Uwaga: w oficjalnym arkuszu jest literówka, klucz odpowiada na pytanie „Czym jest patriotyzm dla Wiesława Chrzanowskiego?”.',
+        key: 'To poczucie obowiązku w stosunku do swojego narodu i kraju, odpowiedzialność za losy ojczyzny, służenie swojemu narodowi bezinteresowność towarzysząca temu działaniu.' },
+      { stem: 'Czy dla sportowca patriotyzm oznacza to samo co dla innych Polaków? Dlaczego tak/nie?',
+        key: 'Dla sportowca, tak jak i dla innych Polaków, patriotyzm to poczucie więzi z narodem, zobowiązanie do godnego reprezentowania swojego narodu, solidnej pracy i uczciwości.' },
+      { stem: 'W czym przede wszystkim powinien przejawiać się współczesny patriotyzm?', key: '' },
+      { stem: 'Która z przedstawionych koncepcji patriotyzmu jest Pani/u najbliższa. Odpowiedź proszę uzasadnić.', key: '', opinion: true }
+    ]
+  },
+  { id: 'V', type: 'gapfrag', per: 1, max: 8, title: 'Zadanie V', pts: '8 x 1 p. = 8 p.',
+    instr: 'Proszę przeczytać podany tekst i dopasować usunięte z niego zdania. Wybierz literę zdania przy każdej luce.',
+    textTitle: 'Juror musi mieć talent',
+    frags: {
+      A: 'Jeśli polubi ofiarę, może ją wesprzeć esemesem i mieć poczucie, że ma wpływ na jej losy.',
+      B: 'Wszystkie to sprawdzone zagraniczne formaty, by zminimalizować ryzyko błędu biznesowego.',
+      C: 'Powinien umieć wdawać się w zapadające w pamięć pogawędki z kolegami z loży.',
+      D: 'Jurorzy przesłuchiwali śpiewających amatorów i wybierali zwycięzcę, któremu ułatwiano start w show-biznesie.',
+      E: 'Następnie były „Progi i bariery” Mariusza Waltera.',
+      F: 'Juror mógł więc być merytoryczny, pomocny, mieć czas dla występującego.',
+      G: 'Określa ona liczbę prowadzących, sposób wyłaniania amatorów, ustawienie mebli w studiu.',
+      H: 'Musi uwodzić telewidza, żeby czekał on z pilotem w ręku w każdą sobotę lub niedzielę.',
+      I: 'Okazał się strzałem w dziesiątkę: po jego komentarzach uczestnikom zdarzało się nawet płakać.'
+    },
+    used: 'E',
+    paras: [
+'Historia programów z jurorami w roli głównej w telewizji polskiej zaczyna się od prof. Bardiniego, który w latach 70. oceniał na żywo występy aktorskie. [[E]]. Jednak w tamtej epoce to nie od oglądalności zależał los programu. {1}. Według dzisiejszych kryteriów pojawiał się na antenie w sposób anachroniczny.',
+'Nowożytną historię talent shows liczy się od występu Simona Cowella, brytyjskiego producenta muzycznego, którego poproszono, by został jednym z czterech jurorów w nowym programie „Idol”. {2}. Cowell w przeciwieństwie do trójki pozostałych aksamitnych sędziów był nieprzyjemny, niegrzeczny, nie zawahał się brutalnie krytykować występów, a nawet wyglądu amatorów. {3}. Widzowie go pokochali, producenci natomiast zrozumieli, że umiejętne poniżanie ludzi przed kamerą to recepta na sukces. Zwykły telewidz sam jest często poniżany w pracy, więc chętnie popatrzy, jak się dręczy i upokarza amatora zwabionego do studia szansą osiągnięcia sławy i wielkich pieniędzy. {4}',
+'Obecnie każda duża polska stacja ma swój talent show. {5}. Do każdego formatu sprzedający dołącza instrukcję obsługi zwana biblią, od której się raczej nie odstępuje. {6} Dopuszczone są jedynie drobne modyfikacje. Na przykład jeśli sponsor zapłaci za spot specjalną cenę, repertuar muzyczny można dostosować do jego profilu produkcji.',
+'Biblia mówi, że jurorem, czyli przewodnikiem widza po świecie konkurujących amatorów lub celebrytów, może zostać człowiek o przyciągającej osobowości. {7}. Widz powinien być zainteresowany również jego życiem pozazawodowym. Juror może być nieprzyjemny, złośliwy, nawet pogardliwy w stosunku do amatora lub celebryty, ale nie może całkowicie odstraszać swoją postawą życiową. {8}. Czasem wystarczy mu sam fakt, że pokazał się na ekranie. Zarówno oni, jak i prowadzący muszą tryskać spontanicznym humorem.'
+    ],
+    answers: { 1: 'F', 2: 'D', 3: 'I', 4: 'A', 5: 'B', 6: 'G', 7: 'H', 8: 'C' }
+  }
+];
+
+const MAX = 40, PASS = 24;
+const STORE_KEY = 'c1_czyt_2017_v1';
+const TEST_ID = 'czytanie-2017';
+const TOTAL_SEC = 60 * 60;
+
+// ---------- pomocnicze ----------
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function pl(n) { return (Math.round(n * 100) / 100).toString().replace('.', ','); }
+let state = {};
+function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY)) || {}; } catch (e) { return {}; } }
+function save() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {} }
+state = load();
+
+function allIds() {
+  const out = [];
+  for (const t of TASKS) {
+    if (t.qs) t.qs.forEach((q, i) => out.push(`${t.id}-${i + 1}`));
+    else for (const n in t.answers) out.push(`${t.id}-${n}`);
+  }
+  return out;
+}
+
+// ---------- budowanie arkusza ----------
+function textBlock(t, gapFn) {
+  let h = `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>`;
+  h += t.paras.map(p => {
+    let x = esc(p);
+    x = x.replace(/\[\[ex\]\]/g, t.exampleHtml || '');
+    x = x.replace(/\[\[(.+?)\]\]/g, '<span class="ex">$1<sup>PRZYKŁAD</sup></span>');
+    x = x.replace(/\{(\d+)(?::([^}]*))?\}/g, (m, n, o) => gapFn(n, o));
+    return `<p>${x}</p>`;
+  }).join('') + `</div>`;
+  return h;
+}
+function letterSelect(id, n, letters) {
+  const opts = letters.map(l => `<option value="${l}">${l}</option>`).join('');
+  return `<span class="gap letter" id="g-${id}"><select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select><sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+}
+function fragList(t) {
+  return `<div id="frags-${t.id}">` + Object.keys(t.frags).map(l =>
+    `<div class="frag${l === t.used ? ' struck' : ''}" data-l="${l}"><b>${l}.</b>${esc(t.frags[l])}${l === t.used ? ' <span class="src">(PRZYKŁAD)</span>' : ''}</div>`).join('') + `</div>`;
+}
+
+function build() {
+  const root = document.getElementById('tasks');
+  let html = '';
+  for (const t of TASKS) {
+    html += `<section class="card" id="task-${t.id}">`;
+    html += `<h2><span>${t.title}</span><span class="pts" id="pts-${t.id}">${t.pts}</span></h2>`;
+    html += `<p class="instr">${esc(t.instr)}</p>`;
+    if (t.type === 'mc') {
+      const e = t.example;
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div><div class="snip"><b>0.</b> ${esc(e.text)}</div><b>${esc(e.stem)}</b><br>` +
+        e.opts.map((o, i) => `<span style="${i === e.ans ? 'font-weight:700;text-decoration:underline dotted' : ''}">${'abc'[i]}) ${esc(o)}</span>`).join('<br>') + `</div>`;
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="q" id="q-${id}"><div class="snip"><b>${i + 1}.</b> ${esc(q.text)}</div><div class="stem">${i + 1}. ${esc(q.stem)}</div>` +
+          q.opts.map((o, j) => `<label class="opt" data-v="${'abc'[j]}"><input type="radio" name="${id}" data-id="${id}" value="${'abc'[j]}">${'abc'[j]}) ${esc(o)}</label>`).join('') +
+          `<div class="qfix"></div></div>`;
+      });
+    } else if (t.type === 'cloze') {
+      html += `<div class="text"><p class="noindent"><b>${esc(t.textTitle)}</b></p>` + t.paras.map(p => {
+        let x = esc(p).replace(/\[\[ex\]\]/g, t.exampleHtml);
+        x = x.replace(/\{(\d+):([^}]*)\}/g, (m, n, o) => {
+          const id = `${t.id}-${n}`;
+          const opts = o.split('|').map(w => `<option value="${w}">${w}</option>`).join('');
+          return `<span class="gap cloze" id="g-${id}"><select data-id="${id}" aria-label="Luka ${n}"><option value=""></option>${opts}</select><sup class="gapno">${n}</sup><span class="fix"></span></span>`;
+        });
+        return `<p>${x}</p>`;
+      }).join('') + `</div>`;
+    } else if (t.type === 'match') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="example-box"><div class="lbl">PRZYKŁAD</div>0. ${esc(t.example)} - <b>${t.used}</b></div>`;
+      html += `<div class="example-box"><div class="lbl">KOLUMNA II - FRAGMENTY (A-I)</div></div>` + fragList(t);
+      html += `<div class="example-box" style="margin-top:12px"><div class="lbl">KOLUMNA I - TYTUŁY: wybierz literę</div></div>`;
+      t.titles.forEach((ti, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="mrow" id="g-${id}"><span class="t">${i + 1}. ${esc(ti)}</span><select data-id="${id}" aria-label="Tytuł ${i + 1}"><option value=""></option>${letters.map(l => `<option value="${l}">${l}</option>`).join('')}</select><span class="fix"></span></div>`;
+      });
+    } else if (t.type === 'open') {
+      html += `<div class="text">${t.textTitle ? '<p class="noindent"><b>' + esc(t.textTitle) + '</b></p>' : ''}` +
+        t.paras.map((p, i) => p.charAt(0) === '#' ? `<p class="sub">${esc(p.slice(1))}</p>` : `<p${i === 0 ? ' class="noindent"' : ''}>${esc(p)}</p>`).join('') + `</div>`;
+      html += `<div class="example-box" style="margin-top:14px"><div class="lbl">PRZYKŁAD</div>0. ${esc(t.example.stem)}<br><b>${esc(t.example.ans)}</b></div>`;
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        html += `<div class="tr-item" id="q-${id}"><div class="tr-orig">${i + 1}. ${esc(q.stem)}</div>` +
+          (q.note ? `<div class="qnote">${esc(q.note)}</div>` : '') +
+          `<textarea data-id="${id}" placeholder="Twoja odpowiedź własnymi słowami..." spellcheck="false"></textarea><div class="tr-res" id="res-${id}"></div></div>`;
+      });
+    } else if (t.type === 'gapfrag') {
+      const letters = Object.keys(t.frags).filter(l => l !== t.used);
+      html += `<div class="example-box"><div class="lbl">ZDANIA (A-I)</div></div>` + fragList(t);
+      html += textBlock(t, (n) => letterSelect(`${t.id}-${n}`, n, letters));
+    }
+    html += `</section>`;
+  }
+  root.innerHTML = html;
+  applyState();
+  wire(root);
+  updateProgress(); updateFrags();
+}
+
+function applyState() {
+  document.querySelectorAll('#tasks [data-id]').forEach(el => {
+    const v = state[el.dataset.id];
+    if (el.type === 'radio') el.checked = (v === el.value);
+    else if (v != null) el.value = v;
+  });
+}
+function wire(scope) {
+  scope.querySelectorAll('[data-id]').forEach(el => {
+    const h = () => { state[el.dataset.id] = el.value; save(); updateProgress(); updateFrags(); };
+    el.addEventListener('change', h);
+    if (el.tagName === 'TEXTAREA') el.addEventListener('input', h);
+  });
+}
+function updateProgress() {
+  const ids = allIds();
+  const filled = ids.filter(id => String(state[id] || '').trim() !== '').length;
+  document.getElementById('progress').textContent = `Wypełnione: ${filled}/${ids.length}`;
+}
+function updateFrags() {
+  for (const t of TASKS) {
+    if (!t.frags) continue;
+    const chosen = [...document.querySelectorAll(`#task-${t.id} select`)].map(s => s.value).filter(Boolean);
+    document.querySelectorAll(`#frags-${t.id} .frag`).forEach(f => {
+      if (f.dataset.l === t.used) return;
+      f.classList.toggle('used', chosen.includes(f.dataset.l));
+    });
+  }
+}
+
+// ---------- sprawdzanie ----------
+function checkAll(keepView) {
+  const per = [];
+  for (const t of TASKS) {
+    let score = 0;
+    if (t.type === 'mc') {
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const got = state[id] || '';
+        const box = document.getElementById(`q-${id}`);
+        box.querySelectorAll('.opt').forEach(l => {
+          l.classList.remove('ok', 'bad', 'key');
+          if (l.dataset.v === q.ans) l.classList.add('key');
+          if (l.dataset.v === got) l.classList.add(got === q.ans ? 'ok' : 'bad');
+        });
+        const fx = box.querySelector('.qfix');
+        if (got === q.ans) { score += t.per; fx.textContent = ''; }
+        else fx.textContent = '→ poprawna odpowiedź: ' + q.ans + ') ' + q.opts['abc'.indexOf(q.ans)];
+      });
+    } else if (t.type === 'open') {
+      t.qs.forEach((q, i) => {
+        const id = `${t.id}-${i + 1}`;
+        const typed = String(state[id] || '').trim() !== '';
+        const sc = typed ? Math.min(2, Math.max(0, parseInt(state[id + '#s'] || '0', 10) || 0)) : 0;
+        score += sc;
+        const cur = String(sc);
+        const key = q.key
+          ? `<div class="keybox"><b>Klucz:</b> ${esc(q.key)}</div>`
+          : `<div class="keybox none">${q.opinion ? 'Pytanie o Twoją opinię - oficjalny klucz nie podaje odpowiedzi wzorcowej.' : 'Oficjalny klucz nie podaje odpowiedzi wzorcowej do tego pytania.'}</div>`;
+        const radios = [0, 1, 2].map(v => `<label><input type="radio" name="sc-${id}" data-id="${id}#s" data-self value="${v}" ${typed && state[id + '#s'] === String(v) ? 'checked' : ''}> ${v} p.</label>`).join('');
+        document.getElementById(`res-${id}`).innerHTML =
+          `${key}<div class="selfscore"><span class="t">${typed ? 'Twoja ocena:' : 'Najpierw wpisz odpowiedź, potem oceń:'}</span>${radios}<span class="tr-score">${sc} / 2 p.</span></div>`;
+      });
+    } else {
+      for (const n in t.answers) {
+        const id = `${t.id}-${n}`;
+        const a = t.answers[n];
+        const raw = state[id] || '';
+        const ok = raw !== '' && raw === a;
+        const gap = document.getElementById(`g-${id}`);
+        const fix = gap.querySelector('.fix');
+        gap.classList.remove('ok', 'bad', 'almost');
+        if (ok) { score += t.per; gap.classList.add('ok'); fix.textContent = ''; }
+        else {
+          gap.classList.add('bad');
+          fix.textContent = '→ ' + a + (t.frags ? ' (' + t.frags[a].slice(0, 60) + '...)' : '');
+        }
+      }
+    }
+    const el = document.getElementById(`pts-${t.id}`);
+    el.textContent = `${pl(score)} / ${t.max} p.`;
+    el.classList.add('scored');
+    per.push({ t, score });
+  }
+  document.querySelectorAll('#tasks input[data-self]').forEach(r => {
+    r.addEventListener('change', () => { state[r.dataset.id] = r.value; save(); checkAll(true); });
+  });
+
+  const total = per.reduce((s, x) => s + x.score, 0);
+  if (window.C1) C1.saveScore(TEST_ID, total, MAX);
+  const pct = Math.round(total / MAX * 100);
+  const pass = total >= PASS;
+  const rows = per.map(({ t, score }) => {
+    const w = Math.round(score / t.max * 100);
+    return `<tr><td>${t.title}</td><td style="width:50%"><div class="meter"><i class="${w < 60 ? 'lowp' : ''}" style="width:${w}%"></i></div></td><td class="n">${pl(score)} / ${t.max}</td></tr>`;
+  }).join('');
+  const res = document.getElementById('result');
+  res.innerHTML = `
+    <div class="big">${pl(total)} / ${MAX} p. (${pct}%)</div>
+    <div class="verdict ${pass ? 'pass' : 'fail'}">${pass
+      ? 'Zdane - próg to 60% (24 p.)'
+      : `Poniżej progu 60% - brakuje ${pl(PASS - total)} p.`}</div>
+    <table class="brk">${rows}</table>
+    <p class="src">Na zielono: dobra odpowiedź. Na czerwono: błąd, obok poprawna odpowiedź z klucza. W zadaniu IV punkty przyznajesz sobie sam po porównaniu z kluczem. Możesz poprawić i sprawdzić jeszcze raz.</p>`;
+  res.classList.add('show');
+  if (!keepView) res.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (running) toggleTimer();
+  return total;
+}
+
+// ---------- zegar ----------
+let left = TOTAL_SEC, running = false, tick = null;
+function drawTimer() {
+  const m = Math.floor(left / 60), s = left % 60;
+  const el = document.getElementById('timer');
+  el.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  el.classList.toggle('low', left <= 300);
+}
+function toggleTimer() {
+  running = !running;
+  document.getElementById('timerBtn').textContent = running ? 'Pauza' : (left < TOTAL_SEC ? 'Wznów' : 'Start');
+  if (running) {
+    tick = setInterval(() => {
+      if (left > 0) { left--; drawTimer(); }
+      if (left === 0) {
+        clearInterval(tick); running = false;
+        document.getElementById('timerBtn').textContent = 'Koniec';
+        document.getElementById('timeUp').classList.add('show');
+      }
+    }, 1000);
+  } else clearInterval(tick);
+}
+
+function resetAll() {
+  if (!confirm('Wyczyścić wszystkie odpowiedzi i zacząć od nowa?')) return;
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  state = {};
+  clearInterval(tick); running = false; left = TOTAL_SEC; drawTimer();
+  document.getElementById('timerBtn').textContent = 'Start';
+  document.getElementById('timeUp').classList.remove('show');
+  document.getElementById('result').classList.remove('show');
+  build();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.getElementById('timerBtn').addEventListener('click', () => { if (left > 0) toggleTimer(); });
+document.getElementById('checkTop').addEventListener('click', () => checkAll());
+document.getElementById('checkBottom').addEventListener('click', () => checkAll());
+document.getElementById('resetBtn').addEventListener('click', resetAll);
+build(); drawTimer();
+
+function fillCorrect() {
+  Object.keys(state).forEach(k => delete state[k]);
+  for (const t of TASKS) {
+    if (t.type === 'mc') t.qs.forEach((q, i) => { state[`${t.id}-${i + 1}`] = q.ans; });
+    else if (t.type === 'open') t.qs.forEach((q, i) => {
+      const id = `${t.id}-${i + 1}`;
+      state[id] = q.key || 'Odpowiedź własna (w oficjalnym kluczu brak odpowiedzi wzorcowej).';
+      state[id + '#s'] = '2';
+    });
+    else for (const n in t.answers) state[`${t.id}-${n}`] = t.answers[n];
+  }
+  save(); applyState(); updateProgress(); updateFrags();
+}
+if (window.C1) C1.register({ id: TEST_ID, part: 'czytanie', session: '2017', max: MAX, fillCorrect, check: () => checkAll() });
+</script>
+</body>
+</html>
